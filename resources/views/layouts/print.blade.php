@@ -8,12 +8,13 @@
 
     <link rel="stylesheet" href="{{ asset('assets/css/base/reset.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/base/variables.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/base/typography.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/print/receipt.css') }}">
     @stack('styles')
 </head>
 <body class="print-document">
-    @yield('content')
+    <main class="print-container">
+        @yield('content')
+    </main>
 
     @stack('scripts')
 </body>

@@ -1,22 +1,80 @@
 .modal {
-    border: 0;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
-    max-width: 460px;
-    padding: 0;
-    width: calc(100% - 48px);
+    inset: 0;
+    position: fixed;
+    z-index: 100;
 }
 
-.modal::backdrop {
-    background: rgb(15 30 23 / 45%);
+.modal__overlay {
+    background: var(--color-overlay);
+    inset: 0;
+    position: absolute;
 }
 
-.modal__content {
-    padding: 24px;
+.modal__positioner {
+    align-items: center;
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    padding: var(--space-6);
+    pointer-events: none;
+    position: absolute;
+}
+
+.modal__dialog {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    max-width: 480px;
+    pointer-events: auto;
+    width: 100%;
+}
+
+.modal__header {
+    align-items: flex-start;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    gap: var(--space-4);
+    justify-content: space-between;
+    padding: var(--space-5);
+}
+
+.modal__header h2 {
+    font-size: var(--font-size-xl);
+}
+
+.modal__close {
+    align-items: center;
+    background: var(--color-surface-secondary);
+    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 34px;
+    font-size: 22px;
+    height: 34px;
+    justify-content: center;
+    line-height: 1;
+    width: 34px;
+}
+
+.modal__close:hover {
+    background: var(--color-neutral-soft);
+    color: var(--color-heading);
+}
+
+.modal__body {
+    color: var(--color-muted);
+    padding: var(--space-5);
 }
 
 .modal__actions {
+    align-items: center;
+    background: var(--color-surface-secondary);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    border-top: 1px solid var(--color-border);
     display: flex;
-    gap: 10px;
+    gap: var(--space-3);
     justify-content: flex-end;
+    padding: var(--space-4) var(--space-5);
 }

@@ -1,18 +1,85 @@
 .alert {
+    align-items: flex-start;
     border: 1px solid;
-    border-radius: var(--radius-sm);
-    margin-bottom: 20px;
-    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    padding: var(--space-4);
 }
 
+.alert__icon {
+    align-items: center;
+    border: 1px solid currentColor;
+    border-radius: var(--radius-pill);
+    display: inline-flex;
+    flex: 0 0 22px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    height: 22px;
+    justify-content: center;
+    width: 22px;
+}
+
+.alert__content {
+    flex: 1;
+}
+
+.alert__title {
+    color: currentColor;
+    font-family: var(--font-body);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.alert__message {
+    font-size: var(--font-size-sm);
+    margin-top: var(--space-1);
+}
+
+.alert__close {
+    align-items: center;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    color: currentColor;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 28px;
+    font-size: 20px;
+    height: 28px;
+    justify-content: center;
+    line-height: 1;
+    opacity: 0.7;
+    width: 28px;
+}
+
+.alert__close:hover {
+    background: rgb(255 255 255 / 45%);
+    opacity: 1;
+}
+
+.alert-success,
 .alert--success {
-    background: var(--color-primary-light);
-    border-color: rgb(47 133 90 / 30%);
+    background: var(--color-success-soft);
+    border-color: var(--color-success);
     color: var(--color-success);
 }
 
+.alert-warning {
+    background: var(--color-warning-soft);
+    border-color: var(--color-warning);
+    color: #92400e;
+}
+
+.alert-danger,
 .alert--danger {
-    background: #fff1f1;
-    border-color: rgb(194 65 65 / 30%);
+    background: var(--color-danger-soft);
+    border-color: var(--color-danger);
     color: var(--color-danger);
+}
+
+.alert-info {
+    background: var(--color-info-soft);
+    border-color: var(--color-info);
+    color: var(--color-info);
 }

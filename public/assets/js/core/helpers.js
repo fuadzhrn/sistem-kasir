@@ -22,5 +22,23 @@
                 }, delay);
             };
         },
+        storage: {
+            get: function (key) {
+                try {
+                    return window.localStorage.getItem(key);
+                } catch (error) {
+                    return null;
+                }
+            },
+            set: function (key, value) {
+                try {
+                    window.localStorage.setItem(key, value);
+                } catch (error) {
+                    return false;
+                }
+
+                return true;
+            },
+        },
     };
 })(window);

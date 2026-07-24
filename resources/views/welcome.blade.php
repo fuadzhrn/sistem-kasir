@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
 @section('title', 'Inisialisasi Aplikasi')
+@section('page-title', 'Inisialisasi Aplikasi')
 
 @section('content')
     <section class="page-header">
         <p class="eyebrow">Tahap 1</p>
-        <h1>Fondasi aplikasi siap dikembangkan</h1>
+        <h2>Fondasi aplikasi siap dikembangkan</h2>
         <p class="page-header__description">
             Proyek Laravel telah disiapkan dengan struktur Blade, CSS, dan JavaScript modular.
             Belum ada fitur bisnis pada tahap ini.
@@ -14,7 +15,7 @@
 
     <section class="card">
         <div class="card__body">
-            <h2>Pemeriksaan lingkungan lokal</h2>
+            <h3>Pemeriksaan lingkungan lokal</h3>
             <p>
                 Gunakan halaman pemeriksaan sistem untuk memastikan runtime, database, storage,
                 dan asset dasar tersedia.

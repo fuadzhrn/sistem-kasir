@@ -1,0 +1,83 @@
+.loading-demo {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: 160px minmax(0, 1fr);
+}
+
+.spinner {
+    animation: spinner-rotate 700ms linear infinite;
+    border: 3px solid var(--color-primary-light);
+    border-radius: var(--radius-pill);
+    border-top-color: var(--color-primary);
+    height: 34px;
+    width: 34px;
+}
+
+.spinner--sm {
+    border-width: 2px;
+    height: 20px;
+    width: 20px;
+}
+
+.skeleton {
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+    background: linear-gradient(
+        90deg,
+        var(--color-neutral-soft) 25%,
+        var(--color-surface-secondary) 45%,
+        var(--color-neutral-soft) 65%
+    );
+    background-size: 220% 100%;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5);
+}
+
+.skeleton-line {
+    height: 12px;
+}
+
+.skeleton-line--title {
+    height: 18px;
+    width: 42%;
+}
+
+.skeleton-line--short {
+    width: 64%;
+}
+
+.skeleton-table-row {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 50px 1.2fr 1fr 100px;
+    padding-block: var(--space-3);
+}
+
+@keyframes spinner-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes skeleton-pulse {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner,
+    .skeleton {
+        animation-duration: 2s;
+    }
+}

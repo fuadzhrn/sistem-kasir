@@ -2,30 +2,55 @@
     'use strict';
 
     window.StoreApp = window.StoreApp || {};
-    window.StoreApp.confirm = function (message) {
-        const dialog = document.getElementById('modal-confirm');
 
-        if (!dialog) {
-            return Promise.resolve(window.confirm(message));
+    let pendingResolve = null;
+
+    window.StoreApp.confirm = function (message) {
+        const modal = document.getElementById('modal-confirm');
+
+        if (!modal || !window.StoreApp.modal) {
+            return Promise.resolve(false);
         }
 
-        const messageElement = dialog.querySelector('[data-confirm-message]');
-        const acceptButton = dialog.querySelector('[data-confirm-accept]');
-        const cancelButton = dialog.querySelector('[data-confirm-cancel]');
+        const messageElement = modal.querySelector('[data-confirm-message]');
 
-        messageElement.textContent = message;
-        window.StoreApp.modal.open(dialog);
+        if (messageElement && message) {
+            messageElement.textContent = message;
+        }
+
+        window.StoreApp.modal.open(modal);
 
         return new Promise(function (resolve) {
-            acceptButton.addEventListener('click', function accept() {
-                window.StoreApp.modal.close(dialog);
-                resolve(true);
-            }, { once: true });
-
-            cancelButton.addEventListener('click', function cancel() {
-                window.StoreApp.modal.close(dialog);
-                resolve(false);
-            }, { once: true });
+            pendingResolve = resolve;
         });
     };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('modal-confirm');
+
+        if (!modal) {
+            return;
+        }
+
+        const acceptButton = modal.querySelector('[data-confirm-accept]');
+
+        if (acceptButton) {
+            acceptButton.addEventListener('click', function () {
+                if (pendingResolve) {
+                    pendingResolve(true);
+                    pendingResolve = null;
+                }
+
+                document.dispatchEvent(new CustomEvent('store-app:confirmed'));
+                window.StoreApp.modal.close(modal, 'confirm');
+            });
+        }
+
+        modal.addEventListener('store-app:modal-closed', function (event) {
+            if (pendingResolve && event.detail.reason !== 'confirm') {
+                pendingResolve(false);
+                pendingResolve = null;
+            }
+        });
+    });
 })(window, document);

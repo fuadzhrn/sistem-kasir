@@ -1,15 +1,37 @@
 @page {
-    margin: 8mm;
+    margin: 10mm;
+}
+
+html,
+body {
+    background: var(--color-white);
+    margin: 0;
+    padding: 0;
 }
 
 .print-document {
-    background: #ffffff;
-    color: #000000;
-    font-family: Arial, sans-serif;
+    color: var(--color-heading);
+    font-family: Arial, "Courier New", monospace;
     font-size: 12px;
+    line-height: 1.4;
+}
+
+.print-container {
+    margin-inline: auto;
+    max-width: 100%;
+    padding: 12px;
 }
 
 @media print {
+    html,
+    body,
+    .print-document,
+    .print-container {
+        margin: 0;
+        padding: 0;
+    }
+
+    .no-print,
     .print-hidden {
         display: none !important;
     }

@@ -17,12 +17,29 @@
     <link rel="stylesheet" href="{{ asset('assets/css/base/variables.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/base/typography.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/base/global.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/layouts/auth-layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/components/buttons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components/forms.css') }}">
     @stack('styles')
 </head>
 <body>
     <main class="auth-shell">
-        @yield('content')
+        <div class="auth-container">
+            <div class="auth-brand" aria-label="Sistem Manajemen Toko">
+                <span class="auth-brand__mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                        <path d="M19.5 4.5c-6.3.3-10.1 2.4-11.7 6.2-1 2.4-.5 4.8.2 6.3 1.3-3.1 3.6-5.7 7.1-7.8-3 2.7-4.8 5.7-5.5 9.1 1.8.9 4.3.8 6.3-.6 3.8-2.6 4.1-7.7 3.6-13.2Z"/>
+                    </svg>
+                </span>
+                <strong>Sistem Manajemen Toko</strong>
+            </div>
+
+            <section class="auth-card">
+                @yield('content')
+            </section>
+
+            <p class="auth-caption">Fondasi autentikasi · Belum terhubung ke akun pengguna</p>
+        </div>
     </main>
 
     <script src="{{ asset('assets/js/core/helpers.js') }}" defer></script>

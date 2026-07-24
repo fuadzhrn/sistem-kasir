@@ -1,9 +1,10 @@
-html {
+html,
+body {
     background: var(--color-background);
 }
 
-body {
-    background: var(--color-background);
+body.is-modal-open {
+    overflow: hidden;
 }
 
 a {
@@ -13,36 +14,65 @@ a {
 }
 
 a:hover {
-    color: var(--color-primary-dark);
+    color: var(--color-primary-hover);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        color var(--transition-fast),
+        background-color var(--transition-fast),
+        opacity var(--transition-fast);
 }
 
 :focus-visible {
-    outline: 3px solid rgb(37 99 168 / 30%);
+    outline: 3px solid rgb(37 99 235 / 24%);
     outline-offset: 2px;
+}
+
+::placeholder {
+    color: var(--color-placeholder);
+}
+
+.visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
 }
 
 .eyebrow {
     color: var(--color-primary);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    margin-bottom: 8px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-2);
     text-transform: uppercase;
 }
 
 .page-header {
-    margin-bottom: 24px;
+    margin-bottom: var(--space-6);
 }
 
 .page-header__description {
     color: var(--color-muted);
-    margin-top: 10px;
+    margin-top: var(--space-2);
     max-width: 760px;
 }
 
-.auth-shell {
+.section-stack {
     display: grid;
-    min-height: 100vh;
-    padding: 48px;
-    place-items: center;
+    gap: var(--space-6);
+}
+
+.text-muted {
+    color: var(--color-muted);
 }

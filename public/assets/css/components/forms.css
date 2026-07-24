@@ -1,15 +1,205 @@
-.form-control {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    color: var(--color-text);
-    min-height: 42px;
-    padding: 9px 12px;
-    width: 100%;
+.form-grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-group {
+    min-width: 0;
+}
+
+.form-group--full {
+    grid-column: 1 / -1;
 }
 
 .form-label {
+    color: var(--color-heading);
     display: block;
-    font-weight: 500;
-    margin-bottom: 6px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--space-2);
+}
+
+.form-required {
+    color: var(--color-danger);
+    margin-left: 2px;
+}
+
+.form-control,
+.form-select,
+.form-textarea,
+.form-file {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-dark);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+    min-height: 42px;
+    padding: 9px var(--space-3);
+    width: 100%;
+}
+
+.form-textarea {
+    min-height: 104px;
+    resize: vertical;
+}
+
+.form-select {
+    cursor: pointer;
+}
+
+.form-control:hover:not(:disabled),
+.form-select:hover:not(:disabled),
+.form-textarea:hover:not(:disabled),
+.form-file:hover:not(:disabled) {
+    border-color: var(--color-primary);
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-textarea:focus,
+.form-file:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgb(22 101 52 / 14%);
+    outline: 0;
+}
+
+.form-control:disabled,
+.form-select:disabled,
+.form-textarea:disabled,
+.form-file:disabled {
+    background: var(--color-neutral-soft);
+    color: var(--color-placeholder);
+    cursor: not-allowed;
+}
+
+.form-control[readonly],
+.form-textarea[readonly] {
+    background: var(--color-surface-secondary);
+    color: var(--color-muted);
+}
+
+.form-help,
+.form-error,
+.form-success {
+    display: block;
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-2);
+}
+
+.form-help {
+    color: var(--color-muted);
+}
+
+.form-error {
+    color: var(--color-danger);
+}
+
+.form-success {
+    color: var(--color-success);
+}
+
+.form-control.is-error,
+.form-select.is-error,
+.form-textarea.is-error {
+    border-color: var(--color-danger);
+}
+
+.form-control.is-error:focus,
+.form-select.is-error:focus,
+.form-textarea.is-error:focus {
+    box-shadow: 0 0 0 3px rgb(220 38 38 / 12%);
+}
+
+.form-control.is-success,
+.form-select.is-success,
+.form-textarea.is-success {
+    border-color: var(--color-success);
+}
+
+.form-check-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+.form-check {
+    align-items: center;
+    color: var(--color-text);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: var(--font-size-sm);
+    gap: var(--space-2);
+}
+
+.form-check input {
+    accent-color: var(--color-primary);
+    height: 16px;
+    width: 16px;
+}
+
+.form-check input:disabled + span {
+    color: var(--color-placeholder);
+}
+
+.input-group {
+    display: flex;
+}
+
+.input-group .form-control {
+    border-radius: 0;
+    min-width: 0;
+}
+
+.input-group__addon {
+    align-items: center;
+    background: var(--color-surface-secondary);
+    border: 1px solid var(--color-border-dark);
+    color: var(--color-muted);
+    display: inline-flex;
+    font-size: var(--font-size-sm);
+    padding-inline: var(--space-3);
+}
+
+.input-group__addon:first-child {
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    border-right: 0;
+}
+
+.input-group__addon:last-child {
+    border-left: 0;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.search-control {
+    position: relative;
+}
+
+.search-control .form-control {
+    padding-left: 38px;
+}
+
+.search-control__icon {
+    color: var(--color-placeholder);
+    height: 18px;
+    left: var(--space-3);
+    pointer-events: none;
+    position: absolute;
+    top: 12px;
+    width: 18px;
+}
+
+.form-file {
+    padding: 7px;
+}
+
+.form-file::file-selector-button {
+    background: var(--color-primary-soft);
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--color-primary);
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+    margin-right: var(--space-3);
+    padding: 6px var(--space-3);
 }

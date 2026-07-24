@@ -1,5 +1,4 @@
 <footer class="app-footer">
-    <div class="app-container">
-        <p>&copy; {{ now()->year }} {{ config('app.name') }}. Fondasi aplikasi Laravel.</p>
-    </div>
+    <p>&copy; {{ now()->year }} Sistem Manajemen Toko</p>
+    <p>Versi pengembangan · Fondasi UI Tahap 2</p>
 </footer>
