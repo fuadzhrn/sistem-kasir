@@ -1,0 +1,16 @@
+@page {
+    margin: 8mm;
+}
+
+.print-document {
+    background: #ffffff;
+    color: #000000;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+@media print {
+    .print-hidden {
+        display: none !important;
+    }
+}

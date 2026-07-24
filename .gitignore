@@ -1,5 +1,6 @@
 *.log
 .DS_Store
+Desktop.ini
 .env
 .env.backup
 .env.production
@@ -7,6 +8,8 @@
 .phpunit.result.cache
 /.codex
 /.cursor/
+/.fleet
+/.history
 /.idea
 /.nova
 /.phpunit.cache
@@ -14,6 +17,8 @@
 /.zed
 /auth.json
 /node_modules
+npm-debug.log*
+yarn-error.log
 /public/build
 /public/fonts-manifest.dev.json
 /public/hot

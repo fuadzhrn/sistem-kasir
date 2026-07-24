@@ -1,0 +1,48 @@
+html {
+    background: var(--color-background);
+}
+
+body {
+    background: var(--color-background);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+a:hover {
+    color: var(--color-primary-dark);
+}
+
+:focus-visible {
+    outline: 3px solid rgb(37 99 168 / 30%);
+    outline-offset: 2px;
+}
+
+.eyebrow {
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header__description {
+    color: var(--color-muted);
+    margin-top: 10px;
+    max-width: 760px;
+}
+
+.auth-shell {
+    display: grid;
+    min-height: 100vh;
+    padding: 48px;
+    place-items: center;
+}

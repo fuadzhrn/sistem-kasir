@@ -1,0 +1,33 @@
+body {
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.65;
+}
+
+h1,
+h2,
+h3 {
+    color: var(--color-primary-dark);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 21px;
+}
+
+h3 {
+    font-size: 16px;
+}
+
+strong {
+    font-weight: 600;
+}

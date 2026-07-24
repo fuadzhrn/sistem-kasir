@@ -1,0 +1,24 @@
+.app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-container {
+    margin-inline: auto;
+    max-width: var(--container-width);
+    padding-inline: 32px;
+    width: 100%;
+}
+
+.app-main {
+    flex: 1;
+    padding-block: 48px;
+}
+
+.app-footer {
+    border-top: 1px solid var(--color-border);
+    color: var(--color-muted);
+    font-size: 13px;
+    padding-block: 20px;
+}

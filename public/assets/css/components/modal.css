@@ -1,0 +1,22 @@
+.modal {
+    border: 0;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    max-width: 460px;
+    padding: 0;
+    width: calc(100% - 48px);
+}
+
+.modal::backdrop {
+    background: rgb(15 30 23 / 45%);
+}
+
+.modal__content {
+    padding: 24px;
+}
+
+.modal__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}

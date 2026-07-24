@@ -1,0 +1,35 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body,
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+}
+
+body {
+    min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+a {
+    color: inherit;
+}
+
+img,
+svg {
+    display: block;
+    max-width: 100%;
+}
