@@ -154,15 +154,23 @@
     font-size: var(--font-size-xs);
 }
 
+.profile-menu a,
 .profile-menu button {
     background: transparent;
     border-radius: var(--radius-sm);
-    color: var(--color-muted);
+    color: var(--color-text);
     display: block;
     font-size: var(--font-size-sm);
     padding: var(--space-2) var(--space-3);
     text-align: left;
     width: 100%;
+}
+
+.profile-menu a:hover,
+.profile-menu button:hover {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    text-decoration: none;
 }
 
 .profile-menu button:disabled {

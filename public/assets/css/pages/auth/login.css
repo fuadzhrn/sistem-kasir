@@ -1,0 +1,9 @@
+.auth-security-note {
+    background: var(--color-primary-soft);
+    border-radius: var(--radius-md);
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+    line-height: 1.7;
+    margin-top: var(--space-6);
+    padding: var(--space-4);
+}

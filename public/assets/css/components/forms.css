@@ -203,3 +203,34 @@
     margin-right: var(--space-3);
     padding: 6px var(--space-3);
 }
+
+.password-field {
+    position: relative;
+}
+
+.password-field .form-control {
+    padding-right: 92px;
+}
+
+.password-toggle {
+    background: transparent;
+    border-radius: var(--radius-sm);
+    color: var(--color-primary);
+    cursor: pointer;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    padding: var(--space-2);
+    position: absolute;
+    right: var(--space-2);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.password-toggle:hover {
+    background: var(--color-primary-soft);
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+}

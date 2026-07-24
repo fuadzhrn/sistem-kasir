@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/layouts/auth-layout.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components/buttons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components/forms.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/components/alerts.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/components/toast.css') }}">
     @stack('styles')
 </head>
 <body>
@@ -35,16 +37,20 @@
             </div>
 
             <section class="auth-card">
+                @include('partials.alert')
                 @yield('content')
             </section>
 
-            <p class="auth-caption">Fondasi autentikasi · Belum terhubung ke akun pengguna</p>
+            <p class="auth-caption">Akses aman untuk pengguna terdaftar</p>
         </div>
     </main>
+
+    <div class="toast-container" data-toast-container aria-live="polite" aria-atomic="true"></div>
 
     <script src="{{ asset('assets/js/core/helpers.js') }}" defer></script>
     <script src="{{ asset('assets/js/core/csrf.js') }}" defer></script>
     <script src="{{ asset('assets/js/core/app.js') }}" defer></script>
+    <script src="{{ asset('assets/js/components/toast.js') }}" defer></script>
     @stack('scripts')
 </body>
 </html>
