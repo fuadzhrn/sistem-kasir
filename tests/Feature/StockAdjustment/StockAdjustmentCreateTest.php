@@ -90,8 +90,10 @@ class StockAdjustmentCreateTest extends StockAdjustmentTestCase
             ]))->assertRedirect();
         }
 
-        $this->assertDatabaseHas('stock_adjustments', ['adjustment_number' => 'ADJ-N01-20260725-0001']);
-        $this->assertDatabaseHas('stock_adjustments', ['adjustment_number' => 'ADJ-N01-20260725-0002']);
+        $dateSegment = now()->format('Ymd');
+
+        $this->assertDatabaseHas('stock_adjustments', ['adjustment_number' => "ADJ-N01-{$dateSegment}-0001"]);
+        $this->assertDatabaseHas('stock_adjustments', ['adjustment_number' => "ADJ-N01-{$dateSegment}-0002"]);
         $this->assertDatabaseMissing('stock_adjustments', ['adjustment_number' => 'PALSU-1']);
     }
 }

@@ -55,7 +55,7 @@ class StockReceiptCreateTest extends StockReceiptTestCase
         ]))->assertSessionHasErrors(['receipt_date', 'items']);
 
         $this->actingAs($owner)->post(route('stock-receipts.store'), $this->payload($branch, $product, [
-            'receipt_date' => '2026-07-26',
+            'receipt_date' => now()->addDay()->toDateString(),
             'items' => [
                 ['product_id' => $product->id, 'quantity' => '1.0000', 'purchase_price' => '10000,01'],
                 ['product_id' => $product->id, 'quantity' => '0', 'purchase_price' => '0'],

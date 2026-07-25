@@ -6,7 +6,7 @@
         ['label' => 'Design System', 'short' => 'DS', 'route' => 'design-system.index', 'available' => app()->environment('local')],
     ];
     $ownerMenu = [
-        ['label' => 'Dashboard', 'short' => 'DB'],
+        ['label' => 'Dashboard', 'short' => 'DB', 'route' => 'dashboard.owner', 'active' => 'dashboard.owner*', 'available' => true],
         ['label' => 'Kasir', 'short' => 'KS', 'route' => 'cashier.index', 'active' => 'cashier.*', 'available' => $sidebarUser?->can('create', \App\Models\Sale::class)],
         ['label' => 'Nota dan Transaksi', 'short' => 'NT', 'route' => 'sales.index', 'active' => 'sales.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Sale::class)],
         ['label' => 'Produk', 'short' => 'PR', 'route' => 'products.index', 'active' => 'products.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Product::class)],
