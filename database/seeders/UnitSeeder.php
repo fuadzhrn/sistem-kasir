@@ -21,12 +21,12 @@ class UnitSeeder extends Seeder
             ['name' => 'Dus', 'slug' => 'dus', 'symbol' => null],
             ['name' => 'Kaleng', 'slug' => 'kaleng', 'symbol' => null],
             ['name' => 'Jeriken', 'slug' => 'jeriken', 'symbol' => null],
-            ['name' => 'Unit', 'slug' => 'unit', 'symbol' => null],
+            ['name' => 'Unit', 'slug' => 'unit', 'symbol' => 'unit'],
             ['name' => 'Lainnya', 'slug' => 'lainnya', 'symbol' => null],
         ];
 
         foreach ($units as $unit) {
-            Unit::query()->updateOrCreate(
+            Unit::query()->firstOrCreate(
                 ['slug' => $unit['slug']],
                 [...$unit, 'is_active' => true],
             );

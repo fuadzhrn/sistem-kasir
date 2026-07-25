@@ -1,0 +1,116 @@
+.summary-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: var(--space-5);
+}
+
+.summary-card,
+.filter-card,
+.form-card,
+.detail-card {
+    padding: var(--space-5);
+}
+
+.summary-card span,
+.table-secondary,
+.detail-list dt,
+.detail-note {
+    color: var(--color-muted);
+}
+
+.summary-card strong {
+    color: var(--color-heading);
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-2xl);
+    margin-top: var(--space-2);
+}
+
+.filter-card,
+.module-actions {
+    margin-bottom: var(--space-5);
+}
+
+.module-filters {
+    align-items: end;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: minmax(280px, 1fr) minmax(180px, .35fr) auto;
+}
+
+.module-filters__actions,
+.module-actions,
+.form-actions,
+.action-group {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.module-actions,
+.action-group,
+.form-actions {
+    justify-content: flex-end;
+}
+
+.form-card {
+    max-width: 900px;
+}
+
+.form-card > .alert {
+    margin-bottom: var(--space-5);
+}
+
+.form-grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-grid__full {
+    grid-column: 1 / -1;
+}
+
+.form-actions {
+    border-top: 1px solid var(--color-border);
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+}
+
+.table-secondary {
+    display: block;
+    margin-top: 2px;
+}
+
+.detail-list {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.detail-list div {
+    background: var(--color-surface-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+}
+
+.detail-list__full {
+    grid-column: 1 / -1;
+}
+
+.detail-list dt {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--space-1);
+}
+
+.detail-list dd {
+    color: var(--color-heading);
+    overflow-wrap: anywhere;
+}
+
+.detail-note {
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-4);
+}

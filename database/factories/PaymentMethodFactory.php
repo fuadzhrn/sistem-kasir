@@ -15,7 +15,7 @@ class PaymentMethodFactory extends Factory
         return [
             'code' => strtoupper(fake()->unique()->bothify('PAY-###')),
             'name' => fake()->unique()->word(),
-            'type' => 'general',
+            'type' => fake()->randomElement(['cash', 'non_cash', 'other']),
             'is_active' => true,
             'sort_order' => fake()->numberBetween(1, 20),
         ];

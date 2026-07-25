@@ -5,16 +5,22 @@ namespace App\Providers;
 use App\Models\ActivityLog;
 use App\Models\Branch;
 use App\Models\BranchStock;
+use App\Models\Category;
 use App\Models\Expense;
+use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\Unit;
 use App\Models\User;
 use App\Policies\ActivityLogPolicy;
 use App\Policies\BranchPolicy;
 use App\Policies\BranchStockPolicy;
+use App\Policies\CategoryPolicy;
 use App\Policies\ExpensePolicy;
+use App\Policies\PaymentMethodPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\SalePolicy;
+use App\Policies\UnitPolicy;
 use App\Policies\UserPolicy;
 use App\Services\Authorization\BranchAccessService;
 use Illuminate\Support\Facades\Gate;
@@ -36,6 +42,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Branch::class, BranchPolicy::class);
+        Gate::policy(Category::class, CategoryPolicy::class);
+        Gate::policy(Unit::class, UnitPolicy::class);
+        Gate::policy(PaymentMethod::class, PaymentMethodPolicy::class);
         Gate::policy(Product::class, ProductPolicy::class);
         Gate::policy(BranchStock::class, BranchStockPolicy::class);
         Gate::policy(Sale::class, SalePolicy::class);

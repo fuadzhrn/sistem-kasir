@@ -1,0 +1,5 @@
+@import url("./categories.css");
+
+.module-filters--payment {
+    grid-template-columns: minmax(240px, 1fr) minmax(150px, .3fr) minmax(160px, .3fr) auto;
+}

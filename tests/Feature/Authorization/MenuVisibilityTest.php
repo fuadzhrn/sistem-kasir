@@ -10,13 +10,16 @@ class MenuVisibilityTest extends AuthorizationTestCase
 
         $response = $this->actingAs($owner)->get(route('account.index'))->assertOk();
 
-        foreach (['Dashboard', 'Kasir', 'Nota', 'Produk', 'Stok', 'Pengeluaran', 'Laporan', 'Cabang', 'Pengguna', 'Aktivitas', 'Pengaturan', 'Akun Saya'] as $label) {
+        foreach (['Dashboard', 'Kasir', 'Nota', 'Produk', 'Stok', 'Pengeluaran', 'Laporan', 'Cabang', 'Pengguna', 'Kategori', 'Satuan', 'Metode Pembayaran', 'Aktivitas', 'Pengaturan', 'Akun Saya'] as $label) {
             $response->assertSeeText($label);
         }
 
         $response
             ->assertSee('href="'.route('branches.index').'"', false)
             ->assertSee('href="'.route('users.index').'"', false)
+            ->assertSee('href="'.route('categories.index').'"', false)
+            ->assertSee('href="'.route('units.index').'"', false)
+            ->assertSee('href="'.route('payment-methods.index').'"', false)
             ->assertDontSee('href="/settings"', false);
     }
 
@@ -26,13 +29,16 @@ class MenuVisibilityTest extends AuthorizationTestCase
 
         $response = $this->actingAs($admin)->get(route('account.index'))->assertOk();
 
-        foreach (['Dashboard Cabang', 'Kasir', 'Nota Cabang', 'Produk', 'Stok Cabang', 'Pengeluaran Cabang', 'Laporan Cabang', 'Cabang Saya', 'Pegawai Cabang', 'Akun Saya'] as $label) {
+        foreach (['Dashboard Cabang', 'Kasir', 'Nota Cabang', 'Produk', 'Stok Cabang', 'Pengeluaran Cabang', 'Laporan Cabang', 'Cabang Saya', 'Pegawai Cabang', 'Kategori', 'Satuan', 'Metode Pembayaran', 'Akun Saya'] as $label) {
             $response->assertSeeText($label);
         }
 
         $response
             ->assertSee('href="'.route('my-branch.show').'"', false)
             ->assertSee('href="'.route('users.index').'"', false)
+            ->assertSee('href="'.route('categories.index').'"', false)
+            ->assertSee('href="'.route('units.index').'"', false)
+            ->assertSee('href="'.route('payment-methods.index').'"', false)
             ->assertDontSeeText('Pengaturan')
             ->assertDontSeeText('Aktivitas');
     }
@@ -52,6 +58,9 @@ class MenuVisibilityTest extends AuthorizationTestCase
             ->assertDontSeeText('Aktivitas')
             ->assertDontSeeText('Pengeluaran Cabang')
             ->assertDontSeeText('Laporan Cabang')
+            ->assertDontSeeText('Kategori')
+            ->assertDontSeeText('Satuan')
+            ->assertDontSeeText('Metode Pembayaran')
             ->assertDontSee('href="/sales"', false);
     }
 }

@@ -16,7 +16,7 @@ class PaymentMethodSeeder extends Seeder
         ];
 
         foreach ($paymentMethods as $paymentMethod) {
-            PaymentMethod::query()->updateOrCreate(
+            PaymentMethod::query()->firstOrCreate(
                 ['code' => $paymentMethod['code']],
                 [...$paymentMethod, 'is_active' => true],
             );
