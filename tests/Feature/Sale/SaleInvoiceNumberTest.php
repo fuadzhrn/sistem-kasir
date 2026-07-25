@@ -28,9 +28,9 @@ class SaleInvoiceNumberTest extends SaleTestCase
         }
 
         $this->assertSame([
-            'INV-UTM-20260725-0001',
-            'INV-UTM-20260725-0002',
-            'INV-CBG01-20260725-0001',
+            'UTM-20260725-0001',
+            'UTM-20260725-0002',
+            'CBG01-20260725-0001',
         ], Sale::query()->orderBy('id')->pluck('invoice_number')->all());
         $this->assertSame(
             3,
@@ -59,9 +59,9 @@ class SaleInvoiceNumberTest extends SaleTestCase
             $this->payload($owner, $branch, $product, $payment),
         )->assertCreated();
 
-        $this->assertSame('INV-DATE-20260725-0001', $first->refresh()->invoice_number);
+        $this->assertSame('DATE-20260725-0001', $first->refresh()->invoice_number);
         $this->assertSame(
-            'INV-DATE-20260726-0001',
+            'DATE-20260726-0001',
             Sale::query()->latest('id')->value('invoice_number'),
         );
         Carbon::setTestNow();

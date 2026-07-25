@@ -51,7 +51,7 @@ class MenuVisibilityTest extends AuthorizationTestCase
 
         $response = $this->actingAs($cashier)->get(route('account.index'))->assertOk();
 
-        foreach (['Transaksi Baru', 'Transaksi Saya', 'Cetak Ulang Nota', 'Akun Saya'] as $label) {
+        foreach (['Transaksi Baru', 'Transaksi Saya', 'Akun Saya'] as $label) {
             $response->assertSeeText($label);
         }
 
@@ -64,6 +64,6 @@ class MenuVisibilityTest extends AuthorizationTestCase
             ->assertDontSeeText('Satuan')
             ->assertDontSeeText('Metode Pembayaran')
             ->assertDontSee('href="'.route('products.index').'"', false)
-            ->assertDontSee('href="/sales"', false);
+            ->assertSee('href="'.route('sales.index').'"', false);
     }
 }

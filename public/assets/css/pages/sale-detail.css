@@ -1,0 +1,124 @@
+.sale-detail-header {
+    margin-bottom: var(--space-5);
+    padding: var(--space-5);
+}
+
+.sale-detail-header__top {
+    align-items: flex-start;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    gap: var(--space-4);
+    justify-content: space-between;
+    padding-bottom: var(--space-4);
+}
+
+.sale-detail-header__top span {
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+}
+
+.sale-detail-header__top h3 {
+    color: var(--color-primary-dark);
+    font-size: var(--font-size-xl);
+    margin-top: var(--space-1);
+}
+
+.sale-detail-meta {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding-top: var(--space-4);
+}
+
+.sale-detail-meta div {
+    display: grid;
+    gap: var(--space-1);
+}
+
+.sale-detail-meta dt,
+.sale-money-list dt {
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+}
+
+.sale-detail-meta dd,
+.sale-money-list dd {
+    color: var(--color-heading);
+    font-weight: var(--font-weight-medium);
+    margin: 0;
+}
+
+.sale-detail-meta__notes {
+    grid-column: span 2;
+}
+
+.sale-items {
+    margin-bottom: var(--space-5);
+}
+
+.sale-items .table-toolbar p {
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-1);
+}
+
+.sale-items .table {
+    min-width: 1100px;
+}
+
+.sale-detail-grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sale-summary-panel .card__header p {
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-1);
+}
+
+.sale-money-list {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5);
+}
+
+.sale-money-list > div {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sale-money-list__total,
+.sale-money-list__profit {
+    border-top: 1px solid var(--color-border);
+    margin-top: var(--space-1);
+    padding-top: var(--space-3);
+}
+
+.sale-money-list__total dd,
+.sale-money-list__profit dd {
+    color: var(--color-primary-dark);
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.sale-internal {
+    border-color: var(--color-info);
+}
+
+.sale-detail-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: flex-end;
+    margin-top: var(--space-5);
+}
+
+@media (max-width: 1100px) {
+    .sale-detail-meta,
+    .sale-detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

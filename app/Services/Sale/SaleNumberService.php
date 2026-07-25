@@ -2,6 +2,7 @@
 
 namespace App\Services\Sale;
 
+use App\Exceptions\Sale\SaleCheckoutException;
 use App\Models\Branch;
 use App\Models\Sale;
 use Carbon\CarbonInterface;
@@ -15,7 +16,7 @@ class SaleNumberService
             ->findOrFail($branch->getKey());
         $branchCode = preg_replace('/[^A-Z0-9]/', '', mb_strtoupper($lockedBranch->code))
             ?: 'CBG'.$lockedBranch->getKey();
-        $prefix = 'INV-'.$branchCode.'-'.$transactionDate->format('Ymd').'-';
+        $prefix = $branchCode.'-'.$transactionDate->format('Ymd').'-';
         $lastNumber = Sale::query()
             ->where('branch_id', $lockedBranch->getKey())
             ->where('invoice_number', 'like', $prefix.'%')

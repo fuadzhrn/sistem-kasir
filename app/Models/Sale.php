@@ -40,6 +40,38 @@ class Sale extends Model
 
     public const STATUS_VOIDED = 'voided';
 
+    /**
+     * @return array<int, string>
+     */
+    public static function statuses(): array
+    {
+        return [
+            self::STATUS_COMPLETED,
+            self::STATUS_VOID_REQUESTED,
+            self::STATUS_VOIDED,
+        ];
+    }
+
+    public function statusLabel(): string
+    {
+        return match ($this->status) {
+            self::STATUS_COMPLETED => 'Selesai',
+            self::STATUS_VOID_REQUESTED => 'Menunggu Pembatalan',
+            self::STATUS_VOIDED => 'Dibatalkan',
+            default => 'Tidak Diketahui',
+        };
+    }
+
+    public function statusBadgeVariant(): string
+    {
+        return match ($this->status) {
+            self::STATUS_COMPLETED => 'success',
+            self::STATUS_VOID_REQUESTED => 'warning',
+            self::STATUS_VOIDED => 'danger',
+            default => 'neutral',
+        };
+    }
+
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);

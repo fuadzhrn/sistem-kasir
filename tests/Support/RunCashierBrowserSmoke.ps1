@@ -389,6 +389,151 @@ try {
     ) {
         throw 'Hasil checkout browser tidak konsisten.'
     }
+
+    foreach ($invoice in $invoices) {
+        if ($invoice -notmatch '^[A-Z0-9]+-\d{8}-\d{4}$' -or $invoice.StartsWith('INV-')) {
+            throw ('Format nomor nota final tidak sesuai: ' + $invoice)
+        }
+    }
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Page.navigate' -Params @{
+        url = $baseUrl + '/sales'
+    }
+    [void] (Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors)
+    Start-Sleep -Seconds 2
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
+        expression = @'
+(() => {
+    const detailLink = document.querySelector('a[href*="/sales/"]:not([href*="/receipt"])');
+    const receiptLink = document.querySelector('a[href*="/sales/"][href*="/receipt"]');
+    const resources = performance.getEntriesByType('resource').map((entry) => entry.name);
+
+    return {
+        location: window.location.href,
+        hasTable: Boolean(document.querySelector('.sales-table-card')),
+        hasOwnTransaction: document.body.innerText.includes('STAGE13-BROWSER') ||
+            document.querySelectorAll('.sales-table tbody tr').length >= 2,
+        hasHistoryCss: resources.some((url) => url.includes('/assets/css/pages/sales-history.css')),
+        hasHistoryJs: resources.some((url) => url.includes('/assets/js/pages/sales-history.js')),
+        hasInternalCost: document.body.innerText.includes('Total HPP') ||
+            document.body.innerText.includes('Laba kotor'),
+        detailUrl: detailLink?.href || '',
+        receiptUrl: receiptLink?.href || '',
+        receiptTarget: receiptLink?.target || '',
+        receiptRel: receiptLink?.rel || ''
+    };
+})()
+'@
+        returnByValue = $true
+    }
+    $historyResult = Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors
+    $history = $historyResult.result.result.value
+
+    Write-Output ('BROWSER_HISTORY_TABLE=' + $history.hasTable)
+    Write-Output ('BROWSER_HISTORY_CSS=' + $history.hasHistoryCss)
+    Write-Output ('BROWSER_HISTORY_JS=' + $history.hasHistoryJs)
+    Write-Output ('BROWSER_HISTORY_INTERNAL_COST=' + $history.hasInternalCost)
+
+    if (
+        -not $history.hasTable -or
+        -not $history.hasOwnTransaction -or
+        -not $history.hasHistoryCss -or
+        -not $history.hasHistoryJs -or
+        $history.hasInternalCost -or
+        -not $history.detailUrl -or
+        -not $history.receiptUrl -or
+        $history.receiptTarget -ne '_blank' -or
+        $history.receiptRel -notmatch 'noopener'
+    ) {
+        throw 'Halaman riwayat transaksi Kasir tidak sesuai.'
+    }
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Page.navigate' -Params @{
+        url = $history.detailUrl
+    }
+    [void] (Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors)
+    Start-Sleep -Seconds 1
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
+        expression = @'
+({
+    hasSnapshot: document.body.innerText.includes('Produk Browser Tahap 13'),
+    hasPayment: document.body.innerText.includes('Ringkasan Pembayaran'),
+    hasInternalCost: document.body.innerText.includes('Total HPP') ||
+        document.body.innerText.includes('Laba kotor'),
+    hasDetailCss: performance.getEntriesByType('resource')
+        .some((entry) => entry.name.includes('/assets/css/pages/sale-detail.css'))
+})
+'@
+        returnByValue = $true
+    }
+    $detailResult = Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors
+    $detail = $detailResult.result.result.value
+
+    Write-Output ('BROWSER_DETAIL_SNAPSHOT=' + $detail.hasSnapshot)
+    Write-Output ('BROWSER_DETAIL_PAYMENT=' + $detail.hasPayment)
+    Write-Output ('BROWSER_DETAIL_INTERNAL_COST=' + $detail.hasInternalCost)
+
+    if (
+        -not $detail.hasSnapshot -or
+        -not $detail.hasPayment -or
+        -not $detail.hasDetailCss -or
+        $detail.hasInternalCost
+    ) {
+        throw 'Halaman detail transaksi Kasir tidak sesuai.'
+    }
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Page.navigate' -Params @{
+        url = $history.receiptUrl
+    }
+    [void] (Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors)
+    Start-Sleep -Seconds 1
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
+        expression = @'
+({
+    hasPrintLayout: document.body.classList.contains('print-document'),
+    hasSnapshot: document.body.innerText.includes('Produk Browser Tahap 13'),
+    hasStage15Notice: document.body.innerText.includes(
+        'Preview nota siap. Fitur cetak browser akan diaktifkan pada Tahap 15.'
+    ),
+    hasInternalCost: document.body.innerText.includes('Total HPP') ||
+        document.body.innerText.includes('Laba kotor'),
+    containsPrintCall: document.documentElement.innerHTML.includes('window.print'),
+    hasPreviewCss: performance.getEntriesByType('resource')
+        .some((entry) => entry.name.includes('/assets/css/pages/receipt-preview.css'))
+})
+'@
+        returnByValue = $true
+    }
+    $receiptResult = Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors
+    $receipt = $receiptResult.result.result.value
+
+    Write-Output ('BROWSER_RECEIPT_PRINT_LAYOUT=' + $receipt.hasPrintLayout)
+    Write-Output ('BROWSER_RECEIPT_SNAPSHOT=' + $receipt.hasSnapshot)
+    Write-Output ('BROWSER_RECEIPT_STAGE15_NOTICE=' + $receipt.hasStage15Notice)
+    Write-Output ('BROWSER_RECEIPT_INTERNAL_COST=' + $receipt.hasInternalCost)
+    Write-Output ('BROWSER_RECEIPT_PRINT_CALL=' + $receipt.containsPrintCall)
+    Write-Output ('BROWSER_STAGE14_CONSOLE_ERROR_COUNT=' + $errors.Count)
+
+    if (
+        -not $receipt.hasPrintLayout -or
+        -not $receipt.hasSnapshot -or
+        -not $receipt.hasStage15Notice -or
+        -not $receipt.hasPreviewCss -or
+        $receipt.hasInternalCost -or
+        $receipt.containsPrintCall -or
+        $errors.Count -ne 0
+    ) {
+        throw 'Preview nota Kasir tidak sesuai atau menghasilkan error browser.'
+    }
 } finally {
     if ($null -ne $socket) {
         $socket.Dispose()

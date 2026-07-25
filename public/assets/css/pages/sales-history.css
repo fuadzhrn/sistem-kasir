@@ -1,0 +1,117 @@
+.sales-summary {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: var(--space-5);
+}
+
+.sales-summary__card {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4);
+}
+
+.sales-summary__card > span,
+.sales-summary__statuses small {
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+}
+
+.sales-summary__card > strong {
+    color: var(--color-heading);
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xl);
+}
+
+.sales-summary__statuses > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.sales-summary__statuses small strong {
+    color: var(--color-heading);
+    margin-left: var(--space-1);
+}
+
+.sales-filters {
+    margin-bottom: var(--space-5);
+    padding: var(--space-5);
+}
+
+.sales-filters__grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.sales-filters__search {
+    grid-column: span 2;
+}
+
+.sales-filters__quick,
+.sales-filters__actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+.sales-filters__quick > span {
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+    margin-right: var(--space-1);
+}
+
+.sales-filters__actions {
+    border-top: 1px solid var(--color-border);
+    justify-content: flex-end;
+    padding-top: var(--space-4);
+}
+
+.sales-table {
+    min-width: 1500px;
+}
+
+.sale-number {
+    color: var(--color-primary-dark);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.sales-table__actions {
+    display: inline-flex;
+    gap: var(--space-2);
+}
+
+.sales-empty {
+    display: grid;
+    gap: var(--space-2);
+    justify-items: center;
+}
+
+.sales-empty p {
+    color: var(--color-muted);
+}
+
+.sales-empty > div {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+.sales-table-card .pagination-button[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.48;
+}
+
+@media (max-width: 1200px) {
+    .sales-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sales-filters__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}

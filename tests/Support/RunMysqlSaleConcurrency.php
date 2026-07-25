@@ -190,7 +190,7 @@ try {
         'activity_log_count' => DB::table('activity_logs')->count(),
         'negative_stock_count' => DB::table('branch_stocks')->where('quantity', '<', 0)->count(),
     ];
-    Artisan::call('migrate:rollback', ['--step' => 1, '--force' => true]);
+    Artisan::call('migrate:rollback', ['--step' => 2, '--force' => true]);
     $summary['rollback_removed_checkout_token'] = ! Schema::hasColumn('sales', 'checkout_token');
     Artisan::call('migrate', ['--force' => true]);
     $summary['remigrate_restored_checkout_token'] = Schema::hasColumn('sales', 'checkout_token');
