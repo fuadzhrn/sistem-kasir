@@ -59,7 +59,7 @@ class CashierPageTest extends CashierTestCase
             ->assertDontSee('Pembayaran Mati');
     }
 
-    public function test_page_is_simulation_only_and_opening_it_does_not_change_database(): void
+    public function test_opening_page_does_not_create_transaction_before_checkout(): void
     {
         $branch = $this->createBranch('SAFE');
         $cashier = $this->createUser('cashier', $branch);
@@ -74,7 +74,7 @@ class CashierPageTest extends CashierTestCase
 
         $this->actingAs($cashier)->get(route('cashier.index'))
             ->assertOk()
-            ->assertSee('Mode Desain Kasir')
+            ->assertSee('Kasir aktif')
             ->assertSee('Bayar &amp; Cetak', false)
             ->assertSee('Bayar Tanpa Cetak')
             ->assertSee('data-payment-action="print"', false)

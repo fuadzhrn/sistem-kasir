@@ -61,7 +61,7 @@ class CashierFrontendMarkupTest extends CashierTestCase
             ->assertSee('assets/js/pages/cashier/index.js')
             ->assertSee('type="module"', false)
             ->assertSee('name="viewport"', false)
-            ->assertSee('Mode Desain Kasir')
+            ->assertSee('Kasir aktif')
             ->getContent();
 
         $this->assertStringNotContainsString('onclick=', $content);
@@ -81,7 +81,7 @@ class CashierFrontendMarkupTest extends CashierTestCase
         $modules = [
             'index', 'product-browser', 'cart-store', 'cart-renderer',
             'payment-calculator', 'payment-form', 'mobile-tabs',
-            'branch-switcher', 'cashier-utils',
+            'branch-switcher', 'cashier-utils', 'checkout-client',
         ];
 
         foreach ($sections as $section) {
@@ -115,7 +115,7 @@ class CashierFrontendMarkupTest extends CashierTestCase
         $this->assertStringNotContainsString('localStorage', $cashierScripts);
         $this->assertStringNotContainsString('window.print', $cashierScripts);
         $this->assertStringNotContainsString('innerHTML', $cashierScripts);
-        $this->assertStringNotContainsString('method: \'POST\'', $cashierScripts);
+        $this->assertStringContainsString("method: 'POST'", $cashierScripts);
         $this->assertStringContainsString('@media (max-width: 768px)', $responsiveCss);
         $this->assertStringContainsString('env(safe-area-inset-bottom', $responsiveCss);
         $this->assertStringContainsString('min-height: 44px', $responsiveCss);

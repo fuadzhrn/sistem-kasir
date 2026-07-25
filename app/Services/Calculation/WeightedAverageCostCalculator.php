@@ -106,9 +106,11 @@ class WeightedAverageCostCalculator
         $digits = ltrim($whole.$fraction, '0');
         $digits = $digits === '' ? '0' : $digits;
 
+        $maximum = (string) PHP_INT_MAX;
+
         if (
-            strlen($digits) > 18
-            || (strlen($digits) === 18 && strcmp($digits, (string) PHP_INT_MAX) > 0)
+            strlen($digits) > strlen($maximum)
+            || (strlen($digits) === strlen($maximum) && strcmp($digits, $maximum) > 0)
         ) {
             throw new InvalidArgumentException("{$label} terlalu besar.");
         }
@@ -181,9 +183,11 @@ class WeightedAverageCostCalculator
             $quotient = $this->addUnsigned($quotient, '1');
         }
 
+        $maximum = (string) PHP_INT_MAX;
+
         if (
-            strlen($quotient) > 18
-            || (strlen($quotient) === 18 && strcmp($quotient, (string) PHP_INT_MAX) > 0)
+            strlen($quotient) > strlen($maximum)
+            || (strlen($quotient) === strlen($maximum) && strcmp($quotient, $maximum) > 0)
         ) {
             throw new InvalidArgumentException('Hasil perhitungan terlalu besar.');
         }

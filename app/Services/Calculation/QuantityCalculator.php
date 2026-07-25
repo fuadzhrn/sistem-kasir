@@ -49,9 +49,11 @@ class QuantityCalculator
         [$whole, $fraction] = array_pad(explode('.', $unsigned, 2), 2, '');
         $digits = ltrim($whole.str_pad($fraction, 3, '0'), '0') ?: '0';
 
+        $maximum = (string) PHP_INT_MAX;
+
         if (
-            strlen($digits) > 18
-            || (strlen($digits) === 18 && strcmp($digits, (string) PHP_INT_MAX) > 0)
+            strlen($digits) > strlen($maximum)
+            || (strlen($digits) === strlen($maximum) && strcmp($digits, $maximum) > 0)
         ) {
             throw new InvalidArgumentException('Quantity terlalu besar.');
         }

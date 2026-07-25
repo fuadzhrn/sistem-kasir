@@ -2,7 +2,7 @@
     $defaultPayment = $paymentMethods->firstWhere('code', 'CASH') ?? $paymentMethods->first();
 @endphp
 <section class="cashier-payment" aria-labelledby="cashier-payment-heading">
-    <h3 id="cashier-payment-heading">Pembayaran Preview</h3>
+    <h3 id="cashier-payment-heading">Pembayaran</h3>
     @if ($paymentMethods->isEmpty())
         <div class="alert alert-warning" role="alert">Belum ada metode pembayaran aktif.</div>
     @endif
@@ -10,7 +10,13 @@
         <div class="form-group">
             <label class="form-label" for="cashier-discount">Diskon</label>
             <input class="form-control" id="cashier-discount" type="number" min="0" step="1" value="0" inputmode="numeric" data-payment-discount>
-            <span class="form-help">Batas preview: {{ \App\Support\Format\Rupiah::format($maximumDiscount) }}</span>
+            <span class="form-help">
+                @if ($discountRestricted)
+                    Batas akun: {{ \App\Support\Format\Rupiah::format($maximumDiscount) }}
+                @else
+                    Maksimal sebesar subtotal transaksi.
+                @endif
+            </span>
         </div>
         <div class="form-group">
             <label class="form-label" for="cashier-payment-method">Metode pembayaran</label>
@@ -40,6 +46,6 @@
     <p class="cashier-payment-error" role="alert" aria-live="assertive" data-payment-error></p>
     <div class="cashier-payment-actions">
         <button class="btn btn-primary" type="button" data-payment-action="print" disabled>Bayar &amp; Cetak</button>
-        <button class="btn btn-outline" type="button" data-payment-action="without-print" disabled>Bayar Tanpa Cetak</button>
+        <button class="btn btn-outline" type="button" data-payment-action="no_print" disabled>Bayar Tanpa Cetak</button>
     </div>
 </section>

@@ -2,9 +2,10 @@
     <div class="modal__overlay" data-modal-overlay></div>
     <div class="modal__positioner">
         <div class="modal__dialog cashier-preview-modal" data-modal-dialog tabindex="-1">
-            <div class="modal__header"><div><p class="eyebrow">Hanya simulasi</p><h2 id="cashier-preview-title">Preview Pembayaran</h2></div><button class="modal__close" type="button" data-modal-close aria-label="Tutup modal">×</button></div>
+            <div class="modal__header"><div><p class="eyebrow">Transaksi tersimpan</p><h2 id="cashier-preview-title">Pembayaran Berhasil</h2></div><button class="modal__close" type="button" data-modal-close aria-label="Tutup modal">×</button></div>
             <div class="modal__body">
                 <dl class="cashier-preview-list">
+                    <div><dt>Nomor invoice</dt><dd data-preview-invoice>-</dd></div>
                     <div><dt>Cabang</dt><dd data-preview-branch>-</dd></div>
                     <div><dt>Jumlah item</dt><dd data-preview-items>0</dd></div>
                     <div><dt>Subtotal</dt><dd data-preview-subtotal>Rp0</dd></div>
@@ -14,9 +15,9 @@
                     <div data-preview-cash-row><dt>Uang diterima</dt><dd data-preview-received>Rp0</dd></div>
                     <div><dt>Kembalian</dt><dd data-preview-change>Rp0</dd></div>
                 </dl>
-                <div class="alert alert-info" data-preview-message>Simulasi berhasil. Transaksi belum disimpan dan stok belum dikurangi.</div>
+                <div class="alert alert-success" data-preview-message>Transaksi berhasil disimpan.</div>
             </div>
-            <div class="modal__actions"><button class="btn btn-primary" type="button" data-modal-close>Tutup Preview</button></div>
+            <div class="modal__actions"><button class="btn btn-primary" type="button" data-modal-close>Transaksi Berikutnya</button></div>
         </div>
     </div>
 </div>

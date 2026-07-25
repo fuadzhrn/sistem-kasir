@@ -1,4 +1,4 @@
 <div class="alert alert-info cashier-simulation-alert" role="status">
-    <strong>Mode Desain Kasir</strong>
-    <span>Transaksi belum disimpan dan stok belum dikurangi.</span>
+    <strong>Kasir aktif</strong>
+    <span>Pembayaran akan menyimpan transaksi dan mengurangi stok. Cetak struk belum tersedia pada tahap ini.</span>
 </div>

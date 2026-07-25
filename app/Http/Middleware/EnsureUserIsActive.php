@@ -22,6 +22,14 @@ class EnsureUserIsActive
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'code' => 'ACCOUNT_INACTIVE',
+                'message' => __('auth.inactive'),
+            ], 403);
+        }
+
         return redirect()
             ->route('login')
             ->withErrors(['login' => __('auth.inactive')]);

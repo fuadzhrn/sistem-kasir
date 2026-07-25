@@ -56,6 +56,12 @@ class StockMovement extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    protected static function booted(): void
+    {
+        static::updating(fn (): bool => false);
+        static::deleting(fn (): bool => false);
+    }
+
     protected function casts(): array
     {
         return [

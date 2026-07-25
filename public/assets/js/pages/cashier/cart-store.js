@@ -203,6 +203,55 @@ export function createCartStore(options) {
         notify();
     }
 
+    function updatePrices(serverItems) {
+        let changed = false;
+
+        serverItems.forEach(function (serverItem) {
+            const item = items.get(Number(serverItem.product_id));
+
+            if (!item || typeof serverItem.selling_price !== 'string') {
+                return;
+            }
+
+            if (moneyToCents(item.selling_price) !== moneyToCents(serverItem.selling_price)) {
+                item.selling_price = serverItem.selling_price;
+                items.set(item.product_id, item);
+                changed = true;
+            }
+        });
+
+        if (changed) {
+            notify();
+        }
+
+        return changed;
+    }
+
+    function applyStockConflict(conflict) {
+        const item = items.get(Number(conflict.product_id));
+
+        if (!item) {
+            return false;
+        }
+
+        const available = quantityToMills(conflict.available_quantity);
+
+        if (available === null) {
+            return false;
+        }
+
+        item.available_stock = millsToQuantity(available);
+
+        if (available > 0 && quantityToMills(item.quantity) > available) {
+            item.quantity = millsToQuantity(available);
+        }
+
+        items.set(item.product_id, item);
+        notify();
+
+        return true;
+    }
+
     function getItems() {
         return Array.from(items.values()).map(function (item) {
             return { ...item };
@@ -220,12 +269,14 @@ export function createCartStore(options) {
 
     return {
         add,
+        applyStockConflict,
         clear,
         getItems,
         increment,
         revalidate,
         remove,
         subscribe,
+        updatePrices,
         updateQuantity,
     };
 }

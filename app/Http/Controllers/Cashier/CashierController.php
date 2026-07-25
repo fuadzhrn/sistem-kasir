@@ -8,14 +8,18 @@ use App\Models\Category;
 use App\Models\PaymentMethod;
 use App\Models\Sale;
 use App\Models\Setting;
+use App\Models\User;
 use App\Services\Cashier\CashierContextService;
+use App\Services\Sale\SaleCalculator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use InvalidArgumentException;
 
 class CashierController extends Controller
 {
     public function __construct(
         private readonly CashierContextService $context,
+        private readonly SaleCalculator $calculator,
     ) {}
 
     public function index(CashierPageRequest $request): View
@@ -48,20 +52,31 @@ class CashierController extends Controller
                 ->orderBy('sort_order')
                 ->orderBy('name')
                 ->get(['id', 'code', 'name', 'type']),
-            'maximumDiscount' => $this->maximumDiscount(),
+            'maximumDiscount' => $this->maximumDiscount($user),
+            'discountRestricted' => $user->isCashier(),
         ]);
     }
 
-    private function maximumDiscount(): string
+    private function maximumDiscount(User $user): ?string
     {
+        if (! $user->isCashier()) {
+            return null;
+        }
+
         $value = Setting::query()
             ->where('key', 'maximum_cashier_discount')
             ->value('value');
 
-        if (! is_numeric($value) || (float) $value < 0) {
+        try {
+            $normalized = $value === null
+                ? '0.00'
+                : $this->calculator->normalizeMoney((string) $value);
+        } catch (InvalidArgumentException) {
             return '0.00';
         }
 
-        return number_format((float) $value, 2, '.', '');
+        return $this->calculator->compareMoney($normalized, '0.00') < 0
+            ? '0.00'
+            : $normalized;
     }
 }

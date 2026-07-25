@@ -1,6 +1,7 @@
 import { initializeBranchSwitcher } from './branch-switcher.js';
 import { createCartRenderer } from './cart-renderer.js';
 import { createCartStore } from './cart-store.js';
+import { createCheckoutClient } from './checkout-client.js';
 import { initializeMobileTabs } from './mobile-tabs.js';
 import { createPaymentForm } from './payment-form.js';
 import { createProductBrowser } from './product-browser.js';
@@ -17,7 +18,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         branchId: root.dataset.branchId,
         userKey: root.dataset.userKey,
     });
-    const paymentForm = createPaymentForm(root, store);
+    let checkoutClient = null;
+    const paymentForm = createPaymentForm(root, store, {
+        onSubmit: function (action, state) {
+            checkoutClient?.submit(action, state);
+        },
+    });
     createCartRenderer(root, store, {
         onSummary: function () {
             paymentForm.recalculate();
@@ -27,6 +33,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     initializeBranchSwitcher(root, store);
 
     const productBrowser = createProductBrowser(root, store);
+    checkoutClient = createCheckoutClient(root, store, productBrowser, paymentForm);
 
     if (root.dataset.branchId) {
         await productBrowser.load();
@@ -34,6 +41,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     root.querySelector('[data-confirm-clear-cart]').addEventListener('click', function () {
+        if (checkoutClient.isSubmitting()) {
+            return;
+        }
+
         store.clear();
         paymentForm.reset();
         window.StoreApp.modal.close('cashier-clear-cart-modal', 'confirmed');

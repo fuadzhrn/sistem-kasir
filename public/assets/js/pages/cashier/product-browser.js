@@ -223,9 +223,15 @@ export function createProductBrowser(root, store) {
     }
 
     return {
+        focusSearch: function () {
+            searchInput.focus();
+        },
         load: function () {
             return fetchPage(true);
         },
         lookupStoredProduct,
+        reload: function () {
+            return fetchPage(true);
+        },
     };
 }
