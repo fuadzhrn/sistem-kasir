@@ -4,7 +4,7 @@ namespace Tests\Feature\Authorization;
 
 class MenuVisibilityTest extends AuthorizationTestCase
 {
-    public function test_owner_sidebar_contains_owner_menu_without_fake_business_links(): void
+    public function test_owner_sidebar_contains_active_branch_and_user_links(): void
     {
         $owner = $this->createUser('owner');
 
@@ -15,8 +15,8 @@ class MenuVisibilityTest extends AuthorizationTestCase
         }
 
         $response
-            ->assertDontSee('href="/branches"', false)
-            ->assertDontSee('href="/users"', false)
+            ->assertSee('href="'.route('branches.index').'"', false)
+            ->assertSee('href="'.route('users.index').'"', false)
             ->assertDontSee('href="/settings"', false);
     }
 
@@ -26,11 +26,13 @@ class MenuVisibilityTest extends AuthorizationTestCase
 
         $response = $this->actingAs($admin)->get(route('account.index'))->assertOk();
 
-        foreach (['Dashboard Cabang', 'Kasir', 'Nota Cabang', 'Produk', 'Stok Cabang', 'Pengeluaran Cabang', 'Laporan Cabang', 'Pegawai Cabang', 'Akun Saya'] as $label) {
+        foreach (['Dashboard Cabang', 'Kasir', 'Nota Cabang', 'Produk', 'Stok Cabang', 'Pengeluaran Cabang', 'Laporan Cabang', 'Cabang Saya', 'Pegawai Cabang', 'Akun Saya'] as $label) {
             $response->assertSeeText($label);
         }
 
         $response
+            ->assertSee('href="'.route('my-branch.show').'"', false)
+            ->assertSee('href="'.route('users.index').'"', false)
             ->assertDontSeeText('Pengaturan')
             ->assertDontSeeText('Aktivitas');
     }

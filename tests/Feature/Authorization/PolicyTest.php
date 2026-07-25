@@ -70,7 +70,7 @@ class PolicyTest extends AuthorizationTestCase
         $this->assertFalse(Gate::forUser($cashierA)->allows('viewAny', Expense::class));
     }
 
-    public function test_user_policy_hides_owner_from_admin_and_limits_cashier_to_self(): void
+    public function test_user_policy_hides_owner_from_admin_and_denies_cashier_module_access(): void
     {
         $branch = $this->createBranch('USR');
         $owner = $this->createUser('owner');
@@ -80,7 +80,7 @@ class PolicyTest extends AuthorizationTestCase
         $this->assertTrue(Gate::forUser($owner)->allows('view', $admin));
         $this->assertFalse(Gate::forUser($admin)->allows('view', $owner));
         $this->assertTrue(Gate::forUser($admin)->allows('view', $cashier));
-        $this->assertTrue(Gate::forUser($cashier)->allows('view', $cashier));
+        $this->assertFalse(Gate::forUser($cashier)->allows('view', $cashier));
         $this->assertFalse(Gate::forUser($cashier)->allows('view', $admin));
         $this->assertFalse(Gate::forUser($cashier)->allows('create', User::class));
         $this->assertTrue(Gate::forUser($owner)->allows('viewAny', Sale::class));

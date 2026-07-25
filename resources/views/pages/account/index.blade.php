@@ -37,8 +37,8 @@
         <aside class="card account-security">
             <span class="account-security__label">Keamanan</span>
             @if ($user->isOwner())
-                <h3>Kelola kata sandi pengguna</h3>
-                <p>Owner dapat menetapkan kata sandi baru untuk seluruh akun tanpa melihat password lama.</p>
+                <h3>Keamanan akun Owner</h3>
+                <p>Ubah password akun ini di sini. Password pengguna lain dikelola melalui modul Pengguna.</p>
             @else
                 <h3>Kata sandi dikelola Owner</h3>
                 <p>Hubungi Owner apabila kata sandi akun perlu diganti atau direset.</p>
@@ -46,7 +46,7 @@
 
             <div class="account-security__actions">
                 @if ($user->isOwner())
-                    <a class="btn btn-primary" href="{{ route('account.password.edit') }}">Kelola Kata Sandi</a>
+                    <a class="btn btn-primary" href="{{ route('account.password.edit') }}">Ubah Kata Sandi Saya</a>
                 @endif
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf

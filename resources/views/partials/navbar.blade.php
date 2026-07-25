@@ -50,7 +50,7 @@
                     </div>
                     <a href="{{ route('account.index') }}">Akun Saya</a>
                     @if ($navbarUser->isOwner())
-                        <a href="{{ route('account.password.edit') }}">Kelola Kata Sandi</a>
+                        <a href="{{ route('account.password.edit') }}">Ubah Kata Sandi Saya</a>
                     @endif
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf

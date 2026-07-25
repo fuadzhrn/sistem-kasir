@@ -20,7 +20,7 @@
     </div>
 @else
     @if (session('status'))
-        <div class="alert alert-success" role="status" data-alert>
+        <div class="alert alert-success" role="status" data-alert data-flash-toast data-toast-type="success" data-toast-title="Berhasil">
             <span class="alert__icon" aria-hidden="true">✓</span>
             <div class="alert__content">
                 <h4 class="alert__title">Berhasil</h4>
@@ -31,7 +31,7 @@
     @endif
 
     @if ($errors->any())
-        <div class="alert alert-danger" role="alert" data-alert>
+        <div class="alert alert-danger" role="alert" data-alert data-flash-toast data-toast-type="danger" data-toast-title="Data belum valid">
             <span class="alert__icon" aria-hidden="true">×</span>
             <div class="alert__content">
                 <h4 class="alert__title">Data belum valid</h4>

@@ -14,13 +14,14 @@ class BranchPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->is_active
-            && ($user->isOwner() || $user->branch_id !== null);
+        return $user->is_active && $user->isOwner();
     }
 
     public function view(User $user, Branch $branch): bool
     {
-        return $this->branchAccess->canAccessBranch($user, $branch);
+        return $user->is_active
+            && $user->hasAnyRole(['owner', 'admin'])
+            && $this->branchAccess->canAccessBranch($user, $branch);
     }
 
     public function create(User $user): bool
@@ -31,6 +32,11 @@ class BranchPolicy
     public function update(User $user, Branch $branch): bool
     {
         return $user->is_active && $user->isOwner() && $branch->exists;
+    }
+
+    public function updateStatus(User $user, Branch $branch): bool
+    {
+        return $this->update($user, $branch);
     }
 
     public function delete(User $user, Branch $branch): bool

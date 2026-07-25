@@ -1,0 +1,173 @@
+.summary-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: var(--space-5);
+}
+
+.summary-card,
+.filter-card,
+.form-card,
+.detail-card {
+    padding: var(--space-5);
+}
+
+.summary-card span {
+    color: var(--color-muted);
+    display: block;
+    font-size: var(--font-size-sm);
+}
+
+.summary-card strong {
+    color: var(--color-heading);
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-2xl);
+    margin-top: var(--space-2);
+}
+
+.filter-card {
+    margin-bottom: var(--space-5);
+}
+
+.module-filters {
+    align-items: end;
+    display: grid;
+    gap: var(--space-3);
+}
+
+.user-filters {
+    grid-template-columns: minmax(240px, 1fr) repeat(3, minmax(150px, 0.45fr));
+}
+
+.module-filters__actions,
+.module-actions,
+.form-actions,
+.action-group {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.module-filters__actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+}
+
+.module-actions {
+    justify-content: flex-end;
+    margin-bottom: var(--space-5);
+}
+
+.action-group {
+    justify-content: flex-end;
+}
+
+.users-table {
+    min-width: 1100px;
+}
+
+.table-secondary {
+    color: var(--color-muted);
+    display: block;
+    margin-top: 2px;
+}
+
+.form-card {
+    max-width: 920px;
+}
+
+.form-actions {
+    border-top: 1px solid var(--color-border);
+    justify-content: flex-end;
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+}
+
+.detail-card {
+    max-width: 920px;
+}
+
+.detail-list {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.detail-list div {
+    background: var(--color-surface-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+}
+
+.detail-list dt {
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--space-1);
+}
+
+.detail-list dd {
+    color: var(--color-heading);
+    overflow-wrap: anywhere;
+}
+
+.user-identity {
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-5);
+}
+
+.user-identity__avatar {
+    align-items: center;
+    background: var(--color-primary);
+    border-radius: var(--radius-lg);
+    color: var(--color-white);
+    display: inline-flex;
+    flex: 0 0 56px;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    height: 56px;
+    justify-content: center;
+}
+
+.user-identity h3 {
+    color: var(--color-heading);
+    font-size: var(--font-size-xl);
+}
+
+.user-identity p {
+    color: var(--color-muted);
+    margin-top: var(--space-1);
+}
+
+[data-branch-field][hidden] {
+    display: none;
+}
+
+.password-reset-card {
+    max-width: 720px;
+}
+
+.password-target {
+    background: var(--color-primary-soft);
+    border-radius: var(--radius-md);
+    display: grid;
+    margin-bottom: var(--space-5);
+    padding: var(--space-4);
+}
+
+.password-target span,
+.password-target small {
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+}
+
+.password-target strong {
+    color: var(--color-heading);
+    margin-block: var(--space-1);
+}

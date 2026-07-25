@@ -9,7 +9,7 @@ class UserPolicy
     public function viewAny(User $user): bool
     {
         return $user->is_active
-            && $user->hasAnyRole(['owner', 'admin', 'cashier']);
+            && $user->hasAnyRole(['owner', 'admin']);
     }
 
     public function view(User $user, User $targetUser): bool
@@ -28,7 +28,7 @@ class UserPolicy
                 && ! $targetUser->isOwner();
         }
 
-        return $user->isCashier() && $user->is($targetUser);
+        return false;
     }
 
     public function create(User $user): bool
@@ -55,6 +55,7 @@ class UserPolicy
     {
         return $user->is_active
             && $user->isOwner()
-            && $targetUser->exists;
+            && $targetUser->exists
+            && ! $user->is($targetUser);
     }
 }

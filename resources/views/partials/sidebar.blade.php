@@ -13,8 +13,8 @@
         ['label' => 'Stok', 'short' => 'ST'],
         ['label' => 'Pengeluaran', 'short' => 'PG'],
         ['label' => 'Laporan', 'short' => 'LP'],
-        ['label' => 'Cabang', 'short' => 'CB'],
-        ['label' => 'Pengguna', 'short' => 'PN'],
+        ['label' => 'Cabang', 'short' => 'CB', 'route' => 'branches.index', 'active' => 'branches.*', 'available' => \Illuminate\Support\Facades\Gate::allows('manage-branches')],
+        ['label' => 'Pengguna', 'short' => 'PN', 'route' => 'users.index', 'active' => 'users.*', 'available' => \Illuminate\Support\Facades\Gate::allows('manage-users')],
         ['label' => 'Aktivitas', 'short' => 'AK'],
         ['label' => 'Pengaturan', 'short' => 'AT'],
         ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],
@@ -27,7 +27,8 @@
         ['label' => 'Stok Cabang', 'short' => 'ST'],
         ['label' => 'Pengeluaran Cabang', 'short' => 'PG'],
         ['label' => 'Laporan Cabang', 'short' => 'LP'],
-        ['label' => 'Pegawai Cabang', 'short' => 'PC'],
+        ['label' => 'Cabang Saya', 'short' => 'CB', 'route' => 'my-branch.show', 'active' => 'my-branch.*', 'available' => $sidebarUser?->isAdmin()],
+        ['label' => 'Pegawai Cabang', 'short' => 'PC', 'route' => 'users.index', 'active' => 'users.*', 'available' => $sidebarUser?->isAdmin()],
         ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],
     ];
     $cashierMenu = [
@@ -73,14 +74,15 @@
                 @php
                     $available = $item['available'] ?? false;
                     $routeName = $item['route'] ?? null;
+                    $activePattern = $item['active'] ?? $routeName;
                 @endphp
                 <li>
                     @if ($available && $routeName)
                         <a
-                            class="sidebar-nav__item {{ request()->routeIs($routeName) ? 'is-active' : '' }}"
+                            class="sidebar-nav__item {{ request()->routeIs($activePattern) ? 'is-active' : '' }}"
                             href="{{ route($routeName) }}"
                             data-tooltip="{{ $item['label'] }}"
-                            @if (request()->routeIs($routeName)) aria-current="page" @endif
+                            @if (request()->routeIs($activePattern)) aria-current="page" @endif
                         >
                             <span class="sidebar-nav__icon" aria-hidden="true">{{ $item['short'] }}</span>
                             <span class="sidebar-nav__text">{{ $item['label'] }}</span>

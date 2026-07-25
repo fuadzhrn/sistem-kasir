@@ -1,29 +1,28 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\User;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
-class UpdatePasswordRequest extends FormRequest
+class ResetUserPasswordRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->is_active === true
-            && $this->user()->isOwner();
+        $targetUser = $this->route('user');
+
+        return $this->user()?->isOwner() === true
+            && $targetUser instanceof User
+            && ! $this->user()->is($targetUser);
     }
 
-    /**
-     * @return array<string, array<int, mixed>>
-     */
     public function rules(): array
     {
         return [
-            'current_password' => ['required', 'string', 'current_password:web'],
             'password' => [
                 'required',
                 'confirmed',
-                'different:current_password',
                 Password::min(8)->mixedCase()->numbers(),
             ],
         ];

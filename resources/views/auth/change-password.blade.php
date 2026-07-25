@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Kelola Kata Sandi')
-@section('page-title', 'Kelola Kata Sandi')
+@section('title', 'Ubah Kata Sandi')
+@section('page-title', 'Ubah Kata Sandi')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/pages/auth/change-password.css') }}">
@@ -9,41 +9,24 @@
 
 @section('content')
     @include('partials.page-header', [
-        'title' => 'Kelola Kata Sandi Pengguna',
-        'description' => 'Tetapkan kata sandi baru untuk akun Owner, Admin, atau Kasir.',
+        'title' => 'Ubah Kata Sandi Owner',
+        'description' => 'Perbarui kata sandi akun Owner yang sedang digunakan.',
         'eyebrow' => 'Khusus Owner',
         'breadcrumbs' => [
             ['label' => 'Akun Saya', 'url' => route('account.index')],
-            ['label' => 'Kelola Kata Sandi'],
+            ['label' => 'Ubah Kata Sandi'],
         ],
     ])
 
     <section class="card password-card" aria-labelledby="password-form-title">
         <div class="password-card__heading">
-            <h3 id="password-form-title">Reset kata sandi pengguna</h3>
-            <p>Pilih akun tujuan. Password lama tidak ditampilkan dan akan langsung diganti dengan password baru.</p>
+            <h3 id="password-form-title">Kata sandi akun Owner</h3>
+            <p>Untuk akun Admin atau Kasir, gunakan tindakan Reset Kata Sandi pada modul Pengguna.</p>
         </div>
 
         <form class="password-form" action="{{ route('account.password.update') }}" method="POST">
             @csrf
             @method('PUT')
-
-            <div class="form-group">
-                <label class="form-label" for="user_id">Akun yang Diubah</label>
-                <select class="form-control @error('user_id') is-error @enderror" id="user_id" name="user_id" required>
-                    <option value="">Pilih akun</option>
-                    @foreach ($users as $targetUser)
-                        <option value="{{ $targetUser->id }}" @selected((string) old('user_id') === (string) $targetUser->id)>
-                            {{ $targetUser->name }} — {{ '@'.$targetUser->username }}
-                            ({{ $targetUser->role?->name ?? 'Role tidak tersedia' }}{{ $targetUser->branch ? ' / '.$targetUser->branch->name : '' }})
-                            {{ $targetUser->is_active ? '' : '— Nonaktif' }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('user_id')
-                    <span class="form-error">{{ $message }}</span>
-                @enderror
-            </div>
 
             <div class="form-group">
                 <label class="form-label" for="current_password">Kata Sandi Owner Saat Ini</label>
@@ -84,7 +67,7 @@
 
             <div class="password-form__actions">
                 <a class="btn btn-secondary" href="{{ route('account.index') }}">Batal</a>
-                <button class="btn btn-primary" type="submit">Ganti Kata Sandi</button>
+                <button class="btn btn-primary" type="submit">Simpan Kata Sandi</button>
             </div>
         </form>
     </section>

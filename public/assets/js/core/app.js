@@ -16,6 +16,20 @@
             }
         });
 
+        document.querySelectorAll('[data-flash-toast]').forEach(function (alert) {
+            if (!window.StoreApp || typeof window.StoreApp.showToast !== 'function') {
+                return;
+            }
+
+            const message = alert.querySelector('.alert__message');
+
+            window.StoreApp.showToast({
+                type: alert.dataset.toastType || 'info',
+                title: alert.dataset.toastTitle || 'Informasi',
+                message: message ? message.textContent.trim() : '',
+            });
+        });
+
         document.dispatchEvent(new CustomEvent('store-app:ready'));
     });
 })(window, document);
