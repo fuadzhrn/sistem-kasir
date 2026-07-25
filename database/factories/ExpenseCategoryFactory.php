@@ -20,6 +20,8 @@ class ExpenseCategoryFactory extends Factory
             'slug' => Str::slug($name).'-'.fake()->unique()->numberBetween(100, 999),
             'description' => null,
             'is_active' => true,
+            'created_by' => null,
+            'updated_by' => null,
         ];
     }
 }

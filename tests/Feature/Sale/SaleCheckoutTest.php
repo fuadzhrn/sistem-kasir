@@ -128,7 +128,7 @@ class SaleCheckoutTest extends SaleTestCase
         }
     }
 
-    public function test_print_and_no_print_actions_both_save_without_enabling_final_print(): void
+    public function test_print_action_returns_receipt_url_and_no_print_action_does_not(): void
     {
         $branch = $this->createBranch('ACT');
         $owner = $this->createUser('owner');
@@ -137,14 +137,24 @@ class SaleCheckoutTest extends SaleTestCase
         $payment = $this->createPaymentMethod();
 
         foreach (['print', 'no_print'] as $action) {
-            $this->actingAs($owner)->postJson(
+            $response = $this->actingAs($owner)->postJson(
                 route('cashier.checkout.store'),
                 $this->payload($owner, $branch, $product, $payment, [
                     'payment_action' => $action,
                 ]),
-            )->assertCreated()
-                ->assertJsonPath('data.payment_action', $action)
-                ->assertJsonPath('data.print_available', false);
+            )->assertCreated()->assertJsonPath('data.payment_action', $action);
+
+            $sale = Sale::query()->latest('id')->firstOrFail();
+
+            if ($action === 'print') {
+                $response
+                    ->assertJsonPath('data.print_available', true)
+                    ->assertJsonPath('data.print_url', route('receipts.print', $sale));
+            } else {
+                $response
+                    ->assertJsonPath('data.print_available', false)
+                    ->assertJsonPath('data.print_url', null);
+            }
         }
 
         $this->assertDatabaseCount('sales', 2);

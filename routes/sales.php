@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Receipt\ReceiptPrintController;
 use App\Http\Controllers\Sale\SaleHistoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,4 +11,7 @@ Route::middleware(['auth', 'active.user', 'role:owner,admin,cashier'])->group(fu
         ->name('sales.receipt.show');
     Route::get('/sales/{sale}', [SaleHistoryController::class, 'show'])
         ->name('sales.show');
+    Route::get('/receipts/{sale}/print', [ReceiptPrintController::class, 'show'])
+        ->whereNumber('sale')
+        ->name('receipts.print');
 });

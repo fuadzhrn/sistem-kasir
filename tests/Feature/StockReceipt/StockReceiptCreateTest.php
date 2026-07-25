@@ -57,7 +57,7 @@ class StockReceiptCreateTest extends StockReceiptTestCase
         $this->actingAs($owner)->post(route('stock-receipts.store'), $this->payload($branch, $product, [
             'receipt_date' => '2026-07-26',
             'items' => [
-                ['product_id' => $product->id, 'quantity' => '1.0000', 'purchase_price' => '10.001'],
+                ['product_id' => $product->id, 'quantity' => '1.0000', 'purchase_price' => '10000,01'],
                 ['product_id' => $product->id, 'quantity' => '0', 'purchase_price' => '0'],
             ],
         ]))->assertSessionHasErrors([
@@ -80,7 +80,7 @@ class StockReceiptCreateTest extends StockReceiptTestCase
         ]))->assertSessionHasErrors('items');
     }
 
-    public function test_fractional_quantity_money_precision_and_optional_fields_are_accepted(): void
+    public function test_fractional_quantity_and_grouped_integer_rupiah_are_accepted(): void
     {
         $branch = $this->createBranch('DEC');
         $owner = $this->createUser('owner');
@@ -92,20 +92,35 @@ class StockReceiptCreateTest extends StockReceiptTestCase
             'items' => [[
                 'product_id' => $product->id,
                 'quantity' => '2.500',
-                'purchase_price' => '20000.50',
+                'purchase_price' => '20.000',
             ]],
         ]))->assertRedirect();
 
         $this->assertDatabaseHas('stock_receipt_items', [
             'product_id' => $product->id,
             'quantity' => '2.500',
-            'purchase_price' => '20000.50',
-            'subtotal' => '50001.25',
+            'purchase_price' => '20000.00',
+            'subtotal' => '50000.00',
         ]);
         $this->assertDatabaseHas('stock_receipts', [
             'supplier_name' => null,
             'notes' => null,
-            'total_cost' => '50001.25',
+            'total_cost' => '50000.00',
         ]);
+    }
+
+    public function test_fractional_rupiah_purchase_price_is_rejected(): void
+    {
+        $branch = $this->createBranch('RUP');
+        $owner = $this->createUser('owner');
+        $product = $this->createProduct();
+
+        $this->actingAs($owner)->post(route('stock-receipts.store'), $this->payload($branch, $product, [
+            'items' => [[
+                'product_id' => $product->id,
+                'quantity' => '1',
+                'purchase_price' => '20000.50',
+            ]],
+        ]))->assertSessionHasErrors('items.0.purchase_price');
     }
 }

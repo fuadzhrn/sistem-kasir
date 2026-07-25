@@ -1,8 +1,16 @@
-$ErrorActionPreference = 'Stop'
+param(
+    [ValidateSet('Chrome', 'Edge')]
+    [string] $Browser = 'Chrome'
+)
 
+$ErrorActionPreference = 'Stop'
 $baseUrl = 'http://sistem-kasir.test'
-$chromePath = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
-$profilePath = Join-Path $env:TEMP ('codex-stage13-browser-' + [guid]::NewGuid().ToString('N'))
+$chromePath = if ($Browser -eq 'Edge') {
+    'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'
+} else {
+    'C:\Program Files\Google\Chrome\Application\chrome.exe'
+}
+$profilePath = Join-Path $env:TEMP ('codex-stage15-' + $Browser.ToLowerInvariant() + '-' + [guid]::NewGuid().ToString('N'))
 $debugPort = 9337
 $chromeProcess = $null
 $socket = $null
@@ -73,15 +81,30 @@ function Wait-CdpResponse {
             throw 'Koneksi DevTools ditutup sebelum respons diterima.'
         }
 
-        if ($message.method -in @('Runtime.exceptionThrown', 'Log.entryAdded')) {
-            $Errors.Add($message.method)
+        if ($message.method -eq 'Runtime.exceptionThrown') {
+            $description = [string] $message.params.exceptionDetails.exception.description
+            $Errors.Add(('Runtime.exceptionThrown:' + $description))
+        }
+
+        if (
+            $message.method -eq 'Log.entryAdded' -and
+            $message.params.entry.level -eq 'error'
+        ) {
+            $Errors.Add(('Log.entryAdded:' + [string] $message.params.entry.text))
         }
 
         if (
             $message.method -eq 'Runtime.consoleAPICalled' -and
             $message.params.type -eq 'error'
         ) {
-            $Errors.Add('Runtime.consoleAPICalled:error')
+            $consoleText = ($message.params.args | ForEach-Object {
+                if ($null -ne $_.value) {
+                    [string] $_.value
+                } else {
+                    [string] $_.description
+                }
+            }) -join ' '
+            $Errors.Add(('Runtime.consoleAPICalled:error:' + $consoleText))
         }
 
         if ($message.id -eq $CommandId) {
@@ -138,6 +161,7 @@ try {
     $chromeArguments = @(
         '--headless=new',
         '--disable-gpu',
+        '--disable-popup-blocking',
         '--no-first-run',
         '--disable-extensions',
         "--remote-debugging-port=$debugPort",
@@ -252,6 +276,10 @@ try {
     Write-Output ('BROWSER_CASHIER_ACTIVE_TEXT=' + $value.pageText)
     Write-Output ('BROWSER_CONSOLE_ERROR_COUNT=' + $errors.Count)
 
+    foreach ($browserError in $errors) {
+        Write-Output ('BROWSER_ERROR=' + $browserError)
+    }
+
     if (
         -not $value.hasCashierRoot -or
         -not $value.hasCheckoutUrl -or
@@ -262,7 +290,16 @@ try {
 
     $invoices = [System.Collections.Generic.List[string]]::new()
 
-    foreach ($paymentAction in @('no_print', 'print')) {
+    $scenarios = @(
+        @{ name = 'NO_PRINT'; action = 'no_print'; blockPopup = $false; methodType = 'cash' },
+        @{ name = 'PRINT'; action = 'print'; blockPopup = $false; methodType = 'cash' },
+        @{ name = 'PRINT_BLOCKED'; action = 'print'; blockPopup = $true; methodType = 'cash' },
+        @{ name = 'NO_PRINT_NONCASH'; action = 'no_print'; blockPopup = $false; methodType = 'non_cash' }
+    )
+    $receiptTargetCount = 0
+
+    foreach ($scenario in $scenarios) {
+        $paymentAction = $scenario.action
         $commandId++
         Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
             expression = @'
@@ -290,12 +327,30 @@ try {
 
         Start-Sleep -Milliseconds 250
         $commandId++
+        $blockPopup = if ($scenario.blockPopup) { 'true' } else { 'false' }
+        $methodType = $scenario.methodType
         $checkoutExpression = @"
 (() => {
     const received = document.querySelector('[data-amount-received]');
+    const method = document.querySelector('[data-payment-method]');
     const button = document.querySelector('[data-payment-action="$paymentAction"]');
-    received.value = '50000';
-    received.dispatchEvent(new Event('input', { bubbles: true }));
+    const targetMethod = Array.from(method.options).find((option) => option.dataset.type === '$methodType');
+
+    if (targetMethod) {
+        method.value = targetMethod.value;
+        method.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    if ('$methodType' === 'cash') {
+        received.value = '50000';
+        received.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    if ($blockPopup) {
+        window.__stage15OriginalOpen = window.open;
+        window.open = () => null;
+    }
+
     const disabled = button.disabled;
 
     if (!disabled) {
@@ -304,7 +359,8 @@ try {
 
     return {
         buttonDisabled: disabled,
-        cartItems: document.querySelectorAll('[data-cart-items] [data-product-id]').length
+        cartItems: document.querySelectorAll('[data-cart-items] [data-product-id]').length,
+        methodFound: Boolean(targetMethod)
     };
 })()
 "@
@@ -314,7 +370,10 @@ try {
         }
         $checkoutStart = Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors
 
-        if ($checkoutStart.result.result.value.buttonDisabled -eq $true) {
+        if (
+            $checkoutStart.result.result.value.buttonDisabled -eq $true -or
+            $checkoutStart.result.result.value.methodFound -ne $true
+        ) {
             throw "Tombol $paymentAction masih disabled."
         }
 
@@ -329,11 +388,15 @@ try {
     const modal = document.getElementById('cashier-payment-preview-modal');
     const invoice = document.querySelector('[data-preview-invoice]')?.textContent || '';
     const error = document.querySelector('[data-payment-error]')?.textContent || '';
+    const printLink = document.querySelector('[data-preview-print-link]');
 
     return {
         modalOpen: Boolean(modal && !modal.hidden),
         invoice,
-        error
+        error,
+        fallbackVisible: Boolean(printLink && !printLink.hidden),
+        method: document.querySelector('[data-preview-method]')?.textContent || '',
+        change: document.querySelector('[data-preview-change]')?.textContent || ''
     };
 })()
 '@
@@ -357,8 +420,63 @@ try {
             throw "Checkout $paymentAction tidak menghasilkan invoice."
         }
 
+        if ($scenario.blockPopup -and $state.fallbackVisible -ne $true) {
+            throw 'Fallback popup blocker tidak tampil.'
+        }
+
+        if (
+            $scenario.methodType -eq 'non_cash' -and
+            ($state.method -eq 'Tunai' -or $state.change -ne 'Rp0')
+        ) {
+            throw 'Ringkasan transaksi non-tunai tidak sesuai.'
+        }
+
+        if ($scenario.blockPopup) {
+            $commandId++
+            Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
+                expression = 'window.open = window.__stage15OriginalOpen; delete window.__stage15OriginalOpen'
+                returnByValue = $true
+            }
+            [void] (Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors)
+        }
+
+        $targetsAfterCheckout = Invoke-RestMethod -Uri "http://127.0.0.1:$debugPort/json/list"
+        $nextReceiptTargetCount = @(
+            $targetsAfterCheckout | Where-Object { $_.url -like ($baseUrl + '/receipts/*/print*') }
+        ).Count
+
+        if ($scenario.name -eq 'PRINT') {
+            for (
+                $targetAttempt = 0;
+                $targetAttempt -lt 20 -and $nextReceiptTargetCount -lt 1;
+                $targetAttempt++
+            ) {
+                Start-Sleep -Milliseconds 100
+                $targetsAfterCheckout = Invoke-RestMethod -Uri "http://127.0.0.1:$debugPort/json/list"
+                $nextReceiptTargetCount = @(
+                    $targetsAfterCheckout |
+                        Where-Object { $_.url -like ($baseUrl + '/receipts/*/print*') }
+                ).Count
+            }
+        }
+
+        Write-Output ('BROWSER_CHECKOUT_' + $scenario.name + '_FALLBACK=' + $state.fallbackVisible)
+
+        if ($scenario.name -eq 'NO_PRINT' -and $nextReceiptTargetCount -ne 0) {
+            throw 'Bayar Tanpa Cetak membuka tab struk.'
+        }
+
+        if ($scenario.name -eq 'PRINT' -and $nextReceiptTargetCount -lt 1) {
+            throw 'Bayar & Cetak tidak membuka tab struk.'
+        }
+
+        if ($scenario.blockPopup -and $nextReceiptTargetCount -ne $receiptTargetCount) {
+            throw 'Skenario popup diblokir tetap membuka tab baru.'
+        }
+
+        $receiptTargetCount = $nextReceiptTargetCount
         $invoices.Add($invoice)
-        Write-Output ('BROWSER_CHECKOUT_' + $paymentAction.ToUpper() + '=success')
+        Write-Output ('BROWSER_CHECKOUT_' + $scenario.name + '=success')
         $commandId++
         Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
             expression = "document.querySelector('#cashier-payment-preview-modal [data-modal-close]').click()"
@@ -379,11 +497,11 @@ try {
     Write-Output ('BROWSER_FINAL_CONSOLE_ERROR_COUNT=' + $errors.Count)
 
     if (
-        $fixtureVerification.sale_count -ne 2 -or
-        $fixtureVerification.sale_item_count -ne 2 -or
-        $fixtureVerification.movement_count -ne 2 -or
-        $fixtureVerification.activity_log_count -ne 2 -or
-        $fixtureVerification.stock_final -ne '3.000' -or
+        $fixtureVerification.sale_count -ne 4 -or
+        $fixtureVerification.sale_item_count -ne 4 -or
+        $fixtureVerification.movement_count -ne 4 -or
+        $fixtureVerification.activity_log_count -ne 4 -or
+        $fixtureVerification.stock_final -ne '1.000' -or
         $fixtureVerification.negative_stock_count -ne 0 -or
         $errors.Count -ne 0
     ) {
@@ -408,7 +526,7 @@ try {
         expression = @'
 (() => {
     const detailLink = document.querySelector('a[href*="/sales/"]:not([href*="/receipt"])');
-    const receiptLink = document.querySelector('a[href*="/sales/"][href*="/receipt"]');
+    const receiptLink = document.querySelector('a[href*="/receipts/"][href*="/print"]');
     const resources = performance.getEntriesByType('resource').map((entry) => entry.name);
 
     return {
@@ -489,8 +607,22 @@ try {
     }
 
     $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Page.addScriptToEvaluateOnNewDocument' -Params @{
+        source = @'
+window.print = function () {
+    window.__stage15PrintCalls = (window.__stage15PrintCalls || 0) + 1;
+    window.setTimeout(function () {
+        window.dispatchEvent(new Event('afterprint'));
+    }, 0);
+};
+'@
+    }
+    [void] (Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors)
+
+    $previewUrl = $history.detailUrl + '/receipt'
+    $commandId++
     Send-CdpCommand -Socket $socket -Id $commandId -Method 'Page.navigate' -Params @{
-        url = $history.receiptUrl
+        url = $previewUrl
     }
     [void] (Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors)
     Start-Sleep -Seconds 1
@@ -499,16 +631,56 @@ try {
     Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
         expression = @'
 ({
-    hasPrintLayout: document.body.classList.contains('print-document'),
     hasSnapshot: document.body.innerText.includes('Produk Browser Tahap 13'),
     hasStage15Notice: document.body.innerText.includes(
         'Preview nota siap. Fitur cetak browser akan diaktifkan pada Tahap 15.'
     ),
+    printCalls: window.__stage15PrintCalls || 0,
+    hasInternalCost: document.body.innerText.includes('Total HPP') ||
+        document.body.innerText.includes('Laba kotor')
+})
+'@
+        returnByValue = $true
+    }
+    $previewResult = Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors
+    $preview = $previewResult.result.result.value
+
+    Write-Output ('BROWSER_PREVIEW_SNAPSHOT=' + $preview.hasSnapshot)
+    Write-Output ('BROWSER_PREVIEW_AUTO_PRINT_CALLS=' + $preview.printCalls)
+
+    if (
+        -not $preview.hasSnapshot -or
+        -not $preview.hasStage15Notice -or
+        $preview.printCalls -ne 0 -or
+        $preview.hasInternalCost
+    ) {
+        throw 'Preview Tahap 14 berubah atau menjalankan auto-print.'
+    }
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Page.navigate' -Params @{
+        url = $history.receiptUrl
+    }
+    [void] (Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors)
+    Start-Sleep -Seconds 2
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
+        expression = @'
+({
+    hasPrintLayout: document.body.classList.contains('print-document'),
+    hasReceipt: Boolean(document.querySelector('.receipt[data-receipt-auto-print="true"]')),
+    hasSnapshot: document.body.innerText.includes('Produk Browser Tahap 13'),
+    hasCopy: document.body.innerText.includes('SALINAN'),
+    hasToolbar: Boolean(document.querySelector('.receipt-toolbar.print-hidden')),
     hasInternalCost: document.body.innerText.includes('Total HPP') ||
         document.body.innerText.includes('Laba kotor'),
-    containsPrintCall: document.documentElement.innerHTML.includes('window.print'),
-    hasPreviewCss: performance.getEntriesByType('resource')
-        .some((entry) => entry.name.includes('/assets/css/pages/receipt-preview.css'))
+    printCalls: window.__stage15PrintCalls || 0,
+    paperWidth: document.querySelector('[data-receipt-paper-select]')?.value || '',
+    hasReceiptCss: performance.getEntriesByType('resource')
+        .some((entry) => entry.name.includes('/assets/css/print/receipt.css')),
+    hasReceiptJs: performance.getEntriesByType('resource')
+        .some((entry) => entry.name.includes('/assets/js/pages/receipt.js'))
 })
 '@
         returnByValue = $true
@@ -518,21 +690,122 @@ try {
 
     Write-Output ('BROWSER_RECEIPT_PRINT_LAYOUT=' + $receipt.hasPrintLayout)
     Write-Output ('BROWSER_RECEIPT_SNAPSHOT=' + $receipt.hasSnapshot)
-    Write-Output ('BROWSER_RECEIPT_STAGE15_NOTICE=' + $receipt.hasStage15Notice)
+    Write-Output ('BROWSER_RECEIPT_COPY_LABEL=' + $receipt.hasCopy)
+    Write-Output ('BROWSER_RECEIPT_AUTO_PRINT_CALLS=' + $receipt.printCalls)
+    Write-Output ('BROWSER_RECEIPT_DEFAULT_WIDTH=' + $receipt.paperWidth)
     Write-Output ('BROWSER_RECEIPT_INTERNAL_COST=' + $receipt.hasInternalCost)
-    Write-Output ('BROWSER_RECEIPT_PRINT_CALL=' + $receipt.containsPrintCall)
-    Write-Output ('BROWSER_STAGE14_CONSOLE_ERROR_COUNT=' + $errors.Count)
 
     if (
         -not $receipt.hasPrintLayout -or
+        -not $receipt.hasReceipt -or
         -not $receipt.hasSnapshot -or
-        -not $receipt.hasStage15Notice -or
-        -not $receipt.hasPreviewCss -or
+        -not $receipt.hasCopy -or
+        -not $receipt.hasToolbar -or
+        -not $receipt.hasReceiptCss -or
+        -not $receipt.hasReceiptJs -or
         $receipt.hasInternalCost -or
-        $receipt.containsPrintCall -or
+        $receipt.printCalls -ne 1 -or
+        $receipt.paperWidth -ne '80'
+    ) {
+        throw 'Halaman cetak struk tidak sesuai.'
+    }
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
+        expression = @'
+(() => {
+    const select = document.querySelector('[data-receipt-paper-select]');
+    select.value = '58';
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+
+    return {
+        selected: select.value,
+        classApplied: document.querySelector('[data-receipt-paper]').classList.contains('receipt-paper--58'),
+        stored: window.localStorage.getItem('receipt_paper_width')
+    };
+})()
+'@
+        returnByValue = $true
+    }
+    $paper58Result = Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors
+    $paper58 = $paper58Result.result.result.value
+
+    if (
+        $paper58.selected -ne '58' -or
+        -not $paper58.classApplied -or
+        $paper58.stored -ne '58'
+    ) {
+        throw 'Preferensi kertas 58 mm tidak tersimpan.'
+    }
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Page.reload'
+    [void] (Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors)
+    Start-Sleep -Seconds 2
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
+        expression = @'
+(() => {
+    const select = document.querySelector('[data-receipt-paper-select]');
+    const persisted58 = select.value === '58' &&
+        document.querySelector('[data-receipt-paper]').classList.contains('receipt-paper--58');
+    select.value = '80';
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+
+    return {
+        persisted58,
+        stored80: window.localStorage.getItem('receipt_paper_width')
+    };
+})()
+'@
+        returnByValue = $true
+    }
+    $paper80Result = Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors
+    $paper80 = $paper80Result.result.result.value
+
+    if (-not $paper80.persisted58 -or $paper80.stored80 -ne '80') {
+        throw 'Preferensi kertas tidak bertahan setelah reload.'
+    }
+
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Page.reload'
+    [void] (Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors)
+    Start-Sleep -Seconds 2
+    $commandId++
+    Send-CdpCommand -Socket $socket -Id $commandId -Method 'Runtime.evaluate' -Params @{
+        expression = @'
+(() => {
+    const selected80 = document.querySelector('[data-receipt-paper-select]').value === '80';
+    document.querySelector('[data-receipt-print-button]').click();
+
+    return new Promise((resolve) => {
+        window.setTimeout(() => resolve({
+            selected80,
+            printCalls: window.__stage15PrintCalls || 0,
+            status: document.querySelector('[data-receipt-print-status]').textContent
+        }), 50);
+    });
+})()
+'@
+        awaitPromise = $true
+        returnByValue = $true
+    }
+    $manualPrintResult = Wait-CdpResponse -Socket $socket -CommandId $commandId -Errors $errors
+    $manualPrint = $manualPrintResult.result.result.value
+
+    Write-Output ('BROWSER_RECEIPT_58_PERSISTED=' + $paper80.persisted58)
+    Write-Output ('BROWSER_RECEIPT_80_PERSISTED=' + $manualPrint.selected80)
+    Write-Output ('BROWSER_RECEIPT_MANUAL_PRINT_CALLS=' + $manualPrint.printCalls)
+    Write-Output ('BROWSER_RECEIPT_AFTERPRINT_STATUS=' + $manualPrint.status)
+    Write-Output ('BROWSER_STAGE15_CONSOLE_ERROR_COUNT=' + $errors.Count)
+
+    if (
+        -not $manualPrint.selected80 -or
+        $manualPrint.printCalls -ne 2 -or
+        $manualPrint.status -ne 'Dialog cetak telah ditutup.' -or
         $errors.Count -ne 0
     ) {
-        throw 'Preview nota Kasir tidak sesuai atau menghasilkan error browser.'
+        throw 'Print manual, afterprint, atau console browser tidak sesuai.'
     }
 } finally {
     if ($null -ne $socket) {

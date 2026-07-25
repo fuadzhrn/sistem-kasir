@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Cashier;
 
 use App\Models\Sale;
+use App\Support\Format\Rupiah;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -56,10 +57,9 @@ class StoreCashierCheckoutRequest extends FormRequest
             ],
             'discount_amount' => [
                 'nullable',
-                'numeric',
+                'integer',
                 'min:0',
-                'max:9999999999999999.99',
-                'decimal:0,2',
+                'max:9999999999999999',
             ],
             'payment_method_id' => [
                 'required',
@@ -68,10 +68,9 @@ class StoreCashierCheckoutRequest extends FormRequest
             ],
             'amount_received' => [
                 'nullable',
-                'numeric',
+                'integer',
                 'min:0',
-                'max:9999999999999999.99',
-                'decimal:0,2',
+                'max:9999999999999999',
             ],
             'payment_action' => [
                 'required',
@@ -118,11 +117,11 @@ class StoreCashierCheckoutRequest extends FormRequest
             'items.*.quantity.gt' => 'Quantity produk harus lebih besar dari nol.',
             'items.*.quantity.regex' => 'Quantity maksimal menggunakan tiga angka desimal.',
             'discount_amount.min' => 'Diskon tidak boleh negatif.',
-            'discount_amount.decimal' => 'Diskon maksimal menggunakan dua angka desimal.',
+            'discount_amount.integer' => 'Diskon harus berupa Rupiah tanpa desimal.',
             'payment_method_id.required' => 'Metode pembayaran wajib dipilih.',
             'payment_method_id.exists' => 'Metode pembayaran tidak tersedia atau tidak aktif.',
             'amount_received.min' => 'Uang diterima tidak boleh negatif.',
-            'amount_received.decimal' => 'Uang diterima maksimal menggunakan dua angka desimal.',
+            'amount_received.integer' => 'Uang diterima harus berupa Rupiah tanpa desimal.',
             'payment_action.required' => 'Tindakan pembayaran wajib dipilih.',
             'payment_action.in' => 'Tindakan pembayaran tidak valid.',
             'expected_subtotal.decimal' => 'Subtotal keranjang tidak valid.',
@@ -136,6 +135,10 @@ class StoreCashierCheckoutRequest extends FormRequest
         $notes = trim((string) $this->input('notes'));
 
         $this->merge([
+            'discount_amount' => Rupiah::normalizeInput($this->input('discount_amount')),
+            'amount_received' => Rupiah::normalizeInput($this->input('amount_received')),
+            'expected_subtotal' => Rupiah::normalizeInput($this->input('expected_subtotal')),
+            'expected_total' => Rupiah::normalizeInput($this->input('expected_total')),
             'notes' => $notes === '' ? null : $notes,
         ]);
     }

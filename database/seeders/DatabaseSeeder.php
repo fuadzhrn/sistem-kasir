@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             UnitSeeder::class,
             PaymentMethodSeeder::class,
+            ExpenseCategorySeeder::class,
             SettingSeeder::class,
         ]);
     }

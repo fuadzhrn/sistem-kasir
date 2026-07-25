@@ -34,7 +34,7 @@
     <td class="receipt-money-cell">
         <div class="input-group">
             <span class="input-group__addon">Rp</span>
-            <input class="form-control" name="items[{{ $rowIndex }}][purchase_price]" type="number" value="{{ $item['purchase_price'] ?? '' }}" min="0.01" max="999999999.99" step="0.01" inputmode="decimal" required data-item-price>
+            <input class="form-control" name="items[{{ $rowIndex }}][purchase_price]" type="text" value="{{ \App\Support\Format\Rupiah::input($item['purchase_price'] ?? null) }}" inputmode="numeric" autocomplete="off" required data-item-price data-rupiah-input>
         </div>
         @error('items.'.$rowIndex.'.purchase_price')<span class="form-error">{{ $message }}</span>@enderror
     </td>

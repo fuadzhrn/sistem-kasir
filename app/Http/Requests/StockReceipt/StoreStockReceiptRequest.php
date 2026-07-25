@@ -3,6 +3,7 @@
 namespace App\Http\Requests\StockReceipt;
 
 use App\Models\StockReceipt;
+use App\Support\Format\Rupiah;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -35,7 +36,7 @@ class StoreStockReceiptRequest extends FormRequest
                 'required', 'numeric', 'decimal:0,3', 'gt:0', 'max:999999999.999',
             ],
             'items.*.purchase_price' => [
-                'required', 'numeric', 'decimal:0,2', 'gt:0', 'max:999999999.99',
+                'required', 'integer', 'gt:0', 'max:999999999',
             ],
         ];
     }
@@ -61,16 +62,31 @@ class StoreStockReceiptRequest extends FormRequest
             'items.*.quantity.decimal' => 'Quantity maksimal menggunakan tiga angka desimal.',
             'items.*.quantity.gt' => 'Quantity harus lebih besar dari nol.',
             'items.*.purchase_price.required' => 'Harga beli wajib diisi.',
-            'items.*.purchase_price.decimal' => 'Harga beli maksimal menggunakan dua angka desimal.',
+            'items.*.purchase_price.integer' => 'Harga beli harus berupa Rupiah tanpa desimal.',
             'items.*.purchase_price.gt' => 'Harga beli harus lebih besar dari nol.',
         ];
     }
 
     protected function prepareForValidation(): void
     {
+        $items = $this->input('items');
+
+        if (is_array($items)) {
+            $items = array_map(static function (mixed $item): mixed {
+                if (! is_array($item) || ! array_key_exists('purchase_price', $item)) {
+                    return $item;
+                }
+
+                $item['purchase_price'] = Rupiah::normalizeInput($item['purchase_price']);
+
+                return $item;
+            }, $items);
+        }
+
         $this->merge([
             'supplier_name' => $this->nullableTrimmed($this->input('supplier_name')),
             'notes' => $this->nullableTrimmed($this->input('notes')),
+            'items' => $items,
         ]);
     }
 

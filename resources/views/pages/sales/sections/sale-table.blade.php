@@ -34,7 +34,7 @@
                                 <a class="btn btn-secondary btn-sm" href="{{ route('sales.show', $sale) }}">Detail</a>
                                 <a
                                     class="btn btn-outline btn-sm"
-                                    href="{{ route('sales.receipt.show', $sale) }}"
+                                    href="{{ route('receipts.print', ['sale' => $sale, 'copy' => 1]) }}"
                                     target="_blank"
                                     rel="noopener"
                                 >Cetak Ulang</a>

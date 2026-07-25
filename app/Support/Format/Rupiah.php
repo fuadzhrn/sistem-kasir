@@ -16,16 +16,42 @@ final class Rupiah
 
     public static function formatMinor(int $minorValue): string
     {
-        $absolute = abs($minorValue);
-        $whole = intdiv($absolute, 100);
-        $fraction = $absolute % 100;
+        $whole = intdiv(abs($minorValue) + 50, 100);
         $formatted = 'Rp'.number_format($whole, 0, ',', '.');
 
-        if ($fraction !== 0) {
-            $formatted .= ','.str_pad((string) $fraction, 2, '0', STR_PAD_LEFT);
+        return $minorValue < 0 ? "-{$formatted}" : $formatted;
+    }
+
+    public static function input(string|int|null $value): string
+    {
+        if ($value === null || trim((string) $value) === '') {
+            return '';
         }
 
-        return $minorValue < 0 ? "-{$formatted}" : $formatted;
+        $minor = self::toMinor((string) self::normalizeInput($value));
+        $formatted = number_format(intdiv(abs($minor) + 50, 100), 0, ',', '.');
+
+        return $minor < 0 ? "-{$formatted}" : $formatted;
+    }
+
+    public static function normalizeInput(mixed $value): mixed
+    {
+        if (! is_string($value) && ! is_int($value)) {
+            return $value;
+        }
+
+        $normalized = trim((string) $value);
+        $normalized = preg_replace('/\ARp\s*/iu', '', $normalized) ?? $normalized;
+
+        if (preg_match('/\A([+-]?)(\d{1,3}(?:\.\d{3})+)\z/', $normalized, $matches) === 1) {
+            return $matches[1].str_replace('.', '', $matches[2]);
+        }
+
+        if (preg_match('/\A([+-]?\d+)\.0{1,2}\z/', $normalized, $matches) === 1) {
+            return $matches[1];
+        }
+
+        return $normalized;
     }
 
     private static function toMinor(string $value): int

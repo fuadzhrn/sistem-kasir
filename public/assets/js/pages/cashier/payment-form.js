@@ -1,5 +1,6 @@
 import { calculateCartSummary } from './payment-calculator.js';
 import {
+    formatRupiahInput,
     formatRupiah,
     moneyToCents,
     rupiahInputToCents,
@@ -97,6 +98,11 @@ export function createPaymentForm(root, store, options = {}) {
         calculate();
     }
 
+    function normalizeMoneyInput(input) {
+        input.value = formatRupiahInput(input.value);
+        calculate();
+    }
+
     function setSubmitting(submitting) {
         isSubmitting = submitting;
         discountInput.disabled = submitting;
@@ -112,8 +118,9 @@ export function createPaymentForm(root, store, options = {}) {
         calculate();
     }
 
-    function showSuccess(payload, action) {
+    function showSuccess(payload, action, printFallbackRequired = false) {
         const data = payload.data;
+        const printLink = root.querySelector('[data-preview-print-link]');
         root.querySelector('[data-preview-invoice]').textContent = data.invoice_number;
         root.querySelector('[data-preview-branch]').textContent = data.branch_name;
         root.querySelector('[data-preview-items]').textContent = data.item_count + ' jenis produk';
@@ -125,13 +132,25 @@ export function createPaymentForm(root, store, options = {}) {
         root.querySelector('[data-preview-change]').textContent = formatRupiah(moneyToCents(data.change_amount));
         root.querySelector('[data-preview-cash-row]').hidden = data.payment_method.type !== 'cash';
         root.querySelector('[data-preview-message]').textContent = action === 'print'
-            ? 'Transaksi berhasil disimpan. Fitur cetak struk akan diaktifkan pada tahap berikutnya.'
-            : 'Transaksi berhasil disimpan tanpa mencetak struk.';
+            ? (printFallbackRequired
+                ? 'Transaksi berhasil disimpan, tetapi popup diblokir. Gunakan tautan Buka Struk untuk Dicetak.'
+                : 'Transaksi berhasil disimpan dan halaman struk telah dibuka.')
+            : 'Transaksi berhasil disimpan tanpa membuka halaman struk.';
+
+        if (printLink) {
+            printLink.hidden = !printFallbackRequired;
+            printLink.href = printFallbackRequired && data.print_url ? data.print_url : '#';
+        }
+
         window.StoreApp.modal.open('cashier-payment-preview-modal');
     }
 
-    discountInput.addEventListener('input', calculate);
-    receivedInput.addEventListener('input', calculate);
+    discountInput.addEventListener('input', function () {
+        normalizeMoneyInput(discountInput);
+    });
+    receivedInput.addEventListener('input', function () {
+        normalizeMoneyInput(receivedInput);
+    });
     methodSelect?.addEventListener('change', updateMethod);
     actionButtons.forEach(function (button) {
         button.addEventListener('click', function () {

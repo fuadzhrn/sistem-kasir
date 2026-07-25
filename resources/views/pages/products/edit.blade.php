@@ -7,7 +7,7 @@
     <div class="module-actions"><a class="btn btn-secondary" href="{{ route('products.show', $product) }}">Batal</a></div>
     <section class="card product-form-card">
         <div class="alert alert-warning">Produk dan harga jual digunakan bersama oleh seluruh cabang.</div>
-        <form method="POST" action="{{ route('products.update', $product) }}" enctype="multipart/form-data" data-product-form data-product-name="{{ $product->name }}" data-old-selling-price="{{ $product->selling_price }}" @if($isOwner) data-old-purchase-price="{{ $product->purchase_price }}" @endif>
+        <form method="POST" action="{{ route('products.update', $product) }}" enctype="multipart/form-data" data-product-form data-product-name="{{ $product->name }}" data-old-selling-price="{{ \App\Support\Format\Rupiah::input($product->selling_price) }}" @if($isOwner) data-old-purchase-price="{{ \App\Support\Format\Rupiah::input($product->purchase_price) }}" @endif>
             @csrf
             @method('PUT')
             @include('pages.products.sections.product-form', ['product' => $product])

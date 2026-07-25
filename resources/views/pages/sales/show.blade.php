@@ -32,7 +32,7 @@
         <a class="btn btn-secondary" href="{{ route('sales.index') }}">Kembali ke Riwayat</a>
         <a
             class="btn btn-primary"
-            href="{{ route('sales.receipt.show', $sale) }}"
+            href="{{ route('receipts.print', ['sale' => $sale, 'copy' => 1]) }}"
             target="_blank"
             rel="noopener"
         >Cetak Ulang</a>

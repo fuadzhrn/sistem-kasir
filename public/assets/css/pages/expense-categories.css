@@ -1,0 +1,24 @@
+@import url("./categories.css");
+
+.expense-category-form {
+    max-width: 760px;
+    padding: var(--space-5);
+}
+
+.expense-category-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.expense-category-filters {
+    align-items: end;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: minmax(260px, 1fr) minmax(180px, .35fr) auto;
+    margin-bottom: var(--space-5);
+    padding: var(--space-5);
+}
+
+.expense-filter-actions {
+    display: flex;
+    gap: var(--space-2);
+}

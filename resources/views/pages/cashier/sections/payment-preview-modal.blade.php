@@ -5,7 +5,7 @@
             <div class="modal__header"><div><p class="eyebrow">Transaksi tersimpan</p><h2 id="cashier-preview-title">Pembayaran Berhasil</h2></div><button class="modal__close" type="button" data-modal-close aria-label="Tutup modal">×</button></div>
             <div class="modal__body">
                 <dl class="cashier-preview-list">
-                    <div><dt>Nomor invoice</dt><dd data-preview-invoice>-</dd></div>
+                    <div><dt>Nomor Nota</dt><dd data-preview-invoice>-</dd></div>
                     <div><dt>Cabang</dt><dd data-preview-branch>-</dd></div>
                     <div><dt>Jumlah item</dt><dd data-preview-items>0</dd></div>
                     <div><dt>Subtotal</dt><dd data-preview-subtotal>Rp0</dd></div>
@@ -17,7 +17,17 @@
                 </dl>
                 <div class="alert alert-success" data-preview-message>Transaksi berhasil disimpan.</div>
             </div>
-            <div class="modal__actions"><button class="btn btn-primary" type="button" data-modal-close>Transaksi Berikutnya</button></div>
+            <div class="modal__actions">
+                <a
+                    class="btn btn-outline"
+                    href="#"
+                    target="_blank"
+                    rel="noopener"
+                    data-preview-print-link
+                    hidden
+                >Buka Struk untuk Dicetak</a>
+                <button class="btn btn-primary" type="button" data-modal-close>Transaksi Berikutnya</button>
+            </div>
         </div>
     </div>
 </div>

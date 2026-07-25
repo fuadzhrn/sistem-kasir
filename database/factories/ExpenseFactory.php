@@ -24,8 +24,11 @@ class ExpenseFactory extends Factory
             'proof_file' => null,
             'status' => Expense::STATUS_PENDING,
             'created_by' => User::factory(),
+            'updated_by' => null,
             'approved_by' => null,
             'approved_at' => null,
+            'rejected_by' => null,
+            'rejected_at' => null,
             'rejection_reason' => null,
         ];
     }

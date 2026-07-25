@@ -80,8 +80,8 @@ class SaleDiscountTest extends SaleTestCase
         $this->actingAs($cashier)->postJson(
             route('cashier.checkout.store'),
             $this->payload($cashier, $branch, $product, $payment, [
-                'discount_amount' => '5000.01',
-                'expected_total' => '34999.99',
+                'discount_amount' => '5001',
+                'expected_total' => '34999.00',
             ]),
         )->assertUnprocessable()->assertJsonPath('code', 'DISCOUNT_LIMIT_EXCEEDED');
     }

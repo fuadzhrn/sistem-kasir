@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
 
     <title>@yield('title', 'Dokumen Cetak') — {{ config('app.name') }}</title>
 
@@ -16,6 +17,7 @@
         @yield('content')
     </main>
 
+    <script src="{{ asset('assets/js/pages/receipt.js') }}" defer></script>
     @stack('scripts')
 </body>
 </html>

@@ -5,6 +5,7 @@ namespace App\Http\Requests\Product;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Unit;
+use App\Support\Format\Rupiah;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Validator;
@@ -27,7 +28,7 @@ class StoreProductRequest extends FormRequest
             'brand' => ['nullable', 'string', 'max:150'],
             'size' => ['nullable', 'string', 'max:100'],
             'purchase_price' => $this->purchasePriceRules(),
-            'selling_price' => ['required', 'numeric', 'decimal:0,2', 'min:0'],
+            'selling_price' => ['required', 'integer', 'min:0', 'max:9999999999999999'],
             'minimum_stock' => ['required', 'numeric', 'decimal:0,3', 'min:0'],
             'image' => [
                 'nullable',
@@ -74,7 +75,9 @@ class StoreProductRequest extends FormRequest
             'name.required' => 'Nama produk wajib diisi.',
             'purchase_price.prohibited' => 'Anda tidak memiliki izin mengubah harga beli.',
             'purchase_price.required' => 'Harga beli wajib diisi.',
+            'purchase_price.integer' => 'Harga beli harus berupa Rupiah tanpa desimal.',
             'selling_price.required' => 'Harga jual wajib diisi.',
+            'selling_price.integer' => 'Harga jual harus berupa Rupiah tanpa desimal.',
             'selling_price.min' => 'Harga jual tidak boleh negatif.',
             'minimum_stock.required' => 'Stok minimum wajib diisi.',
             'minimum_stock.min' => 'Stok minimum tidak boleh negatif.',
@@ -91,13 +94,20 @@ class StoreProductRequest extends FormRequest
             'name' => preg_replace('/\s+/u', ' ', trim((string) $this->input('name'))),
             'brand' => $this->nullableTrimmed('brand'),
             'size' => $this->nullableTrimmed('size'),
+            'selling_price' => Rupiah::normalizeInput($this->input('selling_price')),
         ]);
+
+        if ($this->has('purchase_price')) {
+            $this->merge([
+                'purchase_price' => Rupiah::normalizeInput($this->input('purchase_price')),
+            ]);
+        }
     }
 
     protected function purchasePriceRules(): array
     {
         if ($this->user()?->isOwner()) {
-            return ['required', 'numeric', 'decimal:0,2', 'min:0'];
+            return ['required', 'integer', 'min:0', 'max:9999999999999999'];
         }
 
         return ['prohibited'];

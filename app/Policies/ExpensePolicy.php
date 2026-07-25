@@ -33,20 +33,29 @@ class ExpensePolicy
 
     public function update(User $user, Expense $expense): bool
     {
-        return $this->view($user, $expense);
+        return $this->view($user, $expense) && $expense->isPending();
     }
 
     public function approve(User $user, Expense $expense): bool
     {
         return $user->is_active
             && $user->isOwner()
+            && $expense->isPending()
             && $this->branchAccess->canAccessBranch($user, $expense->branch_id);
+    }
+
+    public function reject(User $user, Expense $expense): bool
+    {
+        return $this->approve($user, $expense);
+    }
+
+    public function removeProof(User $user, Expense $expense): bool
+    {
+        return $this->update($user, $expense) && $expense->proof_file !== null;
     }
 
     public function delete(User $user, Expense $expense): bool
     {
-        return $user->is_active
-            && $user->isOwner()
-            && $this->branchAccess->canAccessBranch($user, $expense->branch_id);
+        return false;
     }
 }

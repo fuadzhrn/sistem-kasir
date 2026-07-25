@@ -9,7 +9,7 @@
     <div class="cashier-payment__grid">
         <div class="form-group">
             <label class="form-label" for="cashier-discount">Diskon</label>
-            <input class="form-control" id="cashier-discount" type="number" min="0" step="1" value="0" inputmode="numeric" data-payment-discount>
+            <input class="form-control" id="cashier-discount" type="text" value="0" inputmode="numeric" autocomplete="off" data-payment-discount data-rupiah-input>
             <span class="form-help">
                 @if ($discountRestricted)
                     Batas akun: {{ \App\Support\Format\Rupiah::format($maximumDiscount) }}
@@ -33,7 +33,7 @@
         </div>
         <div class="form-group cashier-cash-received" data-cash-received-group>
             <label class="form-label" for="cashier-amount-received">Uang diterima</label>
-            <input class="form-control" id="cashier-amount-received" type="number" min="0" step="1" value="" inputmode="numeric" data-amount-received>
+            <input class="form-control" id="cashier-amount-received" type="text" value="" inputmode="numeric" autocomplete="off" data-amount-received data-rupiah-input>
         </div>
         <div class="cashier-noncash-notice" data-noncash-notice hidden>
             Pastikan pembayaran non-tunai telah diterima.

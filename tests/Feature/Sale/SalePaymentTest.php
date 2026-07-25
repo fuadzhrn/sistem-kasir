@@ -17,7 +17,7 @@ class SalePaymentTest extends SaleTestCase
         $this->actingAs($owner)->postJson(
             route('cashier.checkout.store'),
             $this->payload($owner, $branch, $product, $cash, [
-                'amount_received' => '39999.99',
+                'amount_received' => '39.999',
             ]),
         )->assertUnprocessable()->assertJsonPath('code', 'INSUFFICIENT_PAYMENT');
         $this->assertSame('10.000', $stock->refresh()->quantity);
@@ -25,7 +25,7 @@ class SalePaymentTest extends SaleTestCase
         $this->actingAs($owner)->postJson(
             route('cashier.checkout.store'),
             $this->payload($owner, $branch, $product, $cash, [
-                'amount_received' => '50000.00',
+                'amount_received' => '50.000',
             ]),
         )->assertCreated()
             ->assertJsonPath('data.amount_paid', '50000.00')
@@ -54,6 +54,26 @@ class SalePaymentTest extends SaleTestCase
                 ->assertJsonPath('data.amount_paid', '40000.00')
                 ->assertJsonPath('data.change_amount', '0.00');
         }
+    }
+
+    public function test_cash_rejects_fractional_rupiah_input(): void
+    {
+        $branch = $this->createBranch('FRAC');
+        $owner = $this->createUser('owner');
+        $product = $this->createProduct();
+        $this->createStock($branch, $product);
+        $cash = $this->createPaymentMethod();
+
+        $this->actingAs($owner)->postJson(
+            route('cashier.checkout.store'),
+            $this->payload($owner, $branch, $product, $cash, [
+                'amount_received' => '50000.50',
+            ]),
+        )->assertUnprocessable()
+            ->assertJsonPath('code', 'VALIDATION_FAILED')
+            ->assertJsonValidationErrors('amount_received');
+
+        $this->assertDatabaseCount('sales', 0);
     }
 
     public function test_inactive_or_unknown_payment_method_is_rejected(): void

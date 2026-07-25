@@ -2,20 +2,55 @@
     'use strict';
 
     const rupiahFormatter = new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
         minimumFractionDigits: 0,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 0
     });
 
-    function numericValue(value) {
-        const parsed = Number.parseFloat(String(value || '').replace(',', '.'));
+    function quantityValue(value) {
+        const normalized = String(value ?? '').trim().replace(',', '.');
 
-        return Number.isFinite(parsed) ? parsed : 0;
+        if (!/^\d+(?:\.\d{1,3})?$/.test(normalized)) {
+            return 0;
+        }
+
+        const number = Number(normalized);
+
+        return Number.isFinite(number) ? number : 0;
+    }
+
+    function rupiahValue(value) {
+        const normalized = String(value ?? '').trim();
+        let digits = normalized;
+
+        if (/^\d{1,3}(?:\.\d{3})+$/.test(normalized)) {
+            digits = normalized.replaceAll('.', '');
+        } else if (/^\d+\.0{1,2}$/.test(normalized)) {
+            digits = normalized.split('.')[0];
+        } else if (!/^\d+$/.test(normalized)) {
+            return 0;
+        }
+
+        const number = Number(digits);
+
+        return Number.isSafeInteger(number) ? number : 0;
     }
 
     function formatRupiah(value) {
-        return rupiahFormatter.format(numericValue(value)).replace(/\s/g, '');
+        return 'Rp' + rupiahFormatter.format(Number(value) || 0);
+    }
+
+    function formatRupiahInput(input) {
+        const normalized = input.value.trim();
+
+        if (normalized === '' || !/^\d[\d.]*$/.test(normalized)) {
+            return;
+        }
+
+        const value = Number(normalized.replaceAll('.', ''));
+
+        if (Number.isSafeInteger(value)) {
+            input.value = rupiahFormatter.format(value);
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -51,8 +86,8 @@
             let total = 0;
 
             rows().forEach(function (row) {
-                const quantity = numericValue(row.querySelector('[data-item-quantity]').value);
-                const price = numericValue(row.querySelector('[data-item-price]').value);
+                const quantity = quantityValue(row.querySelector('[data-item-quantity]').value);
+                const price = rupiahValue(row.querySelector('[data-item-price]').value);
                 const subtotal = quantity > 0 && price > 0 ? quantity * price : 0;
 
                 row.querySelector('[data-item-subtotal]').textContent = formatRupiah(subtotal);
@@ -94,14 +129,19 @@
 
         function bindRow(row) {
             const select = row.querySelector('[data-product-select]');
+            const quantityInput = row.querySelector('[data-item-quantity]');
+            const priceInput = row.querySelector('[data-item-price]');
 
             select.addEventListener('change', function () {
                 updateProductMetadata(row);
                 validateDuplicates(true);
             });
 
-            row.querySelectorAll('[data-item-quantity], [data-item-price]').forEach(function (input) {
-                input.addEventListener('input', updateTotals);
+            quantityInput.addEventListener('input', updateTotals);
+            formatRupiahInput(priceInput);
+            priceInput.addEventListener('input', function () {
+                formatRupiahInput(priceInput);
+                updateTotals();
             });
 
             row.querySelector('[data-remove-receipt-item]').addEventListener('click', function () {

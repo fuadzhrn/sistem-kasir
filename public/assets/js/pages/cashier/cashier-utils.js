@@ -35,14 +35,34 @@ export function moneyToCents(value) {
 
 export function rupiahInputToCents(value) {
     const normalized = String(value ?? '').trim();
+    let digits = normalized;
 
-    if (!/^\d+$/.test(normalized)) {
+    if (/^\d{1,3}(?:\.\d{3})+$/.test(normalized)) {
+        digits = normalized.replaceAll('.', '');
+    } else if (!/^\d+$/.test(normalized)) {
         return null;
     }
 
-    const cents = Number.parseInt(normalized, 10) * 100;
+    const cents = Number.parseInt(digits, 10) * 100;
 
     return Number.isSafeInteger(cents) ? cents : null;
+}
+
+export function formatRupiahInput(value) {
+    const normalized = String(value ?? '').trim();
+
+    if (normalized === '') {
+        return '';
+    }
+
+    if (!/^\d[\d.]*$/.test(normalized)) {
+        return normalized;
+    }
+
+    const rupiah = Number.parseInt(normalized.replaceAll('.', ''), 10);
+    const cents = rupiah * 100;
+
+    return Number.isSafeInteger(cents) ? formatRupiah(cents).slice(2) : normalized;
 }
 
 export function millsToQuantity(value) {
@@ -65,15 +85,11 @@ export function formatQuantity(value) {
 
 export function formatRupiah(cents) {
     const safeCents = Number.isSafeInteger(cents) ? Math.max(0, cents) : 0;
-    const rupiah = Math.floor(safeCents / 100);
-    const fraction = safeCents % 100;
-    let result = new Intl.NumberFormat('id-ID', {
+    const rupiah = safeCents / 100;
+    const result = new Intl.NumberFormat('id-ID', {
+        minimumFractionDigits: 0,
         maximumFractionDigits: 0,
     }).format(rupiah);
-
-    if (fraction > 0) {
-        result += ',' + String(fraction).padStart(2, '0');
-    }
 
     return 'Rp' + result;
 }

@@ -88,6 +88,26 @@ class User extends Authenticatable
         return $this->hasMany(Expense::class, 'approved_by');
     }
 
+    public function updatedExpenses(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'updated_by');
+    }
+
+    public function rejectedExpenses(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'rejected_by');
+    }
+
+    public function createdExpenseCategories(): HasMany
+    {
+        return $this->hasMany(ExpenseCategory::class, 'created_by');
+    }
+
+    public function updatedExpenseCategories(): HasMany
+    {
+        return $this->hasMany(ExpenseCategory::class, 'updated_by');
+    }
+
     public function priceHistories(): HasMany
     {
         return $this->hasMany(PriceHistory::class, 'changed_by');

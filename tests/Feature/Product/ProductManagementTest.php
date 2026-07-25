@@ -23,6 +23,8 @@ class ProductManagementTest extends ProductTestCase
             'updated_by' => 999,
             'image_path' => 'unsafe.php',
             'branch_id' => 999,
+            'purchase_price' => '50.000',
+            'selling_price' => '75.000',
         ]))->assertRedirect();
 
         $product = Product::query()->where('code', 'PST_001')->firstOrFail();
@@ -30,6 +32,8 @@ class ProductManagementTest extends ProductTestCase
         $this->assertSame('Pestisida ABC', $product->name);
         $this->assertSame($owner->id, $product->created_by);
         $this->assertSame($owner->id, $product->updated_by);
+        $this->assertSame('50000.00', $product->purchase_price);
+        $this->assertSame('75000.00', $product->selling_price);
         $this->assertTrue($product->is_active);
         $this->assertSame($stockCount, BranchStock::query()->count());
         $this->assertSame(0, PriceHistory::query()->count());
@@ -74,6 +78,35 @@ class ProductManagementTest extends ProductTestCase
             $owner,
             attributes: ['code' => 'KODE DENGAN SPASI', 'name' => ''],
         ))->assertSessionHasErrors(['code', 'name']);
+    }
+
+    public function test_product_form_displays_grouped_rupiah_inputs_without_decimal_fields(): void
+    {
+        $owner = $this->createUser('owner');
+        $product = Product::factory()->create([
+            'purchase_price' => '10000.00',
+            'selling_price' => '1250000.00',
+        ]);
+
+        $this->actingAs($owner)->get(route('products.edit', $product))
+            ->assertOk()
+            ->assertSee('value="10.000"', false)
+            ->assertSee('value="1.250.000"', false)
+            ->assertSee('data-rupiah-input', false)
+            ->assertDontSee('step="0.01"', false);
+    }
+
+    public function test_product_prices_reject_fractional_rupiah(): void
+    {
+        $owner = $this->createUser('owner');
+
+        $this->actingAs($owner)->post(route('products.store'), $this->productPayload(
+            $owner,
+            attributes: [
+                'purchase_price' => '50000.50',
+                'selling_price' => '75000.25',
+            ],
+        ))->assertSessionHasErrors(['purchase_price', 'selling_price']);
     }
 
     public function test_owner_and_admin_edit_product_with_master_data_rules(): void

@@ -89,11 +89,52 @@ export function createCheckoutClient(root, store, productBrowser, paymentForm) {
         };
     }
 
+    function preOpenPrintWindow(action) {
+        if (action !== 'print') {
+            return null;
+        }
+
+        const printWindow = window.open('about:blank', '_blank');
+
+        if (printWindow) {
+            try {
+                printWindow.opener = null;
+                printWindow.document.title = 'Menyiapkan struk…';
+                printWindow.document.body.textContent = 'Transaksi sedang disimpan. Struk akan dibuka setelah berhasil.';
+            } catch (error) {
+                // Navigation still works if the browser restricts access to the blank tab.
+            }
+        }
+
+        return printWindow;
+    }
+
+    function closePrintWindow(printWindow) {
+        if (printWindow && !printWindow.closed) {
+            printWindow.close();
+        }
+    }
+
+    function safePrintUrl(value) {
+        if (typeof value !== 'string' || value === '') {
+            return null;
+        }
+
+        try {
+            const url = new URL(value, window.location.origin);
+
+            return url.origin === window.location.origin ? url.href : null;
+        } catch (error) {
+            return null;
+        }
+    }
+
     async function submit(action, state) {
         if (isSubmitting) {
             return;
         }
 
+        const printWindow = preOpenPrintWindow(action);
         setSubmitting(true);
         paymentForm.setError('');
 
@@ -117,16 +158,29 @@ export function createCheckoutClient(root, store, productBrowser, paymentForm) {
             });
 
             if (!response.ok || payload.success !== true) {
+                closePrintWindow(printWindow);
                 handleFailure(payload);
 
                 return;
+            }
+
+            const printUrl = safePrintUrl(payload.data?.print_url);
+            const shouldOpenReceipt = action === 'print'
+                && payload.data?.print_available === true
+                && printUrl !== null;
+            const printFallbackRequired = shouldOpenReceipt && !printWindow;
+
+            if (shouldOpenReceipt && printWindow) {
+                printWindow.location.replace(printUrl);
+            } else if (printWindow) {
+                closePrintWindow(printWindow);
             }
 
             store.clear();
             paymentForm.reset();
             rotateToken();
             await productBrowser.reload();
-            paymentForm.showSuccess(payload, action);
+            paymentForm.showSuccess(payload, action, printFallbackRequired);
             showToast(
                 'success',
                 'Transaksi berhasil',
@@ -134,6 +188,7 @@ export function createCheckoutClient(root, store, productBrowser, paymentForm) {
             );
             productBrowser.focusSearch();
         } catch (error) {
+            closePrintWindow(printWindow);
             paymentForm.setError('Koneksi terputus. Coba ulangi pembayaran dengan keranjang yang sama.');
             showToast(
                 'danger',

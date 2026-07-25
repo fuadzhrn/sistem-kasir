@@ -103,6 +103,7 @@ class CashierCheckoutController extends Controller
         }
 
         $idempotent = (bool) $sale->getAttribute('checkout_idempotent');
+        $printAvailable = $validated['payment_action'] === 'print';
 
         return response()->json([
             'success' => true,
@@ -127,7 +128,10 @@ class CashierCheckoutController extends Controller
                     'type' => $sale->paymentMethod->type,
                 ],
                 'payment_action' => $validated['payment_action'],
-                'print_available' => false,
+                'print_available' => $printAvailable,
+                'print_url' => $printAvailable
+                    ? route('receipts.print', ['sale' => $sale->getKey()])
+                    : null,
             ],
         ], $idempotent ? 200 : 201);
     }

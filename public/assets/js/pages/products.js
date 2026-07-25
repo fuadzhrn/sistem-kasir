@@ -1,14 +1,44 @@
 (function (window, document) {
     'use strict';
 
-    const formatRupiah = function (value) {
-        const number = Number(value || 0);
+    const rupiahFormatter = new Intl.NumberFormat('id-ID', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
 
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            maximumFractionDigits: 0
-        }).format(Number.isFinite(number) ? number : 0);
+    const rupiahValue = function (value) {
+        const normalized = String(value ?? '').trim();
+        let digits = normalized;
+
+        if (/^\d{1,3}(?:\.\d{3})+$/.test(normalized)) {
+            digits = normalized.replaceAll('.', '');
+        } else if (/^\d+\.0{1,2}$/.test(normalized)) {
+            digits = normalized.split('.')[0];
+        } else if (!/^\d+$/.test(normalized)) {
+            return null;
+        }
+
+        const number = Number(digits);
+
+        return Number.isSafeInteger(number) ? number : null;
+    };
+
+    const formatRupiah = function (value) {
+        return 'Rp' + rupiahFormatter.format(rupiahValue(value) ?? 0);
+    };
+
+    const formatRupiahInput = function (input) {
+        const normalized = input.value.trim();
+
+        if (normalized === '' || !/^\d[\d.]*$/.test(normalized)) {
+            return;
+        }
+
+        const number = Number(normalized.replaceAll('.', ''));
+
+        if (Number.isSafeInteger(number)) {
+            input.value = rupiahFormatter.format(number);
+        }
     };
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -47,15 +77,22 @@
         }
 
         if (form) {
+            form.querySelectorAll('[data-rupiah-input]').forEach(function (input) {
+                formatRupiahInput(input);
+                input.addEventListener('input', function () {
+                    formatRupiahInput(input);
+                });
+            });
+
             form.addEventListener('submit', function (event) {
                 const oldSelling = form.dataset.oldSellingPrice;
                 const sellingInput = form.querySelector('[name="selling_price"]');
                 const purchaseInput = form.querySelector('[name="purchase_price"]');
                 const sellingChanged = oldSelling !== undefined
-                    && Number(oldSelling) !== Number(sellingInput ? sellingInput.value : 0);
+                    && rupiahValue(oldSelling) !== rupiahValue(sellingInput ? sellingInput.value : '');
                 const purchaseChanged = form.dataset.oldPurchasePrice !== undefined
                     && purchaseInput
-                    && Number(form.dataset.oldPurchasePrice) !== Number(purchaseInput.value);
+                    && rupiahValue(form.dataset.oldPurchasePrice) !== rupiahValue(purchaseInput.value);
 
                 if (!priceConfirmed && priceModal && (sellingChanged || purchaseChanged) && window.StoreApp) {
                     event.preventDefault();

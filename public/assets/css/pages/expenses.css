@@ -1,0 +1,206 @@
+@import url("./categories.css");
+
+.expense-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.expense-summary small {
+    color: var(--color-muted);
+    display: block;
+    margin-top: var(--space-1);
+}
+
+.module-filters--expenses {
+    grid-template-columns: repeat(4, minmax(160px, 1fr));
+}
+
+.module-filters--expenses .module-filters__actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+}
+
+.table-card {
+    overflow: hidden;
+}
+
+.table-card .table-responsive {
+    overflow-x: auto;
+}
+
+.table-card table {
+    min-width: 1020px;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.expense-money-input {
+    align-items: stretch;
+    display: flex;
+}
+
+.expense-money-input > span {
+    align-items: center;
+    background: var(--color-surface-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    color: var(--color-text);
+    display: flex;
+    font-weight: 600;
+    padding: 0 var(--space-3);
+}
+
+.expense-money-input .form-control {
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.expense-proof-preview,
+.expense-current-proof {
+    margin-top: var(--space-4);
+}
+
+.expense-proof-preview img {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: block;
+    max-height: 260px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.expense-current-proof {
+    align-items: center;
+    background: var(--color-primary-light);
+    border-radius: var(--radius-md);
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-4);
+}
+
+.expense-detail-grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
+}
+
+.section-heading {
+    align-items: center;
+    display: flex;
+    gap: var(--space-4);
+    justify-content: space-between;
+    margin-bottom: var(--space-5);
+}
+
+.section-heading h2 {
+    font-size: var(--font-size-lg);
+}
+
+.section-heading__eyebrow {
+    color: var(--color-primary);
+    display: block;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    letter-spacing: .06em;
+    margin-bottom: var(--space-1);
+    text-transform: uppercase;
+}
+
+.expense-amount {
+    color: var(--color-primary-dark);
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+}
+
+.expense-description {
+    line-height: 1.7;
+    white-space: pre-wrap;
+}
+
+.detail-list .detail-list__danger {
+    background: var(--color-danger-light, #fef2f2);
+    border: 1px solid #fecaca;
+}
+
+.expense-proof {
+    color: var(--color-primary-dark);
+    display: block;
+    margin-bottom: var(--space-4);
+    text-decoration: none;
+}
+
+.expense-proof img {
+    background: var(--color-surface-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: block;
+    height: 280px;
+    margin-bottom: var(--space-2);
+    object-fit: contain;
+    width: 100%;
+}
+
+.expense-timeline-card {
+    margin-top: var(--space-5);
+}
+
+.expense-timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 var(--space-3);
+}
+
+.expense-timeline li {
+    border-left: 2px solid var(--color-border);
+    padding: 0 0 var(--space-5) var(--space-5);
+    position: relative;
+}
+
+.expense-timeline li:last-child {
+    padding-bottom: 0;
+}
+
+.expense-timeline li::before {
+    background: var(--color-muted);
+    border: 3px solid var(--color-surface);
+    border-radius: 50%;
+    content: "";
+    height: 14px;
+    left: -8px;
+    position: absolute;
+    top: 2px;
+    width: 14px;
+}
+
+.expense-timeline li.is-success::before {
+    background: var(--color-success);
+}
+
+.expense-timeline li.is-danger::before {
+    background: var(--color-danger);
+}
+
+.expense-timeline li.is-pending::before {
+    background: var(--color-warning);
+}
+
+.expense-timeline strong,
+.expense-timeline span {
+    display: block;
+}
+
+.expense-timeline span {
+    color: var(--color-muted);
+    margin-top: var(--space-1);
+}
+
+@media (max-width: 1100px) {
+    .module-filters--expenses {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+    }
+
+    .expense-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}

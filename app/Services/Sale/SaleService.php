@@ -20,6 +20,7 @@ use App\Models\Setting;
 use App\Models\StockMovement;
 use App\Models\User;
 use App\Services\Authorization\BranchAccessService;
+use App\Support\Format\Rupiah;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -624,7 +625,7 @@ class SaleService
             'reference_type' => Sale::class,
             'reference_id' => $sale->getKey(),
             'description' => 'Transaksi '.$sale->invoice_number
-                .' berhasil dibuat dengan total '.$this->formatRupiah((string) $sale->total).'.',
+                .' berhasil dibuat dengan total '.Rupiah::format((string) $sale->total).'.',
             'ip_address' => $this->limitedText($ipAddress, 45),
             'user_agent' => $this->limitedText($userAgent, 1000),
         ]);
@@ -672,16 +673,6 @@ class SaleService
         $trimmed = trim((string) $value);
 
         return $trimmed === '' ? null : mb_substr($trimmed, 0, $limit);
-    }
-
-    private function formatRupiah(string $amount): string
-    {
-        [$whole, $fraction] = array_pad(explode('.', $amount, 2), 2, '00');
-        $formatted = 'Rp'.number_format((int) $whole, 0, ',', '.');
-
-        return rtrim($fraction, '0') === ''
-            ? $formatted
-            : $formatted.','.str_pad($fraction, 2, '0');
     }
 
     private function isUniqueConstraintViolation(QueryException $exception): bool
