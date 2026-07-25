@@ -55,9 +55,9 @@ class PolicyTest extends AuthorizationTestCase
         $saleB = $this->createSale($branchB, $this->createUser('cashier', $branchB), 'INV-POL-003');
         $expenseA = $this->createExpense($branchA, $admin, 'Pengeluaran A');
 
-        $this->assertTrue(Gate::forUser($cashierA)->allows('view', $stockA));
+        $this->assertFalse(Gate::forUser($cashierA)->allows('view', $stockA));
         $this->assertFalse(Gate::forUser($cashierA)->allows('adjust', $stockA));
-        $this->assertTrue(Gate::forUser($admin)->allows('adjust', $stockA));
+        $this->assertFalse(Gate::forUser($admin)->allows('adjust', $stockA));
 
         $this->assertTrue(Gate::forUser($owner)->allows('view', $saleB));
         $this->assertTrue(Gate::forUser($admin)->allows('view', $saleA));

@@ -1,0 +1,44 @@
+.stock-history-filter-card {
+    margin-bottom: var(--space-5);
+    padding: var(--space-5);
+}
+
+.stock-history-filters {
+    align-items: end;
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+}
+
+.stock-history-filters__search {
+    grid-column: span 2;
+}
+
+.stock-history-table {
+    min-width: 1450px;
+}
+
+.stock-history-table td {
+    vertical-align: top;
+}
+
+.stock-history-notes {
+    max-width: 260px;
+    white-space: normal;
+}
+
+.stock-change--positive {
+    color: var(--color-success) !important;
+    font-weight: var(--font-weight-semibold);
+}
+
+.stock-change--negative {
+    color: var(--color-danger) !important;
+    font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 1180px) {
+    .stock-history-filters {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}

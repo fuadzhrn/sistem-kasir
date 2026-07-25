@@ -18,6 +18,7 @@ require __DIR__.'/auth.php';
 require __DIR__.'/management.php';
 require __DIR__.'/master-data.php';
 require __DIR__.'/products.php';
+require __DIR__.'/stocks.php';
 
 if (app()->environment(['local', 'testing'])) {
     require __DIR__.'/authorization.php';
