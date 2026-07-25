@@ -63,6 +63,47 @@ class WeightedAverageCostCalculator
         return $this->formatScaled($averageCents, 2);
     }
 
+    public function calculateWeightedAverageFromValue(
+        string $oldQuantity,
+        string $oldAverageCost,
+        string $incomingQuantity,
+        string $incomingTotalValue,
+    ): string {
+        $oldQuantityUnits = $this->parseScaled($oldQuantity, 3, 'Quantity lama');
+        $oldCostCents = $this->parseScaled($oldAverageCost, 2, 'Average cost lama');
+        $incomingQuantityUnits = $this->parseScaled($incomingQuantity, 3, 'Quantity kembali');
+        $incomingValueCents = $this->parseScaled($incomingTotalValue, 2, 'Nilai barang kembali');
+
+        if ($oldQuantityUnits < 0 || $oldCostCents < 0) {
+            throw new InvalidArgumentException('Stok dan average cost lama tidak boleh negatif.');
+        }
+
+        if ($incomingQuantityUnits <= 0 || $incomingValueCents <= 0) {
+            throw new InvalidArgumentException('Quantity dan nilai barang kembali harus lebih besar dari nol.');
+        }
+
+        $newQuantityUnits = $oldQuantityUnits + $incomingQuantityUnits;
+        $oldValue = $this->multiplyUnsigned((string) $oldQuantityUnits, (string) $oldCostCents);
+        $incomingValue = $this->multiplyUnsigned((string) $incomingValueCents, '1000');
+        $newValue = $this->addUnsigned($oldValue, $incomingValue);
+
+        return $this->formatScaled($this->divideRoundHalfUp($newValue, $newQuantityUnits), 2);
+    }
+
+    public function calculateUnitCostFromValue(string $totalValue, string $quantity): string
+    {
+        $valueCents = $this->parseScaled($totalValue, 2, 'Nilai barang');
+        $quantityUnits = $this->parseScaled($quantity, 3, 'Quantity barang');
+
+        if ($valueCents <= 0 || $quantityUnits <= 0) {
+            throw new InvalidArgumentException('Nilai dan quantity barang harus lebih besar dari nol.');
+        }
+
+        $scaledValue = $this->multiplyUnsigned((string) $valueCents, '1000');
+
+        return $this->formatScaled($this->divideRoundHalfUp($scaledValue, $quantityUnits), 2);
+    }
+
     public function calculateSubtotal(string $quantity, string $purchasePrice): string
     {
         $quantityUnits = $this->parseScaled($quantity, 3, 'Quantity');

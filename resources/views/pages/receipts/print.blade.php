@@ -110,6 +110,11 @@
             <p class="receipt__notes">Catatan: {{ $receipt['notes'] }}</p>
         @endif
 
+        @if ($receipt['status'] === \App\Models\Sale::STATUS_VOIDED && $receipt['void_reason'])
+            <div class="receipt__separator" aria-hidden="true"></div>
+            <p class="receipt__notes">Alasan pembatalan: {{ \Illuminate\Support\Str::limit($receipt['void_reason'], 160) }}</p>
+        @endif
+
         <div class="receipt__separator" aria-hidden="true"></div>
 
         <footer class="receipt__footer">

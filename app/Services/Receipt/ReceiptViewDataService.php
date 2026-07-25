@@ -36,6 +36,9 @@ class ReceiptViewDataService
             'cashier_name' => $sale->cashier?->name ?? 'Pengguna historis',
             'status' => $sale->status,
             'status_label' => $sale->statusLabel(),
+            'void_reason' => $sale->isVoided()
+                ? $this->nullableText($sale->saleVoid?->reason)
+                : null,
             'items' => $sale->items->map(static fn ($item): array => [
                 'code' => $item->product_code,
                 'name' => $item->product_name,

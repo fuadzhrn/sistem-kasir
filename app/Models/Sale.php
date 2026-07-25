@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable([
     'branch_id',
@@ -95,6 +96,55 @@ class Sale extends Model
     public function saleVoids(): HasMany
     {
         return $this->hasMany(SaleVoid::class);
+    }
+
+    public function saleVoid(): HasOne
+    {
+        return $this->hasOne(SaleVoid::class);
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->status === self::STATUS_COMPLETED;
+    }
+
+    public function isVoided(): bool
+    {
+        return $this->status === self::STATUS_VOIDED;
+    }
+
+    public function canBeVoided(): bool
+    {
+        if (! in_array($this->status, [self::STATUS_COMPLETED, self::STATUS_VOID_REQUESTED], true)) {
+            return false;
+        }
+
+        if ($this->status === self::STATUS_VOID_REQUESTED) {
+            return true;
+        }
+
+        return ! $this->relationLoaded('saleVoid') || $this->saleVoid === null;
+    }
+
+    public function financiallyActive(): bool
+    {
+        return $this->isCompleted();
+    }
+
+    public function scopeFinanciallyActive(Builder $query): Builder
+    {
+        return $query->where(
+            $query->getModel()->qualifyColumn('status'),
+            self::STATUS_COMPLETED,
+        );
+    }
+
+    public function scopeVoided(Builder $query): Builder
+    {
+        return $query->where(
+            $query->getModel()->qualifyColumn('status'),
+            self::STATUS_VOIDED,
+        );
     }
 
     public function scopeAccessibleTo(Builder $query, User $user): Builder

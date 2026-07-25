@@ -5,6 +5,7 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/pages/sale-detail.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pages/sale-void.css') }}">
 @endpush
 
 @section('content')
@@ -19,6 +20,7 @@
     ])
 
     @include('pages.sales.sections.sale-detail-header')
+    @include('pages.sales.sections.void-information')
     @include('pages.sales.sections.sale-detail-items')
 
     <div class="sale-detail-grid">
@@ -30,6 +32,7 @@
 
     <div class="sale-detail-actions">
         <a class="btn btn-secondary" href="{{ route('sales.index') }}">Kembali ke Riwayat</a>
+        @include('pages.sales.sections.void-action')
         <a
             class="btn btn-primary"
             href="{{ route('receipts.print', ['sale' => $sale, 'copy' => 1]) }}"
@@ -37,4 +40,9 @@
             rel="noopener"
         >Cetak Ulang</a>
     </div>
+    @include('pages.sales.sections.void-confirmation-modal')
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('assets/js/pages/sale-void.js') }}" defer></script>
+@endpush

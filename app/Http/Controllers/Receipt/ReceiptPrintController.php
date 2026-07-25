@@ -29,6 +29,7 @@ class ReceiptPrintController extends Controller
         'payment_method_name',
         'status',
         'notes',
+        'voided_at',
     ];
 
     /**
@@ -61,10 +62,12 @@ class ReceiptPrintController extends Controller
             ->with([
                 'branch:id,name,address,phone',
                 'cashier:id,name',
-                'paymentMethod:id,name',
+                'paymentMethod:id,name,type',
                 'items' => fn ($items) => $items
                     ->select(self::SAFE_ITEM_COLUMNS)
                     ->orderBy('id'),
+                'saleVoid' => fn ($saleVoid) => $saleVoid
+                    ->select(['id', 'sale_id', 'reason', 'voided_at']),
             ])
             ->firstOrFail();
 

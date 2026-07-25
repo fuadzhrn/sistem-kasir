@@ -33,16 +33,23 @@ class SalePolicy
             && ($user->isOwner() || $user->branch_id !== null);
     }
 
-    public function requestVoid(User $user, Sale $sale): bool
+    public function void(User $user, Sale $sale): bool
     {
-        return $this->view($user, $sale);
-    }
+        if (! $this->view($user, $sale) || ! $sale->canBeVoided()) {
+            return false;
+        }
 
-    public function approveVoid(User $user, Sale $sale): bool
-    {
-        return $user->is_active
-            && $user->hasAnyRole(['owner', 'admin'])
-            && $this->branchAccess->canAccessBranch($user, $sale->branch_id);
+        if ($user->isOwner()) {
+            return true;
+        }
+
+        if ($user->isAdmin()) {
+            return (int) $sale->branch_id === (int) $user->branch_id;
+        }
+
+        return $user->isCashier()
+            && (int) $sale->branch_id === (int) $user->branch_id
+            && (int) $sale->cashier_id === (int) $user->getKey();
     }
 
     public function print(User $user, Sale $sale): bool

@@ -1,6 +1,6 @@
 <section class="sales-summary" aria-label="Ringkasan hasil filter">
     <article class="card sales-summary__card">
-        <span>Jumlah transaksi</span>
+        <span>Transaksi aktif</span>
         <strong>{{ number_format($summary['transaction_count'], 0, ',', '.') }}</strong>
     </article>
     <article class="card sales-summary__card">

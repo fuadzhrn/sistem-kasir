@@ -11,17 +11,18 @@ use Illuminate\Support\Facades\Route;
 
 class SaleHistoryImmutabilityTest extends SaleHistoryTestCase
 {
-    public function test_stage_fourteen_exposes_only_get_routes_without_crud_mutations(): void
+    public function test_stage_fourteen_history_routes_remain_read_only_without_crud_mutations(): void
     {
-        foreach (['sales.edit', 'sales.update', 'sales.destroy', 'sales.void'] as $routeName) {
+        foreach (['sales.edit', 'sales.update', 'sales.destroy'] as $routeName) {
             $this->assertFalse(Route::has($routeName));
         }
 
-        $routes = collect(Route::getRoutes()->getRoutes())
-            ->filter(fn ($route) => str_starts_with((string) $route->getName(), 'sales.'));
+        foreach (['sales.index', 'sales.show', 'sales.receipt.show'] as $routeName) {
+            $route = Route::getRoutes()->getByName($routeName);
 
-        $this->assertNotEmpty($routes);
-        $routes->each(fn ($route) => $this->assertSame(['GET', 'HEAD'], $route->methods()));
+            $this->assertNotNull($route);
+            $this->assertSame(['GET', 'HEAD'], $route->methods());
+        }
     }
 
     public function test_index_detail_and_preview_do_not_change_historical_or_stock_data(): void

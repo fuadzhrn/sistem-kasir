@@ -123,6 +123,11 @@ class User extends Authenticatable
         return $this->hasMany(SaleVoid::class, 'reviewed_by');
     }
 
+    public function voidedSales(): HasMany
+    {
+        return $this->hasMany(SaleVoid::class, 'voided_by');
+    }
+
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);

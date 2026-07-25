@@ -37,6 +37,7 @@ class SaleHistoryController extends Controller
         'payment_method_name',
         'status',
         'notes',
+        'voided_at',
         'created_at',
     ];
 
@@ -69,7 +70,7 @@ class SaleHistoryController extends Controller
             ->with([
                 'branch:id,code,name',
                 'cashier:id,name',
-                'paymentMethod:id,name',
+                'paymentMethod:id,name,type',
             ])
             ->withCount('items')
             ->when(
@@ -162,13 +163,16 @@ class SaleHistoryController extends Controller
         $result = $query
             ->reorder()
             ->selectRaw(
-                'COUNT(*) AS transaction_count,
-                COALESCE(SUM(total), 0) AS net_total,
-                COALESCE(SUM(discount_amount), 0) AS discount_total,
+                'SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) AS transaction_count,
+                COALESCE(SUM(CASE WHEN status = ? THEN total ELSE 0 END), 0) AS net_total,
+                COALESCE(SUM(CASE WHEN status = ? THEN discount_amount ELSE 0 END), 0) AS discount_total,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) AS completed_count,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) AS void_requested_count,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) AS voided_count',
                 [
+                    Sale::STATUS_COMPLETED,
+                    Sale::STATUS_COMPLETED,
+                    Sale::STATUS_COMPLETED,
                     Sale::STATUS_COMPLETED,
                     Sale::STATUS_VOID_REQUESTED,
                     Sale::STATUS_VOIDED,
@@ -194,17 +198,32 @@ class SaleHistoryController extends Controller
             ->with([
                 'branch:id,code,name,address,phone',
                 'cashier:id,name',
-                'paymentMethod:id,name',
+                'paymentMethod:id,name,type',
             ]);
 
         if (! $includeInternal) {
             $query
                 ->select(self::SAFE_SALE_COLUMNS)
-                ->with(['items' => fn ($items) => $items
-                    ->select(self::SAFE_ITEM_COLUMNS)
-                    ->orderBy('id')]);
+                ->with([
+                    'items' => fn ($items) => $items
+                        ->select(self::SAFE_ITEM_COLUMNS)
+                        ->orderBy('id'),
+                    'saleVoid' => fn ($saleVoid) => $saleVoid
+                        ->select([
+                            'id',
+                            'sale_id',
+                            'voided_by',
+                            'voided_at',
+                            'reason',
+                            'refund_confirmed',
+                        ])
+                        ->with('voider:id,name'),
+                ]);
         } else {
-            $query->with(['items' => fn ($items) => $items->orderBy('id')]);
+            $query->with([
+                'items' => fn ($items) => $items->orderBy('id'),
+                'saleVoid.voider:id,name',
+            ]);
         }
 
         return $query->firstOrFail();
