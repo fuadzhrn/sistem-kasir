@@ -19,6 +19,10 @@ require __DIR__.'/management.php';
 require __DIR__.'/master-data.php';
 require __DIR__.'/products.php';
 require __DIR__.'/stocks.php';
+require __DIR__.'/stock-receipts.php';
+require __DIR__.'/stock-adjustments.php';
+require __DIR__.'/stock-transfers.php';
+require __DIR__.'/cashier.php';
 
 if (app()->environment(['local', 'testing'])) {
     require __DIR__.'/authorization.php';

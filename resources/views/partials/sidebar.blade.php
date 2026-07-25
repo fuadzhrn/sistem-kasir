@@ -7,10 +7,13 @@
     ];
     $ownerMenu = [
         ['label' => 'Dashboard', 'short' => 'DB'],
-        ['label' => 'Kasir', 'short' => 'KS'],
+        ['label' => 'Kasir', 'short' => 'KS', 'route' => 'cashier.index', 'active' => 'cashier.*', 'available' => $sidebarUser?->can('create', \App\Models\Sale::class)],
         ['label' => 'Nota', 'short' => 'NT'],
         ['label' => 'Produk', 'short' => 'PR', 'route' => 'products.index', 'active' => 'products.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Product::class)],
         ['label' => 'Stok', 'short' => 'ST', 'route' => 'stocks.index', 'active' => 'stocks.index', 'available' => $sidebarUser?->can('viewAny', \App\Models\BranchStock::class)],
+        ['label' => 'Barang Masuk', 'short' => 'BM', 'route' => 'stock-receipts.index', 'active' => 'stock-receipts.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\StockReceipt::class)],
+        ['label' => 'Penyesuaian Stok', 'short' => 'PS', 'route' => 'stock-adjustments.index', 'active' => 'stock-adjustments.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\StockAdjustment::class)],
+        ['label' => 'Mutasi Stok', 'short' => 'MS', 'route' => 'stock-transfers.index', 'active' => 'stock-transfers.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\StockTransfer::class)],
         ['label' => 'Riwayat Stok', 'short' => 'RS', 'route' => 'stocks.history.index', 'active' => 'stocks.history.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\StockMovement::class)],
         ['label' => 'Pengeluaran', 'short' => 'PG'],
         ['label' => 'Laporan', 'short' => 'LP'],
@@ -25,9 +28,12 @@
     ];
     $adminMenu = [
         ['label' => 'Dashboard Cabang', 'short' => 'DB'],
-        ['label' => 'Kasir', 'short' => 'KS'],
+        ['label' => 'Kasir', 'short' => 'KS', 'route' => 'cashier.index', 'active' => 'cashier.*', 'available' => $sidebarUser?->can('create', \App\Models\Sale::class)],
         ['label' => 'Nota Cabang', 'short' => 'NT'],
         ['label' => 'Produk', 'short' => 'PR', 'route' => 'products.index', 'active' => 'products.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Product::class)],
+        ['label' => 'Barang Masuk Cabang', 'short' => 'BM', 'route' => 'stock-receipts.index', 'active' => 'stock-receipts.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\StockReceipt::class)],
+        ['label' => 'Penyesuaian Stok Cabang', 'short' => 'PS', 'route' => 'stock-adjustments.index', 'active' => 'stock-adjustments.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\StockAdjustment::class)],
+        ['label' => 'Mutasi Stok Cabang', 'short' => 'MS', 'route' => 'stock-transfers.index', 'active' => 'stock-transfers.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\StockTransfer::class)],
         ['label' => 'Stok Cabang', 'short' => 'ST', 'route' => 'stocks.index', 'active' => 'stocks.index', 'available' => $sidebarUser?->can('viewAny', \App\Models\BranchStock::class)],
         ['label' => 'Riwayat Stok Cabang', 'short' => 'RS', 'route' => 'stocks.history.index', 'active' => 'stocks.history.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\StockMovement::class)],
         ['label' => 'Pengeluaran Cabang', 'short' => 'PG'],
@@ -40,7 +46,7 @@
         ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],
     ];
     $cashierMenu = [
-        ['label' => 'Transaksi Baru', 'short' => 'TB'],
+        ['label' => 'Transaksi Baru', 'short' => 'TB', 'route' => 'cashier.index', 'active' => 'cashier.*', 'available' => $sidebarUser?->can('create', \App\Models\Sale::class)],
         ['label' => 'Transaksi Saya', 'short' => 'TS'],
         ['label' => 'Cetak Ulang Nota', 'short' => 'CN'],
         ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],

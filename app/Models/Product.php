@@ -63,6 +63,16 @@ class Product extends Model
         return $this->hasMany(StockReceiptItem::class);
     }
 
+    public function stockAdjustments(): HasMany
+    {
+        return $this->hasMany(StockAdjustment::class);
+    }
+
+    public function stockTransfers(): HasMany
+    {
+        return $this->hasMany(StockTransfer::class);
+    }
+
     public function saleItems(): HasMany
     {
         return $this->hasMany(SaleItem::class);

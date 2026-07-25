@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360" viewBox="0 0 480 360" role="img" aria-labelledby="title description">
+  <title id="title">Placeholder produk</title>
+  <desc id="description">Ilustrasi sederhana produk pertanian</desc>
+  <rect width="480" height="360" fill="#eef6f0"/>
+  <rect x="160" y="110" width="160" height="170" rx="18" fill="#fff" stroke="#97b7a0" stroke-width="6"/>
+  <path d="M240 110V75m-38 22h76" fill="none" stroke="#2f6d43" stroke-linecap="round" stroke-width="12"/>
+  <path d="M240 226c-40-23-48-68-48-68s46-2 58 37c11-26 38-34 38-34s4 43-35 65" fill="#80b890"/>
+  <text x="240" y="320" fill="#355b40" font-family="Arial,sans-serif" font-size="22" text-anchor="middle">Produk Toko</text>
+</svg>

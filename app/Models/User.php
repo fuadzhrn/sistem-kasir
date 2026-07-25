@@ -58,6 +58,21 @@ class User extends Authenticatable
         return $this->hasMany(StockReceipt::class, 'created_by');
     }
 
+    public function stockAdjustments(): HasMany
+    {
+        return $this->hasMany(StockAdjustment::class, 'created_by');
+    }
+
+    public function requestedStockTransfers(): HasMany
+    {
+        return $this->hasMany(StockTransfer::class, 'requested_by');
+    }
+
+    public function reviewedStockTransfers(): HasMany
+    {
+        return $this->hasMany(StockTransfer::class, 'reviewed_by');
+    }
+
     public function sales(): HasMany
     {
         return $this->hasMany(Sale::class, 'cashier_id');

@@ -33,6 +33,21 @@ class Branch extends Model
         return $this->hasMany(StockReceipt::class);
     }
 
+    public function stockAdjustments(): HasMany
+    {
+        return $this->hasMany(StockAdjustment::class);
+    }
+
+    public function outgoingStockTransfers(): HasMany
+    {
+        return $this->hasMany(StockTransfer::class, 'from_branch_id');
+    }
+
+    public function incomingStockTransfers(): HasMany
+    {
+        return $this->hasMany(StockTransfer::class, 'to_branch_id');
+    }
+
     public function sales(): HasMany
     {
         return $this->hasMany(Sale::class);

@@ -13,6 +13,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'quantity',
     'purchase_price',
     'subtotal',
+    'quantity_before',
+    'quantity_after',
+    'average_cost_before',
+    'average_cost_after',
 ])]
 class StockReceiptItem extends Model
 {
@@ -34,6 +38,10 @@ class StockReceiptItem extends Model
             'quantity' => 'decimal:3',
             'purchase_price' => 'decimal:2',
             'subtotal' => 'decimal:2',
+            'quantity_before' => 'decimal:3',
+            'quantity_after' => 'decimal:3',
+            'average_cost_before' => 'decimal:2',
+            'average_cost_after' => 'decimal:2',
         ];
     }
 }
