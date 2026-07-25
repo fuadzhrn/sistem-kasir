@@ -1,0 +1,10 @@
+<div class="product-form-grid">
+    @if($isOwner)
+        <div class="form-group"><label class="form-label" for="purchase_price">Harga Beli *</label><div class="money-input"><span>Rp</span><input class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_price" name="purchase_price" type="number" min="0" step="0.01" required value="{{ old('purchase_price', $product->purchase_price ?? '0.00') }}"></div>@error('purchase_price')<span class="form-error">{{ $message }}</span>@enderror</div>
+    @endif
+    <div class="form-group"><label class="form-label" for="selling_price">Harga Jual *</label><div class="money-input"><span>Rp</span><input class="form-control @error('selling_price') is-invalid @enderror" id="selling_price" name="selling_price" type="number" min="0" step="0.01" required value="{{ old('selling_price', $product->selling_price ?? '0.00') }}"></div>@error('selling_price')<span class="form-error">{{ $message }}</span>@enderror</div>
+    <div class="form-group"><label class="form-label" for="minimum_stock">Stok Minimum *</label><input class="form-control @error('minimum_stock') is-invalid @enderror" id="minimum_stock" name="minimum_stock" type="number" min="0" step="0.001" required value="{{ old('minimum_stock', $product->minimum_stock ?? '0.000') }}"><small class="form-help">Tidak membuat atau mengubah stok cabang.</small>@error('minimum_stock')<span class="form-error">{{ $message }}</span>@enderror</div>
+    @if($editing)
+        <div class="form-group product-form-grid__wide"><label class="form-label" for="price_change_reason">Alasan Perubahan Harga</label><textarea class="form-control @error('price_change_reason') is-invalid @enderror" id="price_change_reason" name="price_change_reason" rows="3" maxlength="500" placeholder="Opsional; dicatat jika harga berubah">{{ old('price_change_reason') }}</textarea>@error('price_change_reason')<span class="form-error">{{ $message }}</span>@enderror</div>
+    @endif
+</div>

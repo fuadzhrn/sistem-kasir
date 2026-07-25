@@ -17,6 +17,7 @@ class MenuVisibilityTest extends AuthorizationTestCase
         $response
             ->assertSee('href="'.route('branches.index').'"', false)
             ->assertSee('href="'.route('users.index').'"', false)
+            ->assertSee('href="'.route('products.index').'"', false)
             ->assertSee('href="'.route('categories.index').'"', false)
             ->assertSee('href="'.route('units.index').'"', false)
             ->assertSee('href="'.route('payment-methods.index').'"', false)
@@ -36,6 +37,7 @@ class MenuVisibilityTest extends AuthorizationTestCase
         $response
             ->assertSee('href="'.route('my-branch.show').'"', false)
             ->assertSee('href="'.route('users.index').'"', false)
+            ->assertSee('href="'.route('products.index').'"', false)
             ->assertSee('href="'.route('categories.index').'"', false)
             ->assertSee('href="'.route('units.index').'"', false)
             ->assertSee('href="'.route('payment-methods.index').'"', false)
@@ -61,6 +63,7 @@ class MenuVisibilityTest extends AuthorizationTestCase
             ->assertDontSeeText('Kategori')
             ->assertDontSeeText('Satuan')
             ->assertDontSeeText('Metode Pembayaran')
+            ->assertDontSee('href="'.route('products.index').'"', false)
             ->assertDontSee('href="/sales"', false);
     }
 }

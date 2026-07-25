@@ -29,7 +29,8 @@ class PolicyTest extends AuthorizationTestCase
         $this->assertTrue(Gate::forUser($owner)->allows('create', Product::class));
         $this->assertTrue(Gate::forUser($admin)->allows('create', Product::class));
         $this->assertTrue(Gate::forUser($admin)->allows('update', $product));
-        $this->assertTrue(Gate::forUser($cashier)->allows('view', $product));
+        $this->assertFalse(Gate::forUser($cashier)->allows('view', $product));
+        $this->assertTrue(Gate::forUser($cashier)->allows('viewForSale', $product));
         $this->assertFalse(Gate::forUser($cashier)->allows('create', Product::class));
         $this->assertFalse(Gate::forUser($cashier)->allows('update', $product));
     }

@@ -1,0 +1,12 @@
+.price-history-table {
+    min-width: 1080px;
+}
+
+.price-history-table td {
+    vertical-align: top;
+}
+
+.price-history-table td:nth-last-child(2) {
+    max-width: 260px;
+    white-space: normal;
+}

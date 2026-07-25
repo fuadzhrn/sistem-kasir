@@ -10,7 +10,7 @@ class ProductPolicy
     public function viewAny(User $user): bool
     {
         return $user->is_active
-            && $user->hasAnyRole(['owner', 'admin', 'cashier']);
+            && $user->hasAnyRole(['owner', 'admin']);
     }
 
     public function view(User $user, Product $product): bool
@@ -19,11 +19,7 @@ class ProductPolicy
             return false;
         }
 
-        if ($user->hasAnyRole(['owner', 'admin'])) {
-            return true;
-        }
-
-        return $user->isCashier() && $product->is_active;
+        return $user->hasAnyRole(['owner', 'admin']);
     }
 
     public function create(User $user): bool
@@ -38,16 +34,33 @@ class ProductPolicy
             && $user->hasAnyRole(['owner', 'admin']);
     }
 
-    public function delete(User $user, Product $product): bool
+    public function updatePrice(User $user, Product $product): bool
     {
-        if (! $user->is_active || ! $user->isOwner()) {
-            return false;
-        }
+        return $this->update($user, $product);
+    }
 
-        return ! $product->saleItems()->exists()
-            && ! $product->stockReceiptItems()->exists()
-            && ! $product->branchStocks()->exists()
-            && ! $product->stockMovements()->exists()
-            && ! $product->priceHistories()->exists();
+    public function updatePurchasePrice(User $user, Product $product): bool
+    {
+        return $user->is_active && $product->exists && $user->isOwner();
+    }
+
+    public function updateStatus(User $user, Product $product): bool
+    {
+        return $this->update($user, $product);
+    }
+
+    public function removeImage(User $user, Product $product): bool
+    {
+        return $this->update($user, $product);
+    }
+
+    public function viewPriceHistory(User $user, Product $product): bool
+    {
+        return $this->view($user, $product);
+    }
+
+    public function viewForSale(User $user, Product $product): bool
+    {
+        return $user->is_active && $product->is_active;
     }
 }

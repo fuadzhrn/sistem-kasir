@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-labelledby="title description">
+  <title id="title">Foto produk belum tersedia</title>
+  <desc id="description">Placeholder gambar produk dengan ilustrasi daun sederhana.</desc>
+  <rect width="640" height="480" rx="24" fill="#eef5ef"/>
+  <circle cx="320" cy="218" r="104" fill="#d8eadb"/>
+  <path d="M322 300c-10-76 22-136 92-174-5 82-36 137-92 174Z" fill="#2f6b3d"/>
+  <path d="M318 300c-4-58-33-102-88-132 4 62 32 106 88 132Z" fill="#5b9366"/>
+  <path d="M320 306v55" stroke="#1f4d2b" stroke-linecap="round" stroke-width="16"/>
+  <text x="320" y="410" fill="#53645a" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">Foto produk belum tersedia</text>
+</svg>
