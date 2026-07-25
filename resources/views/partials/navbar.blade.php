@@ -15,12 +15,15 @@
         <div class="profile-dropdown">
             @auth
                 @php
-                    $navbarUser = auth()->user();
+                    $navbarUser = auth()->user()->loadMissing(['role', 'branch']);
                     $navbarInitials = collect(explode(' ', $navbarUser->name))
                         ->filter()
                         ->take(2)
                         ->map(fn (string $name): string => mb_strtoupper(mb_substr($name, 0, 1)))
                         ->implode('');
+                    $navbarBranch = $navbarUser->isOwner()
+                        ? 'Semua Cabang'
+                        : ($navbarUser->branch?->name ?? 'Cabang belum ditetapkan');
                 @endphp
 
                 <button
@@ -33,7 +36,7 @@
                     <span class="profile-trigger__avatar" aria-hidden="true">{{ $navbarInitials ?: 'AK' }}</span>
                     <span class="profile-trigger__identity">
                         <strong>{{ $navbarUser->name }}</strong>
-                        <small>{{ $navbarUser->username }}</small>
+                        <small>{{ $navbarUser->role?->name ?? 'Role belum tersedia' }}</small>
                     </span>
                     <svg class="profile-trigger__chevron" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
                         <path d="m6 8 4 4 4-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
@@ -43,10 +46,12 @@
                 <div class="profile-menu" id="profile-menu" data-dropdown-menu hidden>
                     <div class="profile-menu__header">
                         <strong>{{ $navbarUser->name }}</strong>
-                        <span>Akun aktif</span>
+                        <span>{{ $navbarBranch }}</span>
                     </div>
                     <a href="{{ route('account.index') }}">Akun Saya</a>
-                    <a href="{{ route('account.password.edit') }}">Ubah Kata Sandi</a>
+                    @if ($navbarUser->isOwner())
+                        <a href="{{ route('account.password.edit') }}">Kelola Kata Sandi</a>
+                    @endif
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit">Keluar</button>

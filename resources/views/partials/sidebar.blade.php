@@ -1,16 +1,56 @@
 @php
-    $menuItems = [
+    $sidebarUser = auth()->user();
+    $sidebarUser?->loadMissing(['role', 'branch']);
+
+    $guestMenu = [
         ['label' => 'Design System', 'short' => 'DS', 'route' => 'design-system.index', 'available' => app()->environment('local')],
-        ['label' => 'Dashboard', 'short' => 'DB', 'available' => false],
-        ['label' => 'Kasir', 'short' => 'KS', 'available' => false],
-        ['label' => 'Nota', 'short' => 'NT', 'available' => false],
-        ['label' => 'Produk', 'short' => 'PR', 'available' => false],
-        ['label' => 'Stok', 'short' => 'ST', 'available' => false],
-        ['label' => 'Pengeluaran', 'short' => 'PG', 'available' => false],
-        ['label' => 'Laporan', 'short' => 'LP', 'available' => false],
-        ['label' => 'Pengguna', 'short' => 'PN', 'available' => false],
-        ['label' => 'Pengaturan', 'short' => 'AT', 'available' => false],
     ];
+    $ownerMenu = [
+        ['label' => 'Dashboard', 'short' => 'DB'],
+        ['label' => 'Kasir', 'short' => 'KS'],
+        ['label' => 'Nota', 'short' => 'NT'],
+        ['label' => 'Produk', 'short' => 'PR'],
+        ['label' => 'Stok', 'short' => 'ST'],
+        ['label' => 'Pengeluaran', 'short' => 'PG'],
+        ['label' => 'Laporan', 'short' => 'LP'],
+        ['label' => 'Cabang', 'short' => 'CB'],
+        ['label' => 'Pengguna', 'short' => 'PN'],
+        ['label' => 'Aktivitas', 'short' => 'AK'],
+        ['label' => 'Pengaturan', 'short' => 'AT'],
+        ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],
+    ];
+    $adminMenu = [
+        ['label' => 'Dashboard Cabang', 'short' => 'DB'],
+        ['label' => 'Kasir', 'short' => 'KS'],
+        ['label' => 'Nota Cabang', 'short' => 'NT'],
+        ['label' => 'Produk', 'short' => 'PR'],
+        ['label' => 'Stok Cabang', 'short' => 'ST'],
+        ['label' => 'Pengeluaran Cabang', 'short' => 'PG'],
+        ['label' => 'Laporan Cabang', 'short' => 'LP'],
+        ['label' => 'Pegawai Cabang', 'short' => 'PC'],
+        ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],
+    ];
+    $cashierMenu = [
+        ['label' => 'Transaksi Baru', 'short' => 'TB'],
+        ['label' => 'Transaksi Saya', 'short' => 'TS'],
+        ['label' => 'Cetak Ulang Nota', 'short' => 'CN'],
+        ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],
+    ];
+
+    $menuItems = $guestMenu;
+
+    if ($sidebarUser?->isOwner()) {
+        $menuItems = $ownerMenu;
+    } elseif ($sidebarUser?->isAdmin()) {
+        $menuItems = $adminMenu;
+    } elseif ($sidebarUser?->isCashier()) {
+        $menuItems = $cashierMenu;
+    }
+
+    $sidebarRole = $sidebarUser?->role?->name ?? 'Mode Pengembangan';
+    $sidebarBranch = $sidebarUser?->isOwner()
+        ? 'Semua Cabang'
+        : ($sidebarUser?->branch?->name ?? ($sidebarUser ? 'Cabang belum ditetapkan' : 'Fondasi antarmuka'));
 @endphp
 
 <aside class="app-sidebar" data-sidebar aria-label="Navigasi aplikasi">
@@ -30,13 +70,17 @@
         <p class="sidebar-nav__label">Ruang kerja</p>
         <ul class="sidebar-nav__list">
             @foreach ($menuItems as $item)
+                @php
+                    $available = $item['available'] ?? false;
+                    $routeName = $item['route'] ?? null;
+                @endphp
                 <li>
-                    @if ($item['available'])
+                    @if ($available && $routeName)
                         <a
-                            class="sidebar-nav__item {{ request()->routeIs($item['route']) ? 'is-active' : '' }}"
-                            href="{{ route($item['route']) }}"
+                            class="sidebar-nav__item {{ request()->routeIs($routeName) ? 'is-active' : '' }}"
+                            href="{{ route($routeName) }}"
                             data-tooltip="{{ $item['label'] }}"
-                            @if (request()->routeIs($item['route'])) aria-current="page" @endif
+                            @if (request()->routeIs($routeName)) aria-current="page" @endif
                         >
                             <span class="sidebar-nav__icon" aria-hidden="true">{{ $item['short'] }}</span>
                             <span class="sidebar-nav__text">{{ $item['label'] }}</span>
@@ -60,10 +104,10 @@
 
     <div class="sidebar-footer">
         <div class="sidebar-footer__info">
-            <span class="sidebar-footer__avatar" aria-hidden="true">UI</span>
+            <span class="sidebar-footer__avatar" aria-hidden="true">{{ $sidebarUser ? 'AK' : 'UI' }}</span>
             <span class="sidebar-footer__text">
-                <strong>Mode Pengembangan</strong>
-                <small>Fondasi antarmuka</small>
+                <strong>{{ $sidebarRole }}</strong>
+                <small>{{ $sidebarBranch }}</small>
             </span>
         </div>
 

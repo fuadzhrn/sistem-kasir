@@ -8,9 +8,9 @@
 
 @section('content')
     <header class="auth-heading">
-        <p class="auth-heading__eyebrow">Pemulihan akun</p>
+        <p class="auth-heading__eyebrow">Pemulihan akun Owner</p>
         <h1>Lupa kata sandi?</h1>
-        <p>Masukkan email akun Anda. Kami akan mengirim petunjuk pengaturan ulang jika akun memenuhi syarat.</p>
+        <p>Masukkan email akun Owner. Admin dan Kasir perlu menghubungi Owner untuk mengganti kata sandi.</p>
     </header>
 
     <form class="auth-form" action="{{ route('password.email') }}" method="POST">
@@ -34,7 +34,7 @@
             @error('email')
                 <span class="form-error" id="email-error">{{ $message }}</span>
             @else
-                <span class="form-help" id="email-help">Respons yang sama diberikan untuk setiap alamat email.</span>
+                <span class="form-help" id="email-help">Demi keamanan, respons yang sama diberikan untuk setiap alamat email.</span>
             @enderror
         </div>
 

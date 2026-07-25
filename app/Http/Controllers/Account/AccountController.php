@@ -19,7 +19,7 @@ class AccountController extends Controller
     public function index(Request $request): View
     {
         return view('pages.account.index', [
-            'user' => $request->user(),
+            'user' => $request->user()->loadMissing(['role', 'branch']),
         ]);
     }
 }

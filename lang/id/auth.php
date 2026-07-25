@@ -7,4 +7,5 @@ return [
     'inactive' => 'Akun Anda tidak dapat digunakan. Silakan hubungi administrator.',
     'logged_out' => 'Anda berhasil keluar dari sistem.',
     'password_updated' => 'Kata sandi berhasil diubah.',
+    'password_updated_for' => 'Kata sandi untuk :name berhasil diubah.',
 ];

@@ -31,7 +31,9 @@ Route::middleware(['auth', 'active.user'])->group(function (): void {
     Route::get('/account', [AccountController::class, 'index'])
         ->name('account.index');
     Route::get('/account/password', [PasswordController::class, 'edit'])
+        ->middleware('role:owner')
         ->name('account.password.edit');
     Route::put('/account/password', [PasswordController::class, 'update'])
+        ->middleware('role:owner')
         ->name('account.password.update');
 });

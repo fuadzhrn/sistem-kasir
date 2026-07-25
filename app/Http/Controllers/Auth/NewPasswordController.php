@@ -24,10 +24,23 @@ class NewPasswordController extends Controller
 
     public function store(ResetPasswordRequest $request): RedirectResponse
     {
+        $owner = User::query()
+            ->where('email', $request->validated('email'))
+            ->where('is_active', true)
+            ->whereHas('role', fn ($query) => $query->where('slug', 'owner'))
+            ->first();
+
+        if ($owner === null) {
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => __('passwords.reset_failed')]);
+        }
+
         $status = Password::reset(
             [
                 ...$request->safe()->only(['email', 'password', 'password_confirmation', 'token']),
                 'is_active' => true,
+                'role_id' => $owner->role_id,
             ],
             function (User $user, string $password): void {
                 $user->forceFill([

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -48,6 +49,22 @@ class Expense extends Model
     public function approver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function scopeAccessibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->isOwner()) {
+            return $query;
+        }
+
+        if (! $user->isAdmin() || $user->branch_id === null) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->where(
+            $query->getModel()->qualifyColumn('branch_id'),
+            $user->branch_id,
+        );
     }
 
     protected function casts(): array

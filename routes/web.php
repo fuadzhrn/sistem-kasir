@@ -15,3 +15,7 @@ Route::get('/design-system', DesignSystemController::class)
     ->name('design-system.index');
 
 require __DIR__.'/auth.php';
+
+if (app()->environment(['local', 'testing'])) {
+    require __DIR__.'/authorization.php';
+}

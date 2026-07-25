@@ -2,6 +2,22 @@
 
 namespace App\Providers;
 
+use App\Models\ActivityLog;
+use App\Models\Branch;
+use App\Models\BranchStock;
+use App\Models\Expense;
+use App\Models\Product;
+use App\Models\Sale;
+use App\Models\User;
+use App\Policies\ActivityLogPolicy;
+use App\Policies\BranchPolicy;
+use App\Policies\BranchStockPolicy;
+use App\Policies\ExpensePolicy;
+use App\Policies\ProductPolicy;
+use App\Policies\SalePolicy;
+use App\Policies\UserPolicy;
+use App\Services\Authorization\BranchAccessService;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +35,40 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::policy(Branch::class, BranchPolicy::class);
+        Gate::policy(Product::class, ProductPolicy::class);
+        Gate::policy(BranchStock::class, BranchStockPolicy::class);
+        Gate::policy(Sale::class, SalePolicy::class);
+        Gate::policy(Expense::class, ExpensePolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(ActivityLog::class, ActivityLogPolicy::class);
+
+        Gate::define(
+            'view-profit',
+            fn (User $user, Branch $branch): bool => $user->is_active
+                && $user->hasAnyRole(['owner', 'admin'])
+                && app(BranchAccessService::class)->canAccessBranch($user, $branch),
+        );
+        Gate::define(
+            'view-global-report',
+            fn (User $user): bool => $user->is_active && $user->isOwner(),
+        );
+        Gate::define(
+            'manage-branches',
+            fn (User $user): bool => $user->is_active && $user->isOwner(),
+        );
+        Gate::define(
+            'manage-users',
+            fn (User $user): bool => $user->is_active && $user->isOwner(),
+        );
+        Gate::define(
+            'manage-settings',
+            fn (User $user): bool => $user->is_active && $user->isOwner(),
+        );
+        Gate::define(
+            'view-activity-logs',
+            fn (User $user): bool => $user->is_active
+                && ($user->isOwner() || ($user->isAdmin() && $user->branch_id !== null)),
+        );
     }
 }

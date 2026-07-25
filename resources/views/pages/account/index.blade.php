@@ -27,6 +27,8 @@
             <dl class="account-details">
                 <div><dt>Username</dt><dd>{{ $user->username }}</dd></div>
                 <div><dt>Email</dt><dd>{{ $user->email ?: 'Belum tersedia' }}</dd></div>
+                <div><dt>Role</dt><dd>{{ $user->role?->name ?? 'Belum tersedia' }}</dd></div>
+                <div><dt>Cabang</dt><dd>{{ $user->isOwner() ? 'Semua Cabang' : ($user->branch?->name ?? 'Belum ditetapkan') }}</dd></div>
                 <div><dt>Status akun</dt><dd><span class="badge badge-success">Aktif</span></dd></div>
                 <div><dt>Login terakhir</dt><dd>{{ $user->last_login_at?->format('d M Y, H:i') ?? 'Belum tercatat' }}</dd></div>
             </dl>
@@ -34,11 +36,18 @@
 
         <aside class="card account-security">
             <span class="account-security__label">Keamanan</span>
-            <h3>Lindungi akses akun</h3>
-            <p>Gunakan kata sandi yang unik dan selalu keluar setelah memakai perangkat bersama.</p>
+            @if ($user->isOwner())
+                <h3>Kelola kata sandi pengguna</h3>
+                <p>Owner dapat menetapkan kata sandi baru untuk seluruh akun tanpa melihat password lama.</p>
+            @else
+                <h3>Kata sandi dikelola Owner</h3>
+                <p>Hubungi Owner apabila kata sandi akun perlu diganti atau direset.</p>
+            @endif
 
             <div class="account-security__actions">
-                <a class="btn btn-primary" href="{{ route('account.password.edit') }}">Ubah Kata Sandi</a>
+                @if ($user->isOwner())
+                    <a class="btn btn-primary" href="{{ route('account.password.edit') }}">Kelola Kata Sandi</a>
+                @endif
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button class="btn btn-secondary" type="submit">Logout</button>

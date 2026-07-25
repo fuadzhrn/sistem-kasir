@@ -37,6 +37,28 @@ class PasswordResetTest extends TestCase
         Notification::assertSentTo($user, ResetPassword::class);
     }
 
+    public function test_admin_and_cashier_do_not_receive_reset_notification(): void
+    {
+        Notification::fake();
+        $admin = $this->createUser(
+            ['username' => 'admin.test', 'email' => 'admin.test@example.com'],
+            'admin',
+        );
+        $cashier = $this->createUser(
+            ['username' => 'cashier.test', 'email' => 'cashier.test@example.com'],
+            'cashier',
+        );
+
+        $this->post(route('password.email'), ['email' => $admin->email])
+            ->assertSessionHas('status', __('passwords.sent'));
+        $this->post(route('password.email'), ['email' => $cashier->email])
+            ->assertSessionHas('status', __('passwords.sent'));
+
+        Notification::assertNothingSent();
+        $this->assertDatabaseMissing('password_reset_tokens', ['email' => $admin->email]);
+        $this->assertDatabaseMissing('password_reset_tokens', ['email' => $cashier->email]);
+    }
+
     public function test_unknown_and_inactive_accounts_receive_generic_response_without_notification(): void
     {
         Notification::fake();
@@ -122,6 +144,22 @@ class PasswordResetTest extends TestCase
         $this->assertSame($oldPassword, $user->fresh()->password);
     }
 
+    public function test_admin_cannot_use_a_reset_token_created_directly(): void
+    {
+        $admin = $this->createUser([], 'admin');
+        $token = Password::createToken($admin);
+        $oldPassword = $admin->password;
+
+        $this->post(route('password.update'), [
+            'token' => $token,
+            'email' => $admin->email,
+            'password' => 'PasswordBaru123',
+            'password_confirmation' => 'PasswordBaru123',
+        ])->assertSessionHasErrors('email');
+
+        $this->assertSame($oldPassword, $admin->fresh()->password);
+    }
+
     public function test_password_confirmation_and_strength_are_validated(): void
     {
         $user = $this->createUser();
@@ -139,11 +177,17 @@ class PasswordResetTest extends TestCase
     /**
      * @param  array<string, mixed>  $attributes
      */
-    private function createUser(array $attributes = []): User
+    private function createUser(array $attributes = [], string $roleSlug = 'owner'): User
     {
+        $role = Role::factory()->create([
+            'name' => ucfirst($roleSlug),
+            'slug' => $roleSlug,
+            'is_active' => true,
+        ]);
+
         return User::factory()->create([
-            'role_id' => Role::factory(),
-            'branch_id' => Branch::factory(),
+            'role_id' => $role,
+            'branch_id' => $roleSlug === 'owner' ? null : Branch::factory(),
             'username' => 'pemilik.toko',
             'email' => 'pemilik@example.com',
             'password' => 'Password123',

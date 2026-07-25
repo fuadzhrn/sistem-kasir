@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -45,6 +46,19 @@ class Branch extends Model
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);
+    }
+
+    public function scopeAccessibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->isOwner()) {
+            return $query;
+        }
+
+        if ($user->branch_id === null) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->whereKey($user->branch_id);
     }
 
     protected function casts(): array

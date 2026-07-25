@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,6 +60,31 @@ class Sale extends Model
     public function saleVoids(): HasMany
     {
         return $this->hasMany(SaleVoid::class);
+    }
+
+    public function scopeAccessibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->isOwner()) {
+            return $query;
+        }
+
+        if ($user->branch_id === null) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        $query->where(
+            $query->getModel()->qualifyColumn('branch_id'),
+            $user->branch_id,
+        );
+
+        if ($user->isCashier()) {
+            $query->where(
+                $query->getModel()->qualifyColumn('cashier_id'),
+                $user->getKey(),
+            );
+        }
+
+        return $query;
     }
 
     protected function casts(): array

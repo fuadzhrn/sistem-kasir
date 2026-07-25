@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,22 @@ class ActivityLog extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function scopeAccessibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->isOwner()) {
+            return $query;
+        }
+
+        if (! $user->isAdmin() || $user->branch_id === null) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->where(
+            $query->getModel()->qualifyColumn('branch_id'),
+            $user->branch_id,
+        );
     }
 
     protected static function booted(): void
