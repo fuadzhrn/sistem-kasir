@@ -50,7 +50,7 @@ class ActiveAccountTest extends TestCase
 
         $this->actingAs($this->createUser())
             ->get(route('home'))
-            ->assertRedirect(route('account.index'));
+            ->assertRedirect(route('dashboard'));
     }
 
     public function test_authentication_routes_have_expected_middleware(): void

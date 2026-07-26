@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(fn (): string => route('login'));
-        $middleware->redirectUsersTo(fn (): string => route('account.index'));
+        $middleware->redirectUsersTo(fn (): string => route('dashboard'));
 
         $middleware->alias([
             'active.user' => EnsureUserIsActive::class,
@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*')
                 || $request->is('cashier/products')
                 || $request->is('cashier/checkout')
-                || $request->is('dashboard/owner/data'),
+                || $request->is('dashboard/owner/data')
+                || $request->is('dashboard/admin/data'),
         );
     })->create();

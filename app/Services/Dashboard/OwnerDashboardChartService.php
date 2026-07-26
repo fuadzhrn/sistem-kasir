@@ -24,6 +24,7 @@ final class OwnerDashboardChartService
     public function build(
         ?Branch $branch,
         OwnerDashboardDateRange $dateRange,
+        bool $includeBranchComparison = true,
     ): array {
         [$periods, $dateToPeriod] = $this->periodBuckets($dateRange);
         $dailySales = $this->dailySales($branch, $dateRange);
@@ -64,7 +65,7 @@ final class OwnerDashboardChartService
             $netProfit[] = $this->wholeRupiah($periodGrossProfit - $period['expenses']);
         }
 
-        return [
+        $charts = [
             'sales_trend' => [
                 'labels' => $labels,
                 'gross_sales' => $grossSales,
@@ -79,9 +80,14 @@ final class OwnerDashboardChartService
                 'empty' => array_sum(array_map('abs', $grossProfit)) === 0
                     && array_sum(array_map('abs', $netProfit)) === 0,
             ],
-            'branch_comparison' => $this->branchComparison($branch, $dateRange),
             'payment_composition' => $this->paymentComposition($branch, $dateRange),
         ];
+
+        if ($includeBranchComparison) {
+            $charts['branch_comparison'] = $this->branchComparison($branch, $dateRange);
+        }
+
+        return $charts;
     }
 
     private function dailySales(

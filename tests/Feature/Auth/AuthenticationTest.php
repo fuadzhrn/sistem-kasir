@@ -37,7 +37,7 @@ class AuthenticationTest extends TestCase
             'password' => 'Password123',
         ]);
 
-        $response->assertRedirect(route('account.index'));
+        $response->assertRedirect(route('dashboard'));
         $this->assertAuthenticatedAs($user);
         $this->assertNotNull($user->fresh()->last_login_at);
     }
@@ -51,7 +51,7 @@ class AuthenticationTest extends TestCase
             'password' => 'Password123',
         ]);
 
-        $response->assertRedirect(route('account.index'));
+        $response->assertRedirect(route('dashboard'));
         $this->assertAuthenticatedAs($user);
     }
 
@@ -121,7 +121,7 @@ class AuthenticationTest extends TestCase
         $this->post(route('login.store'), [
             'login' => $user->username,
             'password' => 'Password123',
-        ])->assertRedirect(route('account.index'));
+        ])->assertRedirect(route('dashboard'));
 
         $this->assertNotSame($previousSessionId, $this->app['session']->getId());
     }
@@ -132,7 +132,7 @@ class AuthenticationTest extends TestCase
 
         $this->actingAs($user)
             ->get(route('login'))
-            ->assertRedirect(route('account.index'));
+            ->assertRedirect(route('dashboard'));
     }
 
     public function test_guest_cannot_open_account_and_authenticated_user_can(): void
@@ -212,7 +212,7 @@ class AuthenticationTest extends TestCase
         $this->post(route('login.store'), [
             'login' => $user->username,
             'password' => 'Password123',
-        ])->assertRedirect(route('account.index'));
+        ])->assertRedirect(route('dashboard'));
 
         $this->assertSame(0, RateLimiter::attempts($key));
     }

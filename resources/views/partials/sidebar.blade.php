@@ -28,7 +28,7 @@
         ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],
     ];
     $adminMenu = [
-        ['label' => 'Dashboard Cabang', 'short' => 'DB'],
+        ['label' => 'Dashboard Cabang', 'short' => 'DB', 'route' => 'dashboard.admin', 'active' => 'dashboard.admin*', 'available' => true],
         ['label' => 'Kasir', 'short' => 'KS', 'route' => 'cashier.index', 'active' => 'cashier.*', 'available' => $sidebarUser?->can('create', \App\Models\Sale::class)],
         ['label' => 'Nota Cabang', 'short' => 'NT', 'route' => 'sales.index', 'active' => 'sales.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Sale::class)],
         ['label' => 'Produk', 'short' => 'PR', 'route' => 'products.index', 'active' => 'products.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Product::class)],
@@ -48,6 +48,7 @@
         ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],
     ];
     $cashierMenu = [
+        ['label' => 'Dashboard', 'short' => 'DB', 'route' => 'dashboard.cashier', 'active' => 'dashboard.cashier', 'available' => true],
         ['label' => 'Transaksi Baru', 'short' => 'TB', 'route' => 'cashier.index', 'active' => 'cashier.*', 'available' => $sidebarUser?->can('create', \App\Models\Sale::class)],
         ['label' => 'Transaksi Saya', 'short' => 'TS', 'route' => 'sales.index', 'active' => 'sales.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Sale::class)],
         ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],

@@ -12,7 +12,7 @@ class AccountController extends Controller
     public function redirect(Request $request): RedirectResponse
     {
         return $request->user()
-            ? redirect()->route('account.index')
+            ? redirect()->route('dashboard')
             : redirect()->route('login');
     }
 

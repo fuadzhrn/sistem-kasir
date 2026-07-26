@@ -1,0 +1,23 @@
+.admin-dashboard__header {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-5);
+}
+
+.admin-dashboard__scope {
+    color: var(--color-primary-dark);
+    margin: var(--space-3) 0 0;
+}
+
+.admin-dashboard__filter {
+    grid-template-columns: minmax(220px, 0.8fr) minmax(360px, 1.4fr) auto;
+}
+
+.admin-dashboard__filter .dashboard-filter__custom {
+    align-items: end;
+}
+
+@media (max-width: 1180px) {
+    .admin-dashboard__filter {
+        grid-template-columns: 1fr;
+    }
+}

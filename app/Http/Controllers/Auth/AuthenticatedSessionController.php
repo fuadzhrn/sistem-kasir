@@ -25,7 +25,13 @@ class AuthenticatedSessionController extends Controller
             'last_login_at' => now(),
         ])->saveQuietly();
 
-        return redirect()->intended(route('account.index', absolute: false));
+        $intended = $request->session()->pull('url.intended');
+
+        if (is_string($intended) && $this->isSafeIntendedUrl($request, $intended)) {
+            return redirect()->to($intended);
+        }
+
+        return redirect()->route('dashboard');
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -38,5 +44,16 @@ class AuthenticatedSessionController extends Controller
         return redirect()
             ->route('login')
             ->with('status', __('auth.logged_out'));
+    }
+
+    private function isSafeIntendedUrl(Request $request, string $url): bool
+    {
+        if (str_starts_with($url, '/') && ! str_starts_with($url, '//')) {
+            return true;
+        }
+
+        $origin = rtrim($request->getSchemeAndHttpHost(), '/');
+
+        return $url === $origin || str_starts_with($url, $origin.'/');
     }
 }
