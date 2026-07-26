@@ -30,7 +30,7 @@ class MenuVisibilityTest extends AuthorizationTestCase
 
         $response = $this->actingAs($admin)->get(route('account.index'))->assertOk();
 
-        foreach (['Dashboard Cabang', 'Kasir', 'Nota Cabang', 'Produk', 'Stok Cabang', 'Pengeluaran Cabang', 'Laporan Cabang', 'Cabang Saya', 'Pegawai Cabang', 'Kategori', 'Satuan', 'Metode Pembayaran', 'Akun Saya'] as $label) {
+        foreach (['Dashboard Cabang', 'Kasir', 'Nota Cabang', 'Produk', 'Stok Cabang', 'Pengeluaran Cabang', 'Laporan Cabang', 'Cabang Saya', 'Pegawai Cabang', 'Kategori', 'Satuan', 'Metode Pembayaran', 'Aktivitas Cabang', 'Akun Saya'] as $label) {
             $response->assertSeeText($label);
         }
 
@@ -41,8 +41,9 @@ class MenuVisibilityTest extends AuthorizationTestCase
             ->assertSee('href="'.route('categories.index').'"', false)
             ->assertSee('href="'.route('units.index').'"', false)
             ->assertSee('href="'.route('payment-methods.index').'"', false)
+            ->assertSee('href="'.route('activities.index').'"', false)
             ->assertDontSeeText('Pengaturan')
-            ->assertDontSeeText('Aktivitas');
+            ->assertDontSeeText('Audit Aktivitas');
     }
 
     public function test_cashier_sidebar_only_contains_cashier_work_menu(): void

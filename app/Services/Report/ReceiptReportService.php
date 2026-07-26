@@ -42,7 +42,7 @@ final class ReceiptReportService extends AbstractReportService
             'discount' => $this->money($sale->discount_amount), 'total' => $this->money($sale->total),
             'payment' => $sale->payment_method_name, 'status' => $sale->statusLabel(),
             'detail' => 'Lihat Detail', 'receipt' => 'Cetak Ulang',
-            'detail_url' => route('sales.show', $sale), 'receipt_url' => route('receipts.print', ['sale' => $sale, 'copy' => 1]),
+            'detail_url' => route('sales.show', $sale), 'receipt_url' => route('sales.receipt.reprint', $sale),
         ];
         $rows = $forPrint
             ? $this->printableRows($dataQuery, $mapper)
@@ -53,7 +53,7 @@ final class ReceiptReportService extends AbstractReportService
             ['key' => 'branch', 'label' => 'Cabang'], ['key' => 'cashier', 'label' => 'Kasir'], ['key' => 'items', 'label' => 'Item'],
             ['key' => 'subtotal', 'label' => 'Subtotal'], ['key' => 'discount', 'label' => 'Diskon'], ['key' => 'total', 'label' => 'Total'],
             ['key' => 'payment', 'label' => 'Pembayaran'], ['key' => 'status', 'label' => 'Status'],
-            ['key' => 'detail', 'label' => 'Detail', 'link' => 'detail_url'], ['key' => 'receipt', 'label' => 'Struk', 'link' => 'receipt_url'],
+            ['key' => 'detail', 'label' => 'Detail', 'link' => 'detail_url'], ['key' => 'receipt', 'label' => 'Struk', 'link' => 'receipt_url', 'method' => 'post'],
         ], $rows, [
             ['label' => 'Jumlah Nota', 'value' => number_format((int) $total->receipt_count, 0, ',', '.')],
             ['label' => 'Nota Selesai', 'value' => number_format((int) $total->completed_count, 0, ',', '.')],

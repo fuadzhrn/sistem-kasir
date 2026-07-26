@@ -10,8 +10,12 @@ use App\Models\Expense;
 use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\StockAdjustment;
+use App\Models\StockMovement;
+use App\Models\StockTransfer;
 use App\Models\Unit;
 use App\Models\User;
+use App\Observers\BusinessActivityObserver;
 use App\Policies\ActivityLogPolicy;
 use App\Policies\BranchPolicy;
 use App\Policies\BranchStockPolicy;
@@ -41,6 +45,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        foreach ([
+            Branch::class,
+            Category::class,
+            Unit::class,
+            PaymentMethod::class,
+            Product::class,
+            User::class,
+            StockMovement::class,
+            StockAdjustment::class,
+            StockTransfer::class,
+        ] as $model) {
+            $model::observe(BusinessActivityObserver::class);
+        }
+
         Gate::policy(Branch::class, BranchPolicy::class);
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(Unit::class, UnitPolicy::class);

@@ -5,13 +5,13 @@ namespace App\Services\Sale;
 use App\Exceptions\Sale\RefundConfirmationRequiredException;
 use App\Exceptions\Sale\SaleCannotBeVoidedException;
 use App\Exceptions\Sale\SaleVoidStockException;
-use App\Models\ActivityLog;
 use App\Models\BranchStock;
 use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Models\SaleVoid;
 use App\Models\StockMovement;
 use App\Models\User;
+use App\Services\Audit\AuditLogService;
 use App\Services\Calculation\WeightedAverageCostCalculator;
 use App\Support\Format\Rupiah;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -24,6 +24,7 @@ class SaleVoidService
     public function __construct(
         private readonly SaleCalculator $saleCalculator,
         private readonly WeightedAverageCostCalculator $costCalculator,
+        private readonly AuditLogService $auditLog,
     ) {}
 
     public function voidSale(
@@ -297,18 +298,23 @@ class SaleVoidService
         ?string $ipAddress,
         ?string $userAgent,
     ): void {
-        ActivityLog::query()->create([
-            'user_id' => $actor->getKey(),
-            'branch_id' => $sale->branch_id,
-            'action' => 'sale_voided',
-            'module' => 'sales',
-            'reference_type' => Sale::class,
-            'reference_id' => $sale->getKey(),
-            'description' => 'Transaksi '.$sale->invoice_number
+        $this->auditLog->record(
+            action: 'sale_voided',
+            module: 'sales',
+            description: 'Transaksi '.$sale->invoice_number
                 .' sebesar '.Rupiah::format((string) $sale->total).' dibatalkan.',
-            'ip_address' => $this->limitedText($ipAddress, 45),
-            'user_agent' => $this->limitedText($userAgent, 1000),
-        ]);
+            actor: $actor,
+            branch: (int) $sale->branch_id,
+            reference: $sale,
+            metadata: [
+                'invoice_number' => $sale->invoice_number,
+                'total' => $sale->total,
+                'status' => $sale->status,
+                'voided_at' => $sale->voided_at?->toIso8601String(),
+            ],
+            ipAddress: $ipAddress,
+            userAgent: $userAgent,
+        );
     }
 
     private function prepareResult(SaleVoid $saleVoid, bool $idempotent): SaleVoid

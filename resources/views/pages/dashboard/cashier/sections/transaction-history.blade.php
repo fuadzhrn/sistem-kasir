@@ -37,14 +37,10 @@
                             <td>
                                 <div class="cashier-dashboard__row-actions">
                                     <a class="btn btn-secondary btn-sm" href="{{ $sale['detail_url'] }}">Detail</a>
-                                    <a
-                                        class="btn btn-ghost btn-sm"
-                                        href="{{ $sale['receipt_url'] }}"
-                                        target="_blank"
-                                        rel="noopener"
-                                    >
-                                        Cetak Ulang
-                                    </a>
+                                    <form method="POST" action="{{ $sale['receipt_url'] }}" target="_blank" rel="noopener">
+                                        @csrf
+                                        <button class="btn btn-ghost btn-sm" type="submit">Cetak Ulang</button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

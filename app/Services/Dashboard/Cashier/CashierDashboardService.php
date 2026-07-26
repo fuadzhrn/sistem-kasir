@@ -113,10 +113,7 @@ final class CashierDashboardService
                 'status' => $sale->statusLabel(),
                 'status_variant' => $sale->statusBadgeVariant(),
                 'detail_url' => route('sales.show', $sale->getKey()),
-                'receipt_url' => route('receipts.print', [
-                    'sale' => $sale->getKey(),
-                    'copy' => 1,
-                ]),
+                'receipt_url' => route('sales.receipt.reprint', $sale->getKey()),
             ]);
     }
 }

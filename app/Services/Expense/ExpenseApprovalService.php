@@ -2,9 +2,9 @@
 
 namespace App\Services\Expense;
 
-use App\Models\ActivityLog;
 use App\Models\Expense;
 use App\Models\User;
+use App\Services\Audit\AuditLogService;
 use App\Support\Format\Rupiah;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +12,10 @@ use Illuminate\Validation\ValidationException;
 
 class ExpenseApprovalService
 {
+    public function __construct(
+        private readonly AuditLogService $auditLog,
+    ) {}
+
     public function approve(
         Expense $expense,
         User $actor,
@@ -87,16 +91,20 @@ class ExpenseApprovalService
         ?string $ipAddress,
         ?string $userAgent,
     ): void {
-        ActivityLog::query()->create([
-            'user_id' => $actor->getKey(),
-            'branch_id' => $expense->branch_id,
-            'action' => $action,
-            'module' => 'expenses',
-            'reference_type' => Expense::class,
-            'reference_id' => $expense->getKey(),
-            'description' => $description,
-            'ip_address' => $ipAddress ? mb_substr($ipAddress, 0, 45) : null,
-            'user_agent' => $userAgent ? mb_substr($userAgent, 0, 1000) : null,
-        ]);
+        $this->auditLog->record(
+            $action,
+            'expenses',
+            $description,
+            $actor,
+            (int) $expense->branch_id,
+            $expense,
+            [
+                'amount' => $expense->amount,
+                'status' => $expense->status,
+                'rejection_reason' => $expense->rejection_reason,
+            ],
+            $ipAddress,
+            $userAgent,
+        );
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Services\Expense;
 
-use App\Models\ActivityLog;
 use App\Models\Branch;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\User;
+use App\Services\Audit\AuditLogService;
 use App\Support\Format\Rupiah;
 use Carbon\CarbonInterface;
 use Illuminate\Http\UploadedFile;
@@ -17,6 +17,10 @@ use Throwable;
 
 class ExpenseService
 {
+    public function __construct(
+        private readonly AuditLogService $auditLog,
+    ) {}
+
     public function create(
         Branch $branch,
         ExpenseCategory $category,
@@ -208,16 +212,22 @@ class ExpenseService
         ?string $ipAddress,
         ?string $userAgent,
     ): void {
-        ActivityLog::query()->create([
-            'user_id' => $actor->getKey(),
-            'branch_id' => $expense->branch_id,
-            'action' => $action,
-            'module' => 'expenses',
-            'reference_type' => Expense::class,
-            'reference_id' => $expense->getKey(),
-            'description' => $description,
-            'ip_address' => $ipAddress ? mb_substr($ipAddress, 0, 45) : null,
-            'user_agent' => $userAgent ? mb_substr($userAgent, 0, 1000) : null,
-        ]);
+        $this->auditLog->record(
+            $action,
+            'expenses',
+            $description,
+            $actor,
+            (int) $expense->branch_id,
+            $expense,
+            [
+                'expense_date' => $expense->expense_date?->toDateString(),
+                'amount' => $expense->amount,
+                'status' => $expense->status,
+                'category_id' => (int) $expense->expense_category_id,
+                'has_proof' => filled($expense->proof_file),
+            ],
+            $ipAddress,
+            $userAgent,
+        );
     }
 }

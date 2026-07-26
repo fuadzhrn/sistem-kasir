@@ -23,7 +23,7 @@
         ['label' => 'Kategori', 'short' => 'KT', 'route' => 'categories.index', 'active' => 'categories.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Category::class)],
         ['label' => 'Satuan', 'short' => 'SN', 'route' => 'units.index', 'active' => 'units.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Unit::class)],
         ['label' => 'Metode Pembayaran', 'short' => 'MP', 'route' => 'payment-methods.index', 'active' => 'payment-methods.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\PaymentMethod::class)],
-        ['label' => 'Aktivitas', 'short' => 'AK'],
+        ['label' => 'Audit Aktivitas', 'short' => 'AK', 'route' => 'activities.index', 'active' => 'activities.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\ActivityLog::class)],
         ['label' => 'Pengaturan', 'short' => 'AT'],
         ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],
     ];
@@ -45,6 +45,7 @@
         ['label' => 'Kategori', 'short' => 'KT', 'route' => 'categories.index', 'active' => 'categories.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Category::class)],
         ['label' => 'Satuan', 'short' => 'SN', 'route' => 'units.index', 'active' => 'units.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\Unit::class)],
         ['label' => 'Metode Pembayaran', 'short' => 'MP', 'route' => 'payment-methods.index', 'active' => 'payment-methods.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\PaymentMethod::class)],
+        ['label' => 'Aktivitas Cabang', 'short' => 'AK', 'route' => 'activities.index', 'active' => 'activities.*', 'available' => $sidebarUser?->can('viewAny', \App\Models\ActivityLog::class)],
         ['label' => 'Akun Saya', 'short' => 'AS', 'route' => 'account.index', 'available' => true],
     ];
     $cashierMenu = [

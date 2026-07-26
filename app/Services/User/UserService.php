@@ -4,6 +4,7 @@ namespace App\Services\User;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Audit\AuditLogService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -11,6 +12,10 @@ use Illuminate\Validation\ValidationException;
 
 class UserService
 {
+    public function __construct(
+        private readonly AuditLogService $auditLog,
+    ) {}
+
     public function create(array $data): User
     {
         return DB::transaction(function () use ($data): User {
@@ -92,6 +97,20 @@ class UserService
                 'password' => Hash::make($password),
                 'remember_token' => Str::random(60),
             ])->save();
+
+            $this->auditLog->record(
+                action: 'user_password_reset',
+                module: 'users',
+                description: "Kata sandi pengguna {$target->username} direset oleh Owner.",
+                actor: $actor,
+                branch: $target->branch_id,
+                reference: $target,
+                metadata: [
+                    'target_user_id' => $target->getKey(),
+                    'target_username' => $target->username,
+                    'target_role' => $target->role?->slug,
+                ],
+            );
         });
     }
 

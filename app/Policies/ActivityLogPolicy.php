@@ -27,4 +27,29 @@ class ActivityLogPolicy
             && $user->branch_id !== null
             && $user->branch_id === $activityLog->branch_id;
     }
+
+    public function create(User $user): bool
+    {
+        return false;
+    }
+
+    public function update(User $user, ActivityLog $activityLog): bool
+    {
+        return false;
+    }
+
+    public function delete(User $user, ActivityLog $activityLog): bool
+    {
+        return false;
+    }
+
+    public function restore(User $user, ActivityLog $activityLog): bool
+    {
+        return false;
+    }
+
+    public function forceDelete(User $user, ActivityLog $activityLog): bool
+    {
+        return false;
+    }
 }

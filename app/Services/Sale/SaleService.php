@@ -9,7 +9,6 @@ use App\Exceptions\Sale\InsufficientPaymentException;
 use App\Exceptions\Sale\InsufficientStockException;
 use App\Exceptions\Sale\SaleCheckoutException;
 use App\Exceptions\Sale\StockCostNotReadyException;
-use App\Models\ActivityLog;
 use App\Models\Branch;
 use App\Models\BranchStock;
 use App\Models\PaymentMethod;
@@ -19,6 +18,7 @@ use App\Models\SaleItem;
 use App\Models\Setting;
 use App\Models\StockMovement;
 use App\Models\User;
+use App\Services\Audit\AuditLogService;
 use App\Services\Authorization\BranchAccessService;
 use App\Support\Format\Rupiah;
 use Illuminate\Database\QueryException;
@@ -33,6 +33,7 @@ class SaleService
         private readonly SaleDiscountAllocator $discountAllocator,
         private readonly SaleNumberService $numberService,
         private readonly BranchAccessService $branchAccess,
+        private readonly AuditLogService $auditLog,
     ) {}
 
     /**
@@ -617,18 +618,25 @@ class SaleService
         ?string $ipAddress,
         ?string $userAgent,
     ): void {
-        ActivityLog::query()->create([
-            'user_id' => $actor->getKey(),
-            'branch_id' => $branch->getKey(),
-            'action' => 'sale_created',
-            'module' => 'sales',
-            'reference_type' => Sale::class,
-            'reference_id' => $sale->getKey(),
-            'description' => 'Transaksi '.$sale->invoice_number
+        $this->auditLog->record(
+            action: 'sale_created',
+            module: 'sales',
+            description: 'Transaksi '.$sale->invoice_number
                 .' berhasil dibuat dengan total '.Rupiah::format((string) $sale->total).'.',
-            'ip_address' => $this->limitedText($ipAddress, 45),
-            'user_agent' => $this->limitedText($userAgent, 1000),
-        ]);
+            actor: $actor,
+            branch: $branch,
+            reference: $sale,
+            metadata: [
+                'invoice_number' => $sale->invoice_number,
+                'item_count' => $sale->items()->count(),
+                'subtotal' => $sale->subtotal,
+                'discount_amount' => $sale->discount_amount,
+                'total' => $sale->total,
+                'payment_method' => $sale->payment_method_name,
+            ],
+            ipAddress: $ipAddress,
+            userAgent: $userAgent,
+        );
     }
 
     private function resolveIdempotentSale(

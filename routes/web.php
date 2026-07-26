@@ -27,6 +27,7 @@ require __DIR__.'/sales.php';
 require __DIR__.'/expenses.php';
 require __DIR__.'/dashboard.php';
 require __DIR__.'/reports.php';
+require __DIR__.'/activities.php';
 
 if (app()->environment(['local', 'testing'])) {
     require __DIR__.'/authorization.php';

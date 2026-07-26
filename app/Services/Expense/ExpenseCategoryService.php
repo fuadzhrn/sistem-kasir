@@ -2,15 +2,19 @@
 
 namespace App\Services\Expense;
 
-use App\Models\ActivityLog;
 use App\Models\ExpenseCategory;
 use App\Models\User;
+use App\Services\Audit\AuditLogService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class ExpenseCategoryService
 {
+    public function __construct(
+        private readonly AuditLogService $auditLog,
+    ) {}
+
     /**
      * @param  array{name: string, description?: string|null}  $data
      */
@@ -123,16 +127,20 @@ class ExpenseCategoryService
         ?string $ipAddress,
         ?string $userAgent,
     ): void {
-        ActivityLog::query()->create([
-            'user_id' => $actor->getKey(),
-            'branch_id' => null,
-            'action' => $action,
-            'module' => 'expenses',
-            'reference_type' => ExpenseCategory::class,
-            'reference_id' => $category->getKey(),
-            'description' => $description,
-            'ip_address' => $ipAddress ? mb_substr($ipAddress, 0, 45) : null,
-            'user_agent' => $userAgent ? mb_substr($userAgent, 0, 1000) : null,
-        ]);
+        $this->auditLog->record(
+            $action,
+            'expenses',
+            $description,
+            $actor,
+            $actor->isOwner() ? null : $actor->branch_id,
+            $category,
+            [
+                'name' => $category->name,
+                'is_active' => (bool) $category->is_active,
+                'global_resource' => ! $actor->isOwner(),
+            ],
+            $ipAddress,
+            $userAgent,
+        );
     }
 }

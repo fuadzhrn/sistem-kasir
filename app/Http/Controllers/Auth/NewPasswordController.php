@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Models\User;
+use App\Services\Audit\AuditLogService;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,6 +15,10 @@ use Illuminate\View\View;
 
 class NewPasswordController extends Controller
 {
+    public function __construct(
+        private readonly AuditLogService $auditLog,
+    ) {}
+
     public function create(Request $request, string $token): View
     {
         return view('auth.reset-password', [
@@ -57,6 +62,22 @@ class NewPasswordController extends Controller
                 ->withInput($request->only('email'))
                 ->withErrors(['email' => __('passwords.reset_failed')]);
         }
+
+        $owner->refresh();
+        $this->auditLog->recordSafely(
+            action: 'password_changed',
+            module: 'authentication',
+            description: 'Owner mengubah kata sandi melalui pemulihan akun.',
+            actor: $owner,
+            branch: null,
+            reference: $owner,
+            metadata: [
+                'user_id' => $owner->getKey(),
+                'self_service' => false,
+                'reset_method' => 'password_broker',
+                'occurred_at' => now()->toIso8601String(),
+            ],
+        );
 
         return redirect()
             ->route('login')

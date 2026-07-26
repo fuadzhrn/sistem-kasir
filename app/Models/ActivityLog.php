@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 #[Fillable([
     'user_id',
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'reference_type',
     'reference_id',
     'description',
+    'metadata',
     'ip_address',
     'user_agent',
 ])]
@@ -33,6 +35,11 @@ class ActivityLog extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function reference(): MorphTo
+    {
+        return $this->morphTo();
     }
 
     public function scopeAccessibleTo(Builder $query, User $user): Builder
@@ -54,12 +61,14 @@ class ActivityLog extends Model
     protected static function booted(): void
     {
         static::updating(fn (): bool => false);
+        static::deleting(fn (): bool => false);
     }
 
     protected function casts(): array
     {
         return [
             'created_at' => 'datetime',
+            'metadata' => 'array',
         ];
     }
 }

@@ -9,6 +9,7 @@ use App\Models\StockMovement;
 use App\Models\StockReceipt;
 use App\Models\StockReceiptItem;
 use App\Models\User;
+use App\Services\Audit\AuditLogService;
 use App\Services\Authorization\BranchAccessService;
 use App\Services\Calculation\WeightedAverageCostCalculator;
 use Carbon\CarbonInterface;
@@ -22,6 +23,7 @@ class StockReceiptService
         private readonly StockReceiptNumberService $numberService,
         private readonly WeightedAverageCostCalculator $calculator,
         private readonly BranchAccessService $branchAccess,
+        private readonly AuditLogService $auditLog,
     ) {}
 
     public function create(
@@ -134,6 +136,21 @@ class StockReceiptService
             }
 
             $receipt->update(['total_cost' => $totalCost]);
+            $this->auditLog->record(
+                action: 'stock_receipt_created',
+                module: 'stock_receipts',
+                description: "Barang masuk {$receipt->receipt_number} dicatat.",
+                actor: $actor,
+                branch: $lockedBranch,
+                reference: $receipt,
+                metadata: [
+                    'receipt_number' => $receipt->receipt_number,
+                    'receipt_date' => $receipt->receipt_date?->toDateString(),
+                    'supplier_name' => $receipt->supplier_name,
+                    'item_count' => count($normalizedItems),
+                    'total_cost' => $totalCost,
+                ],
+            );
 
             return $receipt->refresh();
         }, 3);

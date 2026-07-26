@@ -33,12 +33,10 @@
     <div class="sale-detail-actions">
         <a class="btn btn-secondary" href="{{ route('sales.index') }}">Kembali ke Riwayat</a>
         @include('pages.sales.sections.void-action')
-        <a
-            class="btn btn-primary"
-            href="{{ route('receipts.print', ['sale' => $sale, 'copy' => 1]) }}"
-            target="_blank"
-            rel="noopener"
-        >Cetak Ulang</a>
+        <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="_blank" rel="noopener">
+            @csrf
+            <button class="btn btn-primary" type="submit">Cetak Ulang</button>
+        </form>
     </div>
     @include('pages.sales.sections.void-confirmation-modal')
 @endsection
