@@ -1,0 +1,1 @@
+const printButton=document.querySelector('[data-report-print]');const backButton=document.querySelector('[data-report-back]');printButton?.addEventListener('click',()=>window.print());backButton?.addEventListener('click',()=>{if(window.history.length>1){window.history.back()}else{window.close()}});

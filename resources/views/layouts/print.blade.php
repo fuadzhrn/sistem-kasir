@@ -9,7 +9,11 @@
 
     <link rel="stylesheet" href="{{ asset('assets/css/base/reset.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/base/variables.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/print/receipt.css') }}">
+    @if (request()->routeIs('reports.*'))
+        <link rel="stylesheet" href="{{ asset('assets/css/print/report.css') }}">
+    @else
+        <link rel="stylesheet" href="{{ asset('assets/css/print/receipt.css') }}">
+    @endif
     @stack('styles')
 </head>
 <body class="print-document">
@@ -17,7 +21,11 @@
         @yield('content')
     </main>
 
-    <script src="{{ asset('assets/js/pages/receipt.js') }}" defer></script>
+    @if (request()->routeIs('reports.*'))
+        <script src="{{ asset('assets/js/pages/report-print.js') }}" defer></script>
+    @else
+        <script src="{{ asset('assets/js/pages/receipt.js') }}" defer></script>
+    @endif
     @stack('scripts')
 </body>
 </html>
