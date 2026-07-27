@@ -1,17 +1,10 @@
-(function (document) {
+(function (window, document) {
     'use strict';
 
     function formatQuantity(value) {
-        const number = Number.parseFloat(value);
-
-        if (!Number.isFinite(number)) {
-            return '0';
-        }
-
-        return new Intl.NumberFormat('id-ID', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 3,
-        }).format(number);
+        return window.StoreApp && window.StoreApp.quantity
+            ? window.StoreApp.quantity.format(value)
+            : '0';
     }
 
     function initializeTransferForm(form) {
@@ -80,4 +73,4 @@
             });
         });
     });
-})(document);
+})(window, document);

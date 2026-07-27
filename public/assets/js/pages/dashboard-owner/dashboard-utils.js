@@ -16,6 +16,12 @@ export function formatRupiah(value) {
         .replace('Rp-', '-Rp');
 }
 
+export function formatQuantity(value) {
+    return window.StoreApp && window.StoreApp.quantity
+        ? window.StoreApp.quantity.format(value)
+        : '0';
+}
+
 export function createCell(content, className = '') {
     const cell = document.createElement('td');
     cell.textContent = content ?? '';

@@ -57,7 +57,7 @@
 
             <div class="form-group">
                 <label class="form-label" for="transfer-quantity">Quantity <span class="form-required">*</span></label>
-                <input class="form-control @error('quantity') is-error @enderror" id="transfer-quantity" name="quantity" type="number" value="{{ old('quantity') }}" min="0.001" max="999999999.999" step="0.001" inputmode="decimal" required data-transfer-quantity>
+                <input class="form-control @error('quantity') is-error @enderror" id="transfer-quantity" name="quantity" type="text" value="{{ \App\Support\Format\Quantity::inputValue(old('quantity')) }}" inputmode="decimal" required data-transfer-quantity data-quantity-input>
                 @error('quantity')<span class="form-error">{{ $message }}</span>@enderror
             </div>
 

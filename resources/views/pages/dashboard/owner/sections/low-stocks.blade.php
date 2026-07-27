@@ -1,12 +1,19 @@
-<article class="dashboard-table-card card">
+<article class="dashboard-table-card dashboard-table-card--low-stocks card">
     <header class="dashboard-section-heading">
         <div>
             <h2>Stok Hampir Habis</h2>
             <p>Kondisi stok saat ini, tidak mengikuti rentang tanggal.</p>
         </div>
     </header>
-    <div class="table-responsive">
-        <table class="table">
+    <div class="dashboard-table-wrapper">
+        <table class="table dashboard-compact-table dashboard-low-stocks-table">
+            <colgroup>
+                <col class="dashboard-low-stocks-table__branch">
+                <col class="dashboard-low-stocks-table__product">
+                <col class="dashboard-low-stocks-table__available">
+                <col class="dashboard-low-stocks-table__minimum">
+                <col class="dashboard-low-stocks-table__status">
+            </colgroup>
             <thead>
                 <tr>
                     <th scope="col">Cabang</th>

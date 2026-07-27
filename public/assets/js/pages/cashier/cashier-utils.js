@@ -26,7 +26,9 @@ export function toScaledInteger(value, scale) {
 }
 
 export function quantityToMills(value) {
-    return toScaledInteger(value, 3);
+    return window.StoreApp && window.StoreApp.quantity
+        ? window.StoreApp.quantity.toMills(value)
+        : null;
 }
 
 export function moneyToCents(value) {
@@ -66,21 +68,19 @@ export function formatRupiahInput(value) {
 }
 
 export function millsToQuantity(value) {
-    const mills = Number.isSafeInteger(value) ? value : 0;
-    const whole = Math.floor(mills / 1000);
-    const fraction = String(mills % 1000).padStart(3, '0').replace(/0+$/, '');
-
-    return fraction === '' ? String(whole) : whole + '.' + fraction;
+    return window.StoreApp && window.StoreApp.quantity
+        ? window.StoreApp.quantity.fromMills(value) || '0'
+        : '0';
 }
 
 export function formatQuantity(value) {
-    const mills = typeof value === 'number' ? value : quantityToMills(value);
-
-    if (mills === null) {
+    if (!window.StoreApp || !window.StoreApp.quantity) {
         return '0';
     }
 
-    return millsToQuantity(mills).replace('.', ',');
+    return typeof value === 'number'
+        ? window.StoreApp.quantity.formatMills(value)
+        : window.StoreApp.quantity.format(value);
 }
 
 export function formatRupiah(cents) {

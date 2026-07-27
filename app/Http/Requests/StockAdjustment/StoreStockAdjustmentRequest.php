@@ -3,6 +3,7 @@
 namespace App\Http\Requests\StockAdjustment;
 
 use App\Models\StockAdjustment;
+use App\Support\Format\Quantity;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -76,6 +77,8 @@ class StoreStockAdjustmentRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
+            'quantity' => Quantity::normalizeInput($this->input('quantity')),
+            'target_quantity' => Quantity::normalizeInput($this->input('target_quantity')),
             'reason' => trim((string) $this->input('reason')),
         ]);
     }

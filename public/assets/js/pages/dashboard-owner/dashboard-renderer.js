@@ -3,6 +3,7 @@ import {
     createCell,
     createLinkCell,
     emptyRow,
+    formatQuantity,
 } from './dashboard-utils.js';
 
 export function renderDashboard(root, data) {
@@ -47,7 +48,7 @@ function renderTopProducts(root, products) {
             row.append(
                 createCell(product.rank),
                 productCell(product.name, product.code),
-                createCell(`${product.quantity} ${product.unit}`),
+                createCell(`${formatQuantity(product.quantity_value)} ${product.unit}`),
                 createCell(product.receipt_count),
                 createCell(product.net_sales_formatted),
             );
@@ -63,8 +64,8 @@ function renderLowStocks(root, stocks) {
             row.append(
                 createCell(stock.branch),
                 createLinkCell(stock.product_name, stock.detail_url, stock.product_code),
-                createCell(`${stock.quantity} ${stock.unit}`),
-                createCell(`${stock.minimum_stock} ${stock.unit}`),
+                createCell(`${formatQuantity(stock.quantity_value)} ${stock.unit}`),
+                createCell(`${formatQuantity(stock.minimum_stock_value)} ${stock.unit}`),
                 createBadgeCell(stock.status, stock.status === 'Habis' ? 'danger' : 'warning'),
             );
             return row;

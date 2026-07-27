@@ -193,7 +193,7 @@ class DatabaseFoundationTest extends TestCase
         $this->assertDatabaseCount('categories', 8);
         $this->assertDatabaseCount('units', 13);
         $this->assertDatabaseCount('payment_methods', 3);
-        $this->assertDatabaseCount('settings', 4);
+        $this->assertDatabaseCount('settings', 21);
         $this->assertDatabaseCount('users', 0);
 
         $this->assertSame(

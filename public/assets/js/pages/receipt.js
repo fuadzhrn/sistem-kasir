@@ -6,27 +6,35 @@
     let hasAutoPrinted = false;
 
     function validatedPaperWidth(value) {
-        return allowedPaperWidths.includes(String(value)) ? String(value) : '80';
+        return allowedPaperWidths.includes(String(value)) ? String(value) : null;
     }
 
     function readPaperPreference() {
         try {
             return validatedPaperWidth(window.localStorage.getItem(storageKey));
         } catch (error) {
-            return '80';
+            return null;
         }
     }
 
     function savePaperPreference(value) {
         try {
-            window.localStorage.setItem(storageKey, validatedPaperWidth(value));
+            if (value === 'default') {
+                window.localStorage.removeItem(storageKey);
+            } else {
+                const width = validatedPaperWidth(value);
+
+                if (width) {
+                    window.localStorage.setItem(storageKey, width);
+                }
+            }
         } catch (error) {
             // The receipt remains printable when browser storage is unavailable.
         }
     }
 
     function applyPaperWidth(paper, select, value) {
-        const width = validatedPaperWidth(value);
+        const width = validatedPaperWidth(value) || '80';
         paper.classList.remove('receipt-paper--58', 'receipt-paper--80');
         paper.classList.add('receipt-paper--' + width);
 
@@ -90,13 +98,25 @@
         const select = document.querySelector('[data-receipt-paper-select]');
         const printButton = document.querySelector('[data-receipt-print-button]');
         const status = document.querySelector('[data-receipt-print-status]');
-        applyPaperWidth(paper, select, readPaperPreference());
+        const serverDefault = validatedPaperWidth(paper.dataset.receiptDefaultWidth) || '80';
+        const browserPreference = readPaperPreference();
+        applyPaperWidth(paper, null, browserPreference || serverDefault);
+
+        if (select) {
+            select.value = browserPreference || 'default';
+        }
 
         select?.addEventListener('change', function () {
-            const width = validatedPaperWidth(select.value);
-            applyPaperWidth(paper, select, width);
-            savePaperPreference(width);
-            status.textContent = 'Ukuran kertas diubah menjadi ' + width + ' mm.';
+            const selected = select.value;
+            const width = selected === 'default'
+                ? serverDefault
+                : (validatedPaperWidth(selected) || serverDefault);
+            applyPaperWidth(paper, null, width);
+            savePaperPreference(selected);
+            select.value = selected === 'default' ? 'default' : width;
+            status.textContent = selected === 'default'
+                ? 'Menggunakan ukuran default toko ' + width + ' mm.'
+                : 'Ukuran kertas diubah menjadi ' + width + ' mm.';
         });
 
         printButton?.addEventListener('click', function () {

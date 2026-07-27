@@ -28,8 +28,7 @@ export function createCartRenderer(root, store, options = {}) {
             card.querySelector('[data-cart-remove]').setAttribute('aria-label', 'Hapus ' + item.name);
             card.querySelector('[data-quantity-decrease]').setAttribute('aria-label', 'Kurangi jumlah ' + item.name);
             card.querySelector('[data-quantity-increase]').setAttribute('aria-label', 'Tambah jumlah ' + item.name);
-            quantityInput.value = item.quantity;
-            quantityInput.max = item.available_stock;
+            quantityInput.value = formatQuantity(item.quantity);
             quantityInput.setAttribute('aria-label', 'Quantity ' + item.name);
             fragment.appendChild(card);
         });

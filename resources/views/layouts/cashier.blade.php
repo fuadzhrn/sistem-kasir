@@ -34,6 +34,7 @@
     </main>
 
     <div class="toast-container" data-toast-container aria-live="polite" aria-atomic="true"></div>
+    <script src="{{ asset('assets/js/core/quantity.js') }}" defer></script>
     <script src="{{ asset('assets/js/components/modal.js') }}" defer></script>
     <script src="{{ asset('assets/js/components/toast.js') }}" defer></script>
     @stack('scripts')

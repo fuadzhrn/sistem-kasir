@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Role;
 use App\Models\Unit;
 use App\Models\User;
+use App\Support\Format\Quantity;
 use App\Support\Format\Rupiah;
 use Closure;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -42,9 +43,7 @@ abstract class AbstractReportService implements ReportService
 
     protected function quantity(mixed $value): string
     {
-        $formatted = number_format((float) ($value ?? 0), 3, ',', '.');
-
-        return rtrim(rtrim($formatted, '0'), ',');
+        return Quantity::format(is_scalar($value) ? $value : null);
     }
 
     protected function percent(mixed $value): string

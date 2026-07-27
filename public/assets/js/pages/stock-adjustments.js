@@ -1,18 +1,11 @@
 (function (window, document) {
     'use strict';
 
-    const formatQuantity = function (value) {
-        const number = Number(value || 0);
-
-        return new Intl.NumberFormat('id-ID', {
-            maximumFractionDigits: 3
-        }).format(Number.isFinite(number) ? number : 0);
-    };
-
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('[data-adjustment-form]');
+        const quantityFormatter = window.StoreApp && window.StoreApp.quantity;
 
-        if (!form) {
+        if (!form || !quantityFormatter) {
             return;
         }
 
@@ -40,7 +33,9 @@
         }
 
         function currentStock() {
-            return Number(stocks[selectedBranchId() + ':' + productSelect.value] || 0);
+            return quantityFormatter.toMills(
+                stocks[selectedBranchId() + ':' + productSelect.value] || '0',
+            ) || 0;
         }
 
         function selectedUnit() {
@@ -51,8 +46,8 @@
 
         function preview() {
             const before = currentStock();
-            const quantity = Number(quantityInput.value || 0);
-            const target = Number(targetInput.value || 0);
+            const quantity = quantityFormatter.toMills(quantityInput.value || '0') || 0;
+            const target = quantityFormatter.toMills(targetInput.value || '0') || 0;
             const type = typeSelect.value;
             let change = 0;
 
@@ -66,13 +61,15 @@
 
             const after = before + change;
             const unit = selectedUnit();
-            const signedChange = change > 0 ? '+' + formatQuantity(change) : formatQuantity(change);
+            const signedChange = change > 0
+                ? '+' + quantityFormatter.formatMills(change)
+                : quantityFormatter.formatMills(change);
 
-            form.querySelector('[data-current-stock]').textContent = formatQuantity(before);
+            form.querySelector('[data-current-stock]').textContent = quantityFormatter.formatMills(before);
             form.querySelector('[data-current-unit]').textContent = unit;
-            form.querySelector('[data-preview-before]').textContent = formatQuantity(before) + ' ' + unit;
+            form.querySelector('[data-preview-before]').textContent = quantityFormatter.formatMills(before) + ' ' + unit;
             form.querySelector('[data-preview-change]').textContent = signedChange + ' ' + unit;
-            form.querySelector('[data-preview-after]').textContent = formatQuantity(after) + ' ' + unit;
+            form.querySelector('[data-preview-after]').textContent = quantityFormatter.formatMills(after) + ' ' + unit;
 
             return { before: before, change: change, after: after, unit: unit };
         }
@@ -120,14 +117,16 @@
                 : form.dataset.branchName;
             const productName = productSelect.options[productSelect.selectedIndex].textContent.trim();
             const typeName = typeSelect.options[typeSelect.selectedIndex].textContent.trim();
-            const signedChange = values.change > 0 ? '+' + formatQuantity(values.change) : formatQuantity(values.change);
+            const signedChange = values.change > 0
+                ? '+' + quantityFormatter.formatMills(values.change)
+                : quantityFormatter.formatMills(values.change);
 
             modal.querySelector('[data-confirm-adjustment-branch]').textContent = branchName || '-';
             modal.querySelector('[data-confirm-adjustment-product]').textContent = productName || '-';
             modal.querySelector('[data-confirm-adjustment-type]').textContent = typeName || '-';
-            modal.querySelector('[data-confirm-adjustment-before]').textContent = formatQuantity(values.before) + ' ' + values.unit;
+            modal.querySelector('[data-confirm-adjustment-before]').textContent = quantityFormatter.formatMills(values.before) + ' ' + values.unit;
             modal.querySelector('[data-confirm-adjustment-change]').textContent = signedChange + ' ' + values.unit;
-            modal.querySelector('[data-confirm-adjustment-after]').textContent = formatQuantity(values.after) + ' ' + values.unit;
+            modal.querySelector('[data-confirm-adjustment-after]').textContent = quantityFormatter.formatMills(values.after) + ' ' + values.unit;
             modal.querySelector('[data-confirm-adjustment-reason]').textContent = reasonInput.value.trim();
 
             if (window.StoreApp && window.StoreApp.modal) {

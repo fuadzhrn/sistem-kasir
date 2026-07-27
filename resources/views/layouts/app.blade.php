@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/components/toast.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components/empty-state.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components/loading.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/components/pagination.css') }}">
     @stack('styles')
 </head>
 <body>
@@ -54,6 +55,7 @@
     <div class="toast-container" data-toast-container aria-live="polite" aria-atomic="true"></div>
 
     <script src="{{ asset('assets/js/core/helpers.js') }}" defer></script>
+    <script src="{{ asset('assets/js/core/quantity.js') }}" defer></script>
     <script src="{{ asset('assets/js/core/csrf.js') }}" defer></script>
     <script src="{{ asset('assets/js/core/app.js') }}" defer></script>
     <script src="{{ asset('assets/js/components/sidebar.js') }}" defer></script>

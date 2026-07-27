@@ -5,6 +5,7 @@ namespace App\Http\Requests\Product;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Unit;
+use App\Support\Format\Quantity;
 use App\Support\Format\Rupiah;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\File;
@@ -29,7 +30,7 @@ class StoreProductRequest extends FormRequest
             'size' => ['nullable', 'string', 'max:100'],
             'purchase_price' => $this->purchasePriceRules(),
             'selling_price' => ['required', 'integer', 'min:0', 'max:9999999999999999'],
-            'minimum_stock' => ['required', 'numeric', 'decimal:0,3', 'min:0'],
+            'minimum_stock' => ['nullable', 'numeric', 'decimal:0,3', 'min:0'],
             'image' => [
                 'nullable',
                 File::image()
@@ -79,7 +80,6 @@ class StoreProductRequest extends FormRequest
             'selling_price.required' => 'Harga jual wajib diisi.',
             'selling_price.integer' => 'Harga jual harus berupa Rupiah tanpa desimal.',
             'selling_price.min' => 'Harga jual tidak boleh negatif.',
-            'minimum_stock.required' => 'Stok minimum wajib diisi.',
             'minimum_stock.min' => 'Stok minimum tidak boleh negatif.',
             'image.image' => 'Format foto tidak didukung.',
             'image.max' => 'Ukuran foto maksimal 3 MB.',
@@ -95,6 +95,7 @@ class StoreProductRequest extends FormRequest
             'brand' => $this->nullableTrimmed('brand'),
             'size' => $this->nullableTrimmed('size'),
             'selling_price' => Rupiah::normalizeInput($this->input('selling_price')),
+            'minimum_stock' => Quantity::normalizeInput($this->input('minimum_stock')),
         ]);
 
         if ($this->has('purchase_price')) {

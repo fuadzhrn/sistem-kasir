@@ -3,6 +3,7 @@
 namespace App\Http\Requests\StockReceipt;
 
 use App\Models\StockReceipt;
+use App\Support\Format\Quantity;
 use App\Support\Format\Rupiah;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -73,11 +74,17 @@ class StoreStockReceiptRequest extends FormRequest
 
         if (is_array($items)) {
             $items = array_map(static function (mixed $item): mixed {
-                if (! is_array($item) || ! array_key_exists('purchase_price', $item)) {
+                if (! is_array($item)) {
                     return $item;
                 }
 
-                $item['purchase_price'] = Rupiah::normalizeInput($item['purchase_price']);
+                if (array_key_exists('quantity', $item)) {
+                    $item['quantity'] = Quantity::normalizeInput($item['quantity']);
+                }
+
+                if (array_key_exists('purchase_price', $item)) {
+                    $item['purchase_price'] = Rupiah::normalizeInput($item['purchase_price']);
+                }
 
                 return $item;
             }, $items);

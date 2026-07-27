@@ -297,3 +297,17 @@ body {
         page-break-inside: avoid;
     }
 }
+.receipt__logo {
+    display: block;
+    width: auto;
+    max-width: 70%;
+    height: auto;
+    max-height: 50px;
+    margin: 0 auto 6px;
+    object-fit: contain;
+}
+
+.receipt__additional {
+    margin-bottom: 8px;
+    white-space: normal;
+}

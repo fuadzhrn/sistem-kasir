@@ -5,6 +5,7 @@ namespace App\Services\Product;
 use App\Models\PriceHistory;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\Setting\StoreSettingService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,8 @@ use Throwable;
 
 class ProductService
 {
+    public function __construct(private readonly StoreSettingService $settings) {}
+
     public function create(array $data, User $actor, ?UploadedFile $image = null): Product
     {
         $newImagePath = $this->storeImage($image);
@@ -28,7 +31,7 @@ class ProductService
                 'size' => $data['size'] ?? null,
                 'purchase_price' => $actor->isOwner() ? $data['purchase_price'] : '0.00',
                 'selling_price' => $data['selling_price'],
-                'minimum_stock' => $data['minimum_stock'],
+                'minimum_stock' => $data['minimum_stock'] ?? $this->settings->defaultMinimumStock(),
                 'image_path' => $newImagePath,
                 'is_active' => true,
                 'created_by' => $actor->getKey(),

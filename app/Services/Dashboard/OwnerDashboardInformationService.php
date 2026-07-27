@@ -8,6 +8,7 @@ use App\Models\BranchStock;
 use App\Models\Expense;
 use App\Models\Sale;
 use App\Models\SaleItem;
+use App\Support\Format\Quantity;
 use App\Support\Format\Rupiah;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
@@ -224,8 +225,6 @@ final class OwnerDashboardInformationService
 
     private function quantity(string $value): string
     {
-        $formatted = number_format((float) $value, 3, ',', '.');
-
-        return rtrim(rtrim($formatted, '0'), ',');
+        return Quantity::format($value);
     }
 }

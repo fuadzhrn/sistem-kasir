@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Cashier;
 
 use App\Models\Sale;
+use App\Support\Format\Quantity;
 use App\Support\Format\Rupiah;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -133,8 +134,20 @@ class StoreCashierCheckoutRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $notes = trim((string) $this->input('notes'));
+        $items = $this->input('items');
+
+        if (is_array($items)) {
+            $items = array_map(static function (mixed $item): mixed {
+                if (is_array($item) && array_key_exists('quantity', $item)) {
+                    $item['quantity'] = Quantity::normalizeInput($item['quantity']);
+                }
+
+                return $item;
+            }, $items);
+        }
 
         $this->merge([
+            'items' => $items,
             'discount_amount' => Rupiah::normalizeInput($this->input('discount_amount')),
             'amount_received' => Rupiah::normalizeInput($this->input('amount_received')),
             'expected_subtotal' => Rupiah::normalizeInput($this->input('expected_subtotal')),

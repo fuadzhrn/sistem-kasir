@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Unit;
 use App\Services\Product\ProductService;
+use App\Services\Setting\StoreSettingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -19,7 +20,10 @@ use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function __construct(private readonly ProductService $service) {}
+    public function __construct(
+        private readonly ProductService $service,
+        private readonly StoreSettingService $settings,
+    ) {}
 
     public function index(Request $request): View
     {
@@ -87,8 +91,14 @@ class ProductController extends Controller
         Gate::authorize('create', Product::class);
         [$categories, $units] = $this->activeMasterData();
         $isOwner = $request->user()->isOwner();
+        $defaultMinimumStock = $this->settings->defaultMinimumStock();
 
-        return view('pages.products.create', compact('categories', 'units', 'isOwner'));
+        return view('pages.products.create', compact(
+            'categories',
+            'units',
+            'isOwner',
+            'defaultMinimumStock',
+        ));
     }
 
     public function store(StoreProductRequest $request): RedirectResponse

@@ -1,6 +1,8 @@
 .owner-dashboard {
     display: grid;
     gap: var(--space-6);
+    max-width: 100%;
+    min-width: 0;
 }
 
 .dashboard-header,
@@ -151,6 +153,13 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.dashboard-information-grid,
+.dashboard-information-grid > *,
+.dashboard-information-grid .dashboard-table-card {
+    min-width: 0;
+    width: 100%;
+}
+
 .dashboard-chart-card,
 .dashboard-table-card {
     min-width: 0;
@@ -209,7 +218,125 @@
 }
 
 .dashboard-table-card--wide {
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
     width: 100%;
+}
+
+.dashboard-information-grid .dashboard-table-card {
+    overflow: hidden;
+}
+
+.owner-dashboard .table-responsive,
+.dashboard-table-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+
+.dashboard-compact-table {
+    min-width: 570px;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.dashboard-compact-table th,
+.dashboard-compact-table td {
+    line-height: 1.45;
+    padding: 10px 9px;
+}
+
+.dashboard-compact-table th {
+    white-space: nowrap;
+}
+
+.dashboard-compact-table th:last-child,
+.dashboard-compact-table td:last-child {
+    padding-right: var(--space-4);
+}
+
+.dashboard-compact-table td:nth-child(2) strong {
+    display: -webkit-box;
+    line-height: 1.4;
+    max-height: 2.8em;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.dashboard-top-products-table__rank {
+    width: 44px;
+}
+
+.dashboard-top-products-table__quantity {
+    width: 110px;
+}
+
+.dashboard-top-products-table__receipts {
+    width: 68px;
+}
+
+.dashboard-top-products-table__sales {
+    width: 155px;
+}
+
+.dashboard-top-products-table th:nth-child(3),
+.dashboard-top-products-table td:nth-child(3),
+.dashboard-top-products-table th:nth-child(4),
+.dashboard-top-products-table td:nth-child(4),
+.dashboard-top-products-table th:nth-child(5),
+.dashboard-top-products-table td:nth-child(5) {
+    white-space: nowrap;
+}
+
+.dashboard-top-products-table th:nth-child(4),
+.dashboard-top-products-table td:nth-child(4) {
+    text-align: center;
+}
+
+.dashboard-top-products-table th:nth-child(5),
+.dashboard-top-products-table td:nth-child(5) {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.dashboard-low-stocks-table__branch {
+    width: 23%;
+}
+
+.dashboard-low-stocks-table__available,
+.dashboard-low-stocks-table__minimum {
+    width: 100px;
+}
+
+.dashboard-low-stocks-table__status {
+    width: 94px;
+}
+
+.dashboard-low-stocks-table th:nth-child(3),
+.dashboard-low-stocks-table td:nth-child(3),
+.dashboard-low-stocks-table th:nth-child(4),
+.dashboard-low-stocks-table td:nth-child(4),
+.dashboard-low-stocks-table th:nth-child(5),
+.dashboard-low-stocks-table td:nth-child(5) {
+    white-space: nowrap;
+}
+
+.dashboard-low-stocks-table td:first-child {
+    overflow-wrap: anywhere;
+}
+
+.dashboard-low-stocks-table th:nth-child(5),
+.dashboard-low-stocks-table td:nth-child(5) {
+    text-align: center;
+}
+
+.dashboard-low-stocks-table td:nth-child(5) .badge {
+    max-width: 100%;
 }
 
 .dashboard-table-card td small {
@@ -274,6 +401,12 @@
     }
 }
 
+@media (max-width: 1400px) {
+    .dashboard-information-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
 @media (max-width: 1280px) {
     .dashboard-financial-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -299,8 +432,7 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .dashboard-chart-grid,
-    .dashboard-information-grid {
+    .dashboard-chart-grid {
         grid-template-columns: 1fr;
     }
 }

@@ -6,16 +6,10 @@
         maximumFractionDigits: 0
     });
 
-    function quantityValue(value) {
-        const normalized = String(value ?? '').trim().replace(',', '.');
-
-        if (!/^\d+(?:\.\d{1,3})?$/.test(normalized)) {
-            return 0;
-        }
-
-        const number = Number(normalized);
-
-        return Number.isFinite(number) ? number : 0;
+    function quantityMills(value) {
+        return window.StoreApp && window.StoreApp.quantity
+            ? window.StoreApp.quantity.toMills(value)
+            : null;
     }
 
     function rupiahValue(value) {
@@ -86,9 +80,12 @@
             let total = 0;
 
             rows().forEach(function (row) {
-                const quantity = quantityValue(row.querySelector('[data-item-quantity]').value);
+                const quantity = quantityMills(row.querySelector('[data-item-quantity]').value);
                 const price = rupiahValue(row.querySelector('[data-item-price]').value);
-                const subtotal = quantity > 0 && price > 0 ? quantity * price : 0;
+                const value = quantity !== null ? quantity * price : 0;
+                const subtotal = quantity > 0 && price > 0 && Number.isSafeInteger(value)
+                    ? Math.floor((value + 500) / 1000)
+                    : 0;
 
                 row.querySelector('[data-item-subtotal]').textContent = formatRupiah(subtotal);
                 total += subtotal;

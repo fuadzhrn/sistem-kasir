@@ -3,6 +3,7 @@
 namespace App\Http\Requests\StockTransfer;
 
 use App\Models\StockTransfer;
+use App\Support\Format\Quantity;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -66,6 +67,7 @@ class StoreStockTransferRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
+            'quantity' => Quantity::normalizeInput($this->input('quantity')),
             'notes' => trim((string) $this->input('notes')),
         ]);
     }

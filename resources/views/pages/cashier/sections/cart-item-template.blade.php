@@ -12,7 +12,7 @@
             </div>
             <div class="cashier-quantity-control">
                 <button type="button" data-quantity-decrease>−</button>
-                <input type="number" min="0.001" step="0.001" inputmode="decimal" data-cart-quantity>
+                <input type="text" inputmode="decimal" data-cart-quantity data-quantity-input>
                 <button type="button" data-quantity-increase>+</button>
             </div>
             <small data-cart-stock></small>

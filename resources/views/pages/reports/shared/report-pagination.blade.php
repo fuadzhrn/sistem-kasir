@@ -1,3 +1,3 @@
 @if ($report['rows'] instanceof \Illuminate\Contracts\Pagination\Paginator)
-    <div class="report-pagination">{{ $report['rows']->links() }}</div>
+    {{ $report['rows']->onEachSide(1)->links('components.pagination', ['itemLabel' => 'data laporan']) }}
 @endif

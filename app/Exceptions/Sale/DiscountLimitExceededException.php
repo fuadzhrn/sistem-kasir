@@ -7,8 +7,8 @@ class DiscountLimitExceededException extends SaleCheckoutException
     public function __construct()
     {
         parent::__construct(
-            'DISCOUNT_LIMIT_EXCEEDED',
-            'Diskon melebihi batas yang diizinkan untuk akun Anda.',
+            'CASHIER_DISCOUNT_LIMIT_EXCEEDED',
+            'Diskon melebihi batas yang diizinkan untuk Kasir.',
             422,
         );
     }

@@ -111,7 +111,7 @@ class SaleCheckoutTest extends SaleTestCase
         $this->actingAs($owner)->postJson(
             route('cashier.checkout.store'),
             $this->payload($owner, $branch, $product, $payment, [
-                'items' => [['product_id' => $product->id, 'quantity' => '1.500']],
+                'items' => [['product_id' => $product->id, 'quantity' => '1,5']],
                 'expected_subtotal' => '30000.00',
                 'expected_total' => '30000.00',
             ]),

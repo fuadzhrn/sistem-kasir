@@ -49,8 +49,6 @@
             </table>
         </div>
 
-        <div class="cashier-dashboard__pagination">
-            {{ $dashboard['sales']->links() }}
-        </div>
+        {{ $dashboard['sales']->onEachSide(1)->links('components.pagination', ['itemLabel' => 'transaksi']) }}
     @endif
 </section>

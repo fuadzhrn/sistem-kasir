@@ -115,11 +115,10 @@
                             class="form-control @error('quantity') is-error @enderror"
                             id="initial-quantity"
                             name="quantity"
-                            type="number"
-                            min="0"
-                            max="999999999999.999"
-                            step="0.001"
-                            value="{{ old('quantity', $branchStock?->quantity ?? '0') }}"
+                            type="text"
+                            inputmode="decimal"
+                            value="{{ \App\Support\Format\Quantity::inputValue(old('quantity', $branchStock?->quantity ?? '0')) }}"
+                            data-quantity-input
                             required
                             @disabled(! $canCorrect)
                         >

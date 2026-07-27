@@ -28,7 +28,7 @@
     <td data-product-size>{{ $selectedProduct?->size ?: '-' }}</td>
     <td data-product-unit>{{ $selectedProduct ? ($selectedProduct->unit->symbol ?: $selectedProduct->unit->name) : '-' }}</td>
     <td class="receipt-number-cell">
-        <input class="form-control" name="items[{{ $rowIndex }}][quantity]" type="number" value="{{ $item['quantity'] ?? '' }}" min="0.001" max="999999999.999" step="0.001" inputmode="decimal" required data-item-quantity>
+        <input class="form-control" name="items[{{ $rowIndex }}][quantity]" type="text" value="{{ \App\Support\Format\Quantity::inputValue($item['quantity'] ?? '') }}" inputmode="decimal" required data-item-quantity data-quantity-input>
         @error('items.'.$rowIndex.'.quantity')<span class="form-error">{{ $message }}</span>@enderror
     </td>
     <td class="receipt-money-cell">

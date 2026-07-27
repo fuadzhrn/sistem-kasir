@@ -65,13 +65,13 @@
 
             <div class="form-group" data-quantity-group>
                 <label class="form-label" for="adjustment-quantity">Quantity perubahan <span class="form-required">*</span></label>
-                <input class="form-control @error('quantity') is-error @enderror" id="adjustment-quantity" name="quantity" type="number" value="{{ old('quantity') }}" min="0.001" max="999999999.999" step="0.001" inputmode="decimal" data-adjustment-quantity>
+                <input class="form-control @error('quantity') is-error @enderror" id="adjustment-quantity" name="quantity" type="text" value="{{ \App\Support\Format\Quantity::inputValue(old('quantity')) }}" inputmode="decimal" data-adjustment-quantity data-quantity-input>
                 @error('quantity')<span class="form-error">{{ $message }}</span>@enderror
             </div>
 
             <div class="form-group" data-target-group hidden>
                 <label class="form-label" for="adjustment-target">Target quantity akhir <span class="form-required">*</span></label>
-                <input class="form-control @error('target_quantity') is-error @enderror" id="adjustment-target" name="target_quantity" type="number" value="{{ old('target_quantity') }}" min="0" max="999999999.999" step="0.001" inputmode="decimal" data-adjustment-target disabled>
+                <input class="form-control @error('target_quantity') is-error @enderror" id="adjustment-target" name="target_quantity" type="text" value="{{ \App\Support\Format\Quantity::inputValue(old('target_quantity')) }}" inputmode="decimal" data-adjustment-target data-quantity-input disabled>
                 @error('target_quantity')<span class="form-error">{{ $message }}</span>@enderror
             </div>
 

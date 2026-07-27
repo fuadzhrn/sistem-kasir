@@ -66,7 +66,7 @@ class SaleDiscountTest extends SaleTestCase
                 'discount_amount' => '1.00',
                 'expected_total' => '39999.00',
             ]),
-        )->assertUnprocessable()->assertJsonPath('code', 'DISCOUNT_LIMIT_EXCEEDED');
+        )->assertUnprocessable()->assertJsonPath('code', 'CASHIER_DISCOUNT_LIMIT_EXCEEDED');
 
         $this->setCashierDiscount('5000.00');
         $this->actingAs($cashier)->postJson(
@@ -83,7 +83,7 @@ class SaleDiscountTest extends SaleTestCase
                 'discount_amount' => '5001',
                 'expected_total' => '34999.00',
             ]),
-        )->assertUnprocessable()->assertJsonPath('code', 'DISCOUNT_LIMIT_EXCEEDED');
+        )->assertUnprocessable()->assertJsonPath('code', 'CASHIER_DISCOUNT_LIMIT_EXCEEDED');
     }
 
     public function test_discount_allocation_net_subtotal_profit_and_header_are_consistent(): void

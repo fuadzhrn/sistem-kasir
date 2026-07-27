@@ -27,6 +27,7 @@ class AuditActionRegistry
         'categories' => 'Kategori',
         'units' => 'Satuan',
         'payment_methods' => 'Metode Pembayaran',
+        'settings' => 'Pengaturan',
     ];
 
     /**
@@ -92,6 +93,11 @@ class AuditActionRegistry
         'payment_method_updated' => 'Metode pembayaran diperbarui',
         'payment_method_status_changed' => 'Status metode pembayaran diubah',
         'payment_method_deleted' => 'Metode pembayaran dihapus',
+        'store_settings_updated' => 'Informasi toko diperbarui',
+        'receipt_settings_updated' => 'Pengaturan struk diperbarui',
+        'business_settings_updated' => 'Aturan bisnis diperbarui',
+        'store_logo_updated' => 'Logo toko diperbarui',
+        'store_logo_removed' => 'Logo toko dihapus',
     ];
 
     /**

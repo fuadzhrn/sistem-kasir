@@ -1,12 +1,19 @@
-<article class="dashboard-table-card card">
+<article class="dashboard-table-card dashboard-table-card--top-products card">
     <header class="dashboard-section-heading">
         <div>
             <h2>Produk Terlaris</h2>
             <p>Peringkat berdasarkan penjualan bersih transaksi aktif.</p>
         </div>
     </header>
-    <div class="table-responsive">
-        <table class="table">
+    <div class="dashboard-table-wrapper">
+        <table class="table dashboard-compact-table dashboard-top-products-table">
+            <colgroup>
+                <col class="dashboard-top-products-table__rank">
+                <col class="dashboard-top-products-table__product">
+                <col class="dashboard-top-products-table__quantity">
+                <col class="dashboard-top-products-table__receipts">
+                <col class="dashboard-top-products-table__sales">
+            </colgroup>
             <thead>
                 <tr>
                     <th scope="col">#</th>

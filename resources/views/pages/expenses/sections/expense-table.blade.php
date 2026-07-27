@@ -1,39 +1,50 @@
-<section class="card table-card">
-    <div class="table-responsive">
-        <table>
+<section class="card table-card expense-table-card">
+    <div class="expense-table-wrapper">
+        <table class="expense-table">
+            <colgroup>
+                <col class="expense-table__column-date">
+                <col class="expense-table__column-branch">
+                <col class="expense-table__column-description">
+                <col class="expense-table__column-amount">
+                <col class="expense-table__column-recorder">
+                <col class="expense-table__column-status">
+                <col class="expense-table__column-actions">
+            </colgroup>
             <thead>
                 <tr>
-                    <th>Tanggal</th>
-                    <th>Cabang / Kategori</th>
-                    <th>Deskripsi</th>
-                    <th class="text-right">Jumlah</th>
-                    <th>Pencatat</th>
-                    <th>Status</th>
-                    <th class="text-right">Aksi</th>
+                    <th scope="col">Tanggal</th>
+                    <th scope="col">Cabang / Kategori</th>
+                    <th scope="col">Deskripsi</th>
+                    <th class="expense-table__amount" scope="col">Jumlah</th>
+                    <th scope="col">Pencatat</th>
+                    <th class="expense-table__status" scope="col">Status</th>
+                    <th class="expense-table__actions-heading" scope="col">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($expenses as $expense)
                     <tr>
-                        <td>{{ $expense->expense_date->translatedFormat('d M Y') }}</td>
-                        <td>
+                        <td class="expense-table__date">{{ $expense->expense_date->translatedFormat('d M Y') }}</td>
+                        <td class="expense-table__branch">
                             <strong>{{ $expense->branch->name }}</strong>
-                            <span class="table-secondary">{{ $expense->expenseCategory->name }}</span>
+                            <span class="expense-table__category">{{ $expense->expenseCategory->name }}</span>
                         </td>
-                        <td>
-                            {{ \Illuminate\Support\Str::limit($expense->description, 70) }}
+                        <td class="expense-table__description">
+                            <span class="expense-table__description-text">{{ \Illuminate\Support\Str::limit($expense->description, 140) }}</span>
                             @if ($expense->proof_file)
-                                <span class="table-secondary">Bukti tersedia</span>
+                                <span class="expense-table__proof">Bukti tersedia</span>
                             @endif
                         </td>
-                        <td class="text-right"><strong>{{ \App\Support\Format\Rupiah::format($expense->amount) }}</strong></td>
-                        <td>
-                            {{ $expense->creator->name }}
-                            <span class="table-secondary">{{ $expense->created_at->translatedFormat('d M Y H:i') }}</span>
+                        <td class="expense-table__amount"><strong>{{ \App\Support\Format\Rupiah::format($expense->amount) }}</strong></td>
+                        <td class="expense-table__recorder">
+                            <strong>{{ $expense->creator->name }}</strong>
+                            <time class="expense-table__recorded-at" datetime="{{ $expense->created_at->toIso8601String() }}">
+                                {{ $expense->created_at->translatedFormat('d M Y H:i') }}
+                            </time>
                         </td>
-                        <td>@include('pages.expenses.sections.expense-status-badge')</td>
-                        <td>
-                            <div class="action-group">
+                        <td class="expense-table__status">@include('pages.expenses.sections.expense-status-badge')</td>
+                        <td class="expense-table__actions-cell">
+                            <div class="expense-table__actions">
                                 <a class="btn btn-sm btn-secondary" href="{{ route('expenses.show', $expense) }}">Detail</a>
                                 @can('update', $expense)
                                     <a class="btn btn-sm btn-secondary" href="{{ route('expenses.edit', $expense) }}">Ubah</a>
@@ -46,12 +57,10 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="7"><div class="empty-state"><h3>Belum ada pengeluaran</h3><p>Catat pengeluaran operasional pertama atau ubah filter pencarian.</p></div></td></tr>
+                    <tr class="expense-table__empty-row"><td colspan="7"><div class="empty-state"><h3>Belum ada pengeluaran</h3><p>Catat pengeluaran operasional pertama atau ubah filter pencarian.</p></div></td></tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-    @if ($expenses->hasPages())
-        <div class="pagination-wrap">{{ $expenses->links() }}</div>
-    @endif
+    {{ $expenses->onEachSide(1)->links('components.pagination', ['itemLabel' => 'pengeluaran']) }}
 </section>

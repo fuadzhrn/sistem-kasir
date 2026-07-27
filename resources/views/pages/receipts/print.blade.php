@@ -11,8 +11,9 @@
             <label class="receipt-toolbar__paper">
                 <span>Ukuran Kertas</span>
                 <select data-receipt-paper-select>
+                    <option value="default">Gunakan Default Toko</option>
                     <option value="58">58 mm</option>
-                    <option value="80" selected>80 mm</option>
+                    <option value="80">80 mm</option>
                 </select>
             </label>
             <button class="receipt-toolbar__button" type="button" data-receipt-print-button>
@@ -34,11 +35,12 @@
     </section>
 
     <article
-        class="receipt receipt-paper--{{ config('receipt.default_paper_width', '80') }}"
+        class="receipt receipt-paper--{{ $receipt['default_paper_width'] }}"
         data-receipt-paper
         data-receipt-auto-print="true"
+        data-receipt-default-width="{{ $receipt['default_paper_width'] }}"
     >
-        @if ($isCopy)
+        @if ($isCopy && $receipt['show_copy_label'])
             <div class="receipt-copy-label">SALINAN</div>
         @endif
 
@@ -51,6 +53,13 @@
         @endif
 
         <header class="receipt__header">
+            @if ($receipt['store_logo_url'])
+                <img
+                    class="receipt__logo"
+                    src="{{ $receipt['store_logo_url'] }}"
+                    alt="Logo {{ $receipt['store_name'] }}"
+                >
+            @endif
             <h1>{{ $receipt['store_name'] }}</h1>
             <p class="receipt__branch">{{ $receipt['branch_name'] }}</p>
             @if ($receipt['branch_address'])
@@ -78,7 +87,9 @@
                     <p class="receipt-line__name">
                         {{ $item['name'] }}@if ($item['size']) — {{ $item['size'] }}@endif
                     </p>
-                    <p class="receipt-line__code">{{ $item['code'] }}</p>
+                    @if ($receipt['show_product_code'])
+                        <p class="receipt-line__code">{{ $item['code'] }}</p>
+                    @endif
                     <div class="receipt-line__calculation">
                         <span>
                             {{ \App\Support\Format\Quantity::format($item['quantity']) }}
@@ -105,7 +116,7 @@
             <div><dt>Kembalian</dt><dd>{{ \App\Support\Format\Rupiah::format($receipt['change_amount']) }}</dd></div>
         </dl>
 
-        @if ($receipt['notes'])
+        @if ($receipt['show_transaction_notes'] && $receipt['notes'])
             <div class="receipt__separator" aria-hidden="true"></div>
             <p class="receipt__notes">Catatan: {{ $receipt['notes'] }}</p>
         @endif
@@ -118,6 +129,9 @@
         <div class="receipt__separator" aria-hidden="true"></div>
 
         <footer class="receipt__footer">
+            @if ($receipt['additional_information'])
+                <p class="receipt__additional">{!! nl2br(e($receipt['additional_information'])) !!}</p>
+            @endif
             <p>{{ $receipt['closing_message'] }}</p>
         </footer>
     </article>

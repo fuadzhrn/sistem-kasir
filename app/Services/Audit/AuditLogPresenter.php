@@ -4,6 +4,7 @@ namespace App\Services\Audit;
 
 use App\Models\ActivityLog;
 use App\Models\User;
+use App\Support\Format\Quantity;
 
 class AuditLogPresenter
 {
@@ -37,6 +38,8 @@ class AuditLogPresenter
         if (! $viewer->isOwner()) {
             $metadata = $this->withoutInternalFinancials($metadata);
         }
+
+        $metadata = $this->formatQuantities($metadata);
 
         return [
             'id' => $activityLog->getKey(),
@@ -75,5 +78,49 @@ class AuditLogPresenter
         }
 
         return $filtered;
+    }
+
+    /**
+     * @param  array<array-key, mixed>  $metadata
+     * @return array<array-key, mixed>
+     */
+    private function formatQuantities(array $metadata, ?string $parentKey = null): array
+    {
+        $formatted = [];
+
+        foreach ($metadata as $key => $value) {
+            $keyName = mb_strtolower((string) $key);
+
+            if (is_array($value)) {
+                $formatted[$key] = $this->formatQuantities($value, $keyName);
+
+                continue;
+            }
+
+            $formatted[$key] = $this->isQuantityKey($keyName)
+                || ($parentKey !== null && $this->isQuantityKey($parentKey))
+                    ? Quantity::format(is_scalar($value) ? $value : null)
+                    : $value;
+        }
+
+        return $formatted;
+    }
+
+    private function isQuantityKey(string $key): bool
+    {
+        return in_array($key, [
+            'quantity',
+            'quantity_before',
+            'quantity_change',
+            'quantity_after',
+            'target_quantity',
+            'minimum_stock',
+            'available_quantity',
+            'requested_quantity',
+            'source_quantity_before',
+            'source_quantity_after',
+            'destination_quantity_before',
+            'destination_quantity_after',
+        ], true);
     }
 }

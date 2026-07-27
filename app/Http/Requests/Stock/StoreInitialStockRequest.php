@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Stock;
 
 use App\Models\BranchStock;
+use App\Support\Format\Quantity;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -48,5 +49,13 @@ class StoreInitialStockRequest extends FormRequest
             'reason.min' => 'Alasan perubahan minimal 5 karakter.',
             'reason.max' => 'Alasan perubahan maksimal 500 karakter.',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'quantity' => Quantity::normalizeInput($this->input('quantity')),
+            'reason' => trim((string) $this->input('reason')),
+        ]);
     }
 }

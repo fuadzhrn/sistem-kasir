@@ -7,10 +7,10 @@ use App\Http\Requests\Cashier\CashierPageRequest;
 use App\Models\Category;
 use App\Models\PaymentMethod;
 use App\Models\Sale;
-use App\Models\Setting;
 use App\Models\User;
 use App\Services\Cashier\CashierContextService;
 use App\Services\Sale\SaleCalculator;
+use App\Services\Setting\StoreSettingService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use InvalidArgumentException;
@@ -20,6 +20,7 @@ class CashierController extends Controller
     public function __construct(
         private readonly CashierContextService $context,
         private readonly SaleCalculator $calculator,
+        private readonly StoreSettingService $settings,
     ) {}
 
     public function index(CashierPageRequest $request): View
@@ -63,14 +64,10 @@ class CashierController extends Controller
             return null;
         }
 
-        $value = Setting::query()
-            ->where('key', 'maximum_cashier_discount')
-            ->value('value');
-
         try {
-            $normalized = $value === null
-                ? '0.00'
-                : $this->calculator->normalizeMoney((string) $value);
+            $normalized = $this->calculator->normalizeMoney(
+                $this->settings->maximumCashierDiscount(),
+            );
         } catch (InvalidArgumentException) {
             return '0.00';
         }

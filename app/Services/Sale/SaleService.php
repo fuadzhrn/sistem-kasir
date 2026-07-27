@@ -15,11 +15,11 @@ use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleItem;
-use App\Models\Setting;
 use App\Models\StockMovement;
 use App\Models\User;
 use App\Services\Audit\AuditLogService;
 use App\Services\Authorization\BranchAccessService;
+use App\Services\Setting\StoreSettingService;
 use App\Support\Format\Rupiah;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
@@ -34,6 +34,7 @@ class SaleService
         private readonly SaleNumberService $numberService,
         private readonly BranchAccessService $branchAccess,
         private readonly AuditLogService $auditLog,
+        private readonly StoreSettingService $settings,
     ) {}
 
     /**
@@ -450,15 +451,10 @@ class SaleService
             return;
         }
 
-        $setting = Setting::query()
-            ->where('key', 'maximum_cashier_discount')
-            ->lockForUpdate()
-            ->value('value');
-
         try {
-            $limit = $setting === null
-                ? '0.00'
-                : $this->calculator->normalizeMoney((string) $setting);
+            $limit = $this->calculator->normalizeMoney(
+                $this->settings->maximumCashierDiscount(),
+            );
         } catch (InvalidArgumentException) {
             $limit = '0.00';
         }
