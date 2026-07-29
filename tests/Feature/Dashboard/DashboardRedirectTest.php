@@ -3,6 +3,7 @@
 namespace Tests\Feature\Dashboard;
 
 use App\Models\Role;
+use App\Models\User;
 use Tests\Feature\OwnerDashboard\OwnerDashboardTestCase;
 
 class DashboardRedirectTest extends OwnerDashboardTestCase
@@ -44,7 +45,7 @@ class DashboardRedirectTest extends OwnerDashboardTestCase
             'slug' => 'unknown',
             'is_active' => true,
         ]);
-        $user = \App\Models\User::factory()->create([
+        $user = User::factory()->create([
             'role_id' => $role->id,
             'is_active' => true,
         ]);
@@ -61,6 +62,7 @@ class DashboardRedirectTest extends OwnerDashboardTestCase
 
         $this->withSession(['url.intended' => route('account.index')])
             ->post(route('login.store'), [
+                'login_role' => 'owner',
                 'login' => $owner->username,
                 'password' => 'Password123',
             ])
@@ -70,9 +72,10 @@ class DashboardRedirectTest extends OwnerDashboardTestCase
 
         $this->withSession(['url.intended' => 'https://evil.example/phishing'])
             ->post(route('login.store'), [
+                'login_role' => 'owner',
                 'login' => $owner->username,
                 'password' => 'Password123',
             ])
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('dashboard.owner'));
     }
 }

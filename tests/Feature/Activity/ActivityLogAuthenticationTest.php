@@ -16,6 +16,7 @@ class ActivityLogAuthenticationTest extends ActivityLogTestCase
         ]);
 
         $this->post(route('login.store'), [
+            'login_role' => 'admin',
             'login' => 'admin.audit',
             'password' => 'Password-Uji-123',
         ])->assertRedirect();
@@ -29,6 +30,7 @@ class ActivityLogAuthenticationTest extends ActivityLogTestCase
         $this->assertDatabaseHas('activity_logs', ['action' => 'logout', 'user_id' => $user->id]);
 
         $this->post(route('login.store'), [
+            'login_role' => 'admin',
             'login' => 'admin.audit',
             'password' => 'Password-Salah-Rahasia',
         ])->assertSessionHasErrors('login');

@@ -24,25 +24,29 @@
     <link rel="stylesheet" href="{{ asset('assets/css/components/toast.css') }}">
     @stack('styles')
 </head>
-<body>
+<body class="@yield('body-class')">
     <main class="auth-shell">
-        <div class="auth-container">
-            <div class="auth-brand" aria-label="Sistem Manajemen Toko">
-                <span class="auth-brand__mark" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" focusable="false">
-                        <path d="M19.5 4.5c-6.3.3-10.1 2.4-11.7 6.2-1 2.4-.5 4.8.2 6.3 1.3-3.1 3.6-5.7 7.1-7.8-3 2.7-4.8 5.7-5.5 9.1 1.8.9 4.3.8 6.3-.6 3.8-2.6 4.1-7.7 3.6-13.2Z"/>
-                    </svg>
-                </span>
-                <strong>Sistem Manajemen Toko</strong>
+        @hasSection('auth-page')
+            @yield('auth-page')
+        @else
+            <div class="auth-container">
+                <div class="auth-brand" aria-label="Sistem Manajemen Toko">
+                    <span class="auth-brand__mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" focusable="false">
+                            <path d="M19.5 4.5c-6.3.3-10.1 2.4-11.7 6.2-1 2.4-.5 4.8.2 6.3 1.3-3.1 3.6-5.7 7.1-7.8-3 2.7-4.8 5.7-5.5 9.1 1.8.9 4.3.8 6.3-.6 3.8-2.6 4.1-7.7 3.6-13.2Z"/>
+                        </svg>
+                    </span>
+                    <strong>Sistem Manajemen Toko</strong>
+                </div>
+
+                <section class="auth-card">
+                    @include('partials.alert')
+                    @yield('content')
+                </section>
+
+                <p class="auth-caption">Akses aman untuk pengguna terdaftar</p>
             </div>
-
-            <section class="auth-card">
-                @include('partials.alert')
-                @yield('content')
-            </section>
-
-            <p class="auth-caption">Akses aman untuk pengguna terdaftar</p>
-        </div>
+        @endif
     </main>
 
     <div class="toast-container" data-toast-container aria-live="polite" aria-atomic="true"></div>

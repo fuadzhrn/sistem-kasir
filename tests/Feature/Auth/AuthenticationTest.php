@@ -20,11 +20,15 @@ class AuthenticationTest extends TestCase
             ->assertOk()
             ->assertSeeText('Username atau Email')
             ->assertSeeText('Kata Sandi')
+            ->assertSeeText('Owner')
+            ->assertSeeText('Admin Cabang')
+            ->assertSeeText('Kasir')
+            ->assertSeeText('Ingat saya')
             ->assertSee('name="_token"', false)
+            ->assertSee('name="login_role"', false)
             ->assertSee('assets/css/pages/auth/login.css', false)
             ->assertSee('assets/js/components/password-toggle.js', false)
             ->assertDontSeeText('Registrasi')
-            ->assertDontSeeText('Remember me')
             ->assertDontSeeText('Akun demo');
     }
 
@@ -33,11 +37,12 @@ class AuthenticationTest extends TestCase
         $user = $this->createUser();
 
         $response = $this->post(route('login.store'), [
+            'login_role' => 'cashier',
             'login' => '  '.Str::upper($user->username).'  ',
             'password' => 'Password123',
         ]);
 
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect(route('dashboard.cashier'));
         $this->assertAuthenticatedAs($user);
         $this->assertNotNull($user->fresh()->last_login_at);
     }
@@ -47,11 +52,12 @@ class AuthenticationTest extends TestCase
         $user = $this->createUser();
 
         $response = $this->post(route('login.store'), [
+            'login_role' => 'cashier',
             'login' => '  '.Str::upper((string) $user->email).'  ',
             'password' => 'Password123',
         ]);
 
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect(route('dashboard.cashier'));
         $this->assertAuthenticatedAs($user);
     }
 
@@ -60,6 +66,7 @@ class AuthenticationTest extends TestCase
         $user = $this->createUser();
 
         $wrongPassword = $this->from(route('login'))->post(route('login.store'), [
+            'login_role' => 'cashier',
             'login' => $user->username,
             'password' => 'Password999',
         ]);
@@ -69,6 +76,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $unknownUser = $this->from(route('login'))->post(route('login.store'), [
+            'login_role' => 'cashier',
             'login' => 'tidak-dikenal',
             'password' => 'Password999',
         ]);
@@ -86,12 +94,13 @@ class AuthenticationTest extends TestCase
 
         $this->from(route('login'))
             ->post(route('login.store'), [
+                'login_role' => 'cashier',
                 'login' => $user->username,
                 'password' => 'Password123',
             ])
             ->assertRedirect(route('login'))
             ->assertSessionHasErrors([
-                'login' => __('auth.failed'),
+                'login' => __('auth.inactive'),
             ]);
 
         $this->assertGuest();
@@ -103,6 +112,7 @@ class AuthenticationTest extends TestCase
 
         $this->from(route('login'))
             ->post(route('login.store'), [
+                'login_role' => 'cashier',
                 'login' => $user->username,
                 'password' => 'PasswordSangatRahasia123',
             ])
@@ -119,9 +129,10 @@ class AuthenticationTest extends TestCase
         $previousSessionId = $this->app['session']->getId();
 
         $this->post(route('login.store'), [
+            'login_role' => 'cashier',
             'login' => $user->username,
             'password' => 'Password123',
-        ])->assertRedirect(route('dashboard'));
+        ])->assertRedirect(route('dashboard.cashier'));
 
         $this->assertNotSame($previousSessionId, $this->app['session']->getId());
     }
@@ -178,19 +189,21 @@ class AuthenticationTest extends TestCase
 
         for ($attempt = 0; $attempt < 5; $attempt++) {
             $this->post(route('login.store'), [
+                'login_role' => 'cashier',
                 'login' => $user->username,
                 'password' => 'Password999',
             ])->assertSessionHasErrors('login');
         }
 
         $response = $this->post(route('login.store'), [
+            'login_role' => 'cashier',
             'login' => $user->username,
             'password' => 'Password123',
         ]);
 
         $response->assertSessionHasErrors('login');
         $this->assertStringContainsString(
-            'Terlalu banyak percobaan login',
+            'Terlalu banyak percobaan masuk',
             $response->getSession()->get('errors')->first('login'),
         );
         $this->assertSame(5, RateLimiter::attempts($key));
@@ -204,15 +217,17 @@ class AuthenticationTest extends TestCase
         RateLimiter::clear($key);
 
         $this->post(route('login.store'), [
+            'login_role' => 'cashier',
             'login' => $user->username,
             'password' => 'Password999',
         ])->assertSessionHasErrors('login');
         $this->assertSame(1, RateLimiter::attempts($key));
 
         $this->post(route('login.store'), [
+            'login_role' => 'cashier',
             'login' => $user->username,
             'password' => 'Password123',
-        ])->assertRedirect(route('dashboard'));
+        ])->assertRedirect(route('dashboard.cashier'));
 
         $this->assertSame(0, RateLimiter::attempts($key));
     }
@@ -223,7 +238,10 @@ class AuthenticationTest extends TestCase
     private function createUser(array $attributes = []): User
     {
         return User::factory()->create([
-            'role_id' => Role::factory(),
+            'role_id' => Role::factory()->state([
+                'name' => 'Kasir',
+                'slug' => 'cashier',
+            ]),
             'branch_id' => Branch::factory(),
             'username' => 'kasir.aktif',
             'email' => 'kasir@example.com',

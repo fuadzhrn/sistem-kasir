@@ -10,6 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -25,27 +26,51 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'login_role' => ['required', 'string', Rule::in(['owner', 'admin', 'cashier'])],
             'login' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string'],
+            'remember' => ['nullable', 'boolean'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'login_role.required' => 'Silakan pilih Owner, Admin Cabang, atau Kasir terlebih dahulu.',
+            'login_role.in' => 'Jenis akun yang dipilih tidak tersedia.',
+            'login.required' => 'Username atau email wajib diisi.',
+            'login.max' => 'Username atau email maksimal 255 karakter.',
+            'password.required' => 'Kata sandi wajib diisi.',
+            'remember.boolean' => 'Pilihan Ingat saya tidak valid.',
         ];
     }
 
     public function authenticate(): void
     {
-        if (RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            $this->recordFailure('rate_limited');
-            $this->ensureIsNotRateLimited();
+        $this->ensureIsNotRateLimited();
+
+        $credentials = $this->credentials();
+        $provider = Auth::getProvider();
+        $user = $provider->retrieveByCredentials($credentials);
+
+        if (! $user instanceof User || ! $provider->validateCredentials($user, $credentials)) {
+            $this->rejectAttempt('login', __('auth.failed'), 'invalid_credentials');
         }
 
-        if (! Auth::attempt($this->credentials())) {
-            RateLimiter::hit($this->throttleKey(), 60);
-            $this->recordFailure($this->failureReason());
-
-            throw ValidationException::withMessages([
-                'login' => __('auth.failed'),
-            ]);
+        if (! $user->is_active) {
+            $this->rejectAttempt('login', __('auth.inactive'), 'inactive');
         }
 
+        $selectedRole = $this->string('login_role')->value();
+
+        if (! $user->hasRole($selectedRole)) {
+            $this->rejectAttempt('login_role', __('auth.role_mismatch'), 'role_mismatch');
+        }
+
+        Auth::guard('web')->login($user, $this->boolean('remember'));
         RateLimiter::clear($this->throttleKey());
     }
 
@@ -55,6 +80,7 @@ class LoginRequest extends FormRequest
             return;
         }
 
+        $this->recordFailure('rate_limited');
         event(new Lockout($this));
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
@@ -83,19 +109,20 @@ class LoginRequest extends FormRequest
         return [
             $field => $login,
             'password' => $this->string('password')->value(),
-            'is_active' => true,
         ];
     }
 
-    private function failureReason(): string
+    private function rejectAttempt(string $field, string $message, string $reason): never
     {
-        $login = $this->string('login')->value();
-        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        $user = User::query()->where($field, $login)->first(['id', 'is_active']);
+        RateLimiter::hit($this->throttleKey(), 60);
+        $this->recordFailure($reason);
 
-        return $user !== null && ! $user->is_active
-            ? 'inactive'
-            : 'invalid_credentials';
+        $this->session()->invalidate();
+        $this->session()->regenerateToken();
+
+        throw ValidationException::withMessages([
+            $field => $message,
+        ]);
     }
 
     private function recordFailure(string $reason): void
@@ -123,9 +150,11 @@ class LoginRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $login = trim((string) $this->input('login'));
+        $loginRole = Str::lower(trim((string) $this->input('login_role')));
 
         $this->merge([
             'login' => Str::lower($login),
+            'login_role' => $loginRole,
         ]);
     }
 

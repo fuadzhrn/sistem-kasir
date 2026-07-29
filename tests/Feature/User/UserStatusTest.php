@@ -74,6 +74,7 @@ class UserStatusTest extends UserTestCase
         ]);
 
         $this->post(route('login.store'), [
+            'login_role' => 'cashier',
             'login' => $cashier->username,
             'password' => 'Password123',
         ])->assertSessionHasErrors('login');

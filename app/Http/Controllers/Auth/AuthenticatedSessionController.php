@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use App\Services\Audit\AuditLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -48,11 +50,11 @@ class AuthenticatedSessionController extends Controller
 
         $intended = $request->session()->pull('url.intended');
 
-        if (is_string($intended) && $this->isSafeIntendedUrl($request, $intended)) {
+        if (is_string($intended) && $this->isSafeIntendedUrl($request, $user, $intended)) {
             return redirect()->to($intended);
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->route($this->dashboardRoute($user));
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -81,14 +83,66 @@ class AuthenticatedSessionController extends Controller
             ->with('status', __('auth.logged_out'));
     }
 
-    private function isSafeIntendedUrl(Request $request, string $url): bool
+    private function dashboardRoute(User $user): string
     {
-        if (str_starts_with($url, '/') && ! str_starts_with($url, '//')) {
-            return true;
-        }
+        return match (true) {
+            $user->isOwner() => 'dashboard.owner',
+            $user->isAdmin() => 'dashboard.admin',
+            $user->isCashier() => 'dashboard.cashier',
+            default => abort(403, 'Role akun tidak memiliki dashboard.'),
+        };
+    }
 
+    private function isSafeIntendedUrl(Request $request, User $user, string $url): bool
+    {
+        $isRelative = str_starts_with($url, '/') && ! str_starts_with($url, '//');
         $origin = rtrim($request->getSchemeAndHttpHost(), '/');
 
-        return $url === $origin || str_starts_with($url, $origin.'/');
+        if (! $isRelative && $url !== $origin && ! str_starts_with($url, $origin.'/')) {
+            return false;
+        }
+
+        $parts = parse_url($url);
+
+        if ($parts === false) {
+            return false;
+        }
+
+        $path = $parts['path'] ?? '/';
+        $query = isset($parts['query']) ? '?'.$parts['query'] : '';
+
+        try {
+            $route = Route::getRoutes()->match(Request::create($path.$query, 'GET'));
+        } catch (\Throwable) {
+            return false;
+        }
+
+        if (
+            in_array($route->getName(), [
+                'login',
+                'login.store',
+                'logout',
+                'password.request',
+                'password.email',
+                'password.reset',
+                'password.update',
+            ], true)
+        ) {
+            return false;
+        }
+
+        foreach ($route->gatherMiddleware() as $middleware) {
+            if (! is_string($middleware) || ! str_starts_with($middleware, 'role:')) {
+                continue;
+            }
+
+            $roles = array_filter(explode(',', mb_substr($middleware, 5)));
+
+            if (! $user->hasAnyRole($roles)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

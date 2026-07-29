@@ -3,6 +3,8 @@
 
     function updateToggle(button, input, isVisible) {
         const label = button.querySelector('[data-password-toggle-label]');
+        const showIcon = button.querySelector('[data-password-icon-show]');
+        const hideIcon = button.querySelector('[data-password-icon-hide]');
         const action = isVisible ? 'Sembunyikan' : 'Tampilkan';
 
         input.type = isVisible ? 'text' : 'password';
@@ -11,6 +13,14 @@
 
         if (label) {
             label.textContent = action;
+        }
+
+        if (showIcon) {
+            showIcon.hidden = isVisible;
+        }
+
+        if (hideIcon) {
+            hideIcon.hidden = !isVisible;
         }
     }
 
