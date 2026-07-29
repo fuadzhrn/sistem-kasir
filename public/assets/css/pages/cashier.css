@@ -385,6 +385,10 @@
     min-height: 220px;
 }
 
+.cashier-cart-empty__action {
+    display: none;
+}
+
 .cashier-cart-item {
     border-bottom: 1px solid var(--color-border);
     display: grid;
@@ -522,15 +526,29 @@
     font-size: var(--font-size-display);
 }
 
+.cashier-payment-sheet {
+    display: contents;
+}
+
+.cashier-payment-sheet__overlay,
+.cashier-payment__close,
+.cashier-payment-sheet__summary {
+    display: none;
+}
+
 .cashier-payment {
     border-top: 1px solid var(--color-border);
     flex: 0 0 auto;
     padding: var(--space-3) var(--space-5) var(--space-4);
 }
 
-.cashier-payment h3 {
+.cashier-payment__heading h3 {
     font-size: var(--font-size-md);
     margin-bottom: var(--space-3);
+}
+
+.cashier-payment__heading .eyebrow {
+    display: none;
 }
 
 .cashier-payment__grid {

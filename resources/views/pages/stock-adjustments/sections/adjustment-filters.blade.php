@@ -1,4 +1,17 @@
-<section class="card adjustment-filter-card" aria-label="Filter penyesuaian stok">
+@php
+    $selectedAdjustmentBranch = auth()->user()->isOwner() && filled($filters['branch_id'] ?? null)
+        ? $branches->firstWhere('id', (int) $filters['branch_id'])
+        : null;
+    $selectedAdjustmentProduct = filled($filters['product_id'] ?? null)
+        ? $products->firstWhere('id', (int) $filters['product_id'])
+        : null;
+    $selectedAdjustmentUser = filled($filters['user_id'] ?? null)
+        ? $users->firstWhere('id', (int) $filters['user_id'])
+        : null;
+    $selectedAdjustmentType = $labels[$filters['adjustment_type'] ?? ''] ?? null;
+@endphp
+
+<section class="card adjustment-filter-card" aria-label="Pencarian dan filter penyesuaian stok">
     <form action="{{ route('stock-adjustments.index') }}" method="GET" class="adjustment-filter-grid">
         <div class="form-group adjustment-filter-grid__search">
             <label class="form-label" for="adjustment-search">Nomor atau produk</label>
@@ -59,4 +72,41 @@
             <button class="btn btn-primary" type="submit">Terapkan Filter</button>
         </div>
     </form>
+
+    @if (
+        filled($filters['search'] ?? null)
+        || $selectedAdjustmentBranch
+        || $selectedAdjustmentProduct
+        || $selectedAdjustmentUser
+        || $selectedAdjustmentType
+        || filled($filters['date_from'] ?? null)
+        || filled($filters['date_to'] ?? null)
+    )
+        <div class="stock-adjustments-filter-summary" aria-label="Filter aktif">
+            <span class="stock-adjustments-filter-summary__label">Filter aktif:</span>
+            <div class="stock-adjustments-filter-summary__items">
+                @if (filled($filters['search'] ?? null))
+                    <span>Pencarian “{{ $filters['search'] }}”</span>
+                @endif
+                @if ($selectedAdjustmentBranch)
+                    <span>Cabang {{ $selectedAdjustmentBranch->name }}</span>
+                @endif
+                @if ($selectedAdjustmentProduct)
+                    <span>Produk {{ $selectedAdjustmentProduct->name }}</span>
+                @endif
+                @if ($selectedAdjustmentType)
+                    <span>Jenis {{ $selectedAdjustmentType }}</span>
+                @endif
+                @if ($selectedAdjustmentUser)
+                    <span>Pengguna {{ $selectedAdjustmentUser->name }}</span>
+                @endif
+                @if (filled($filters['date_from'] ?? null))
+                    <span>Mulai {{ $filters['date_from'] }}</span>
+                @endif
+                @if (filled($filters['date_to'] ?? null))
+                    <span>Sampai {{ $filters['date_to'] }}</span>
+                @endif
+            </div>
+        </div>
+    @endif
 </section>

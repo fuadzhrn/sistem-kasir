@@ -5,6 +5,12 @@
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
     });
+    const receiptDateFormatter = new Intl.DateTimeFormat('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC'
+    });
 
     function quantityMills(value) {
         return window.StoreApp && window.StoreApp.quantity
@@ -47,6 +53,20 @@
         }
     }
 
+    function formatReceiptDate(value) {
+        const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+        if (!match) {
+            return value || '-';
+        }
+
+        return receiptDateFormatter.format(new Date(Date.UTC(
+            Number(match[1]),
+            Number(match[2]) - 1,
+            Number(match[3])
+        )));
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('[data-stock-receipt-form]');
 
@@ -65,6 +85,22 @@
 
         function rows() {
             return Array.from(itemsContainer.querySelectorAll('[data-receipt-item-row]'));
+        }
+
+        function updateRowLabels() {
+            rows().forEach(function (row, index) {
+                const itemNumber = index + 1;
+                const sequence = row.querySelector('[data-item-sequence]');
+                const removeButton = row.querySelector('[data-remove-receipt-item]');
+
+                if (sequence) {
+                    sequence.textContent = 'Item ' + itemNumber;
+                }
+
+                if (removeButton) {
+                    removeButton.setAttribute('aria-label', 'Hapus item produk ' + itemNumber);
+                }
+            });
         }
 
         function updateProductMetadata(row) {
@@ -155,6 +191,7 @@
                 }
 
                 row.remove();
+                updateRowLabels();
                 validateDuplicates(false);
                 updateTotals();
             });
@@ -163,6 +200,7 @@
         }
 
         rows().forEach(bindRow);
+        updateRowLabels();
         updateTotals();
 
         addButton.addEventListener('click', function () {
@@ -183,6 +221,7 @@
             const newRow = rows().at(-1);
 
             bindRow(newRow);
+            updateRowLabels();
             updateTotals();
             newRow.querySelector('[data-product-select]').focus();
         });
@@ -232,7 +271,9 @@
             const notes = form.querySelector('[data-receipt-notes]').value.trim();
 
             modal.querySelector('[data-confirm-receipt-branch]').textContent = branchName || '-';
-            modal.querySelector('[data-confirm-receipt-date]').textContent = form.querySelector('[data-receipt-date]').value;
+            modal.querySelector('[data-confirm-receipt-date]').textContent = formatReceiptDate(
+                form.querySelector('[data-receipt-date]').value
+            );
             modal.querySelector('[data-confirm-receipt-supplier]').textContent = supplier || 'Tidak dicantumkan';
             modal.querySelector('[data-confirm-receipt-count]').textContent = rows().length + ' produk';
             modal.querySelector('[data-confirm-receipt-total]').textContent = form.querySelector('[data-receipt-total]').textContent;

@@ -3,10 +3,13 @@
     <div class="modal__positioner">
         <div class="modal__dialog receipt-confirmation-dialog" data-modal-dialog tabindex="-1">
             <div class="modal__header">
-                <div><p class="eyebrow">Dokumen final</p><h2 id="receipt-confirmation-title">Konfirmasi Barang Masuk</h2></div>
+                <div><p class="eyebrow">Dokumen final</p><h2 id="receipt-confirmation-title">Simpan Barang Masuk?</h2></div>
                 <button class="modal__close" type="button" data-modal-close aria-label="Tutup modal">&times;</button>
             </div>
             <div class="modal__body">
+                <p class="receipt-confirmation-intro">
+                    Pastikan cabang, supplier, produk, quantity, dan harga modal sudah benar.
+                </p>
                 <dl class="receipt-confirmation-list">
                     <div><dt>Cabang</dt><dd data-confirm-receipt-branch>-</dd></div>
                     <div><dt>Tanggal</dt><dd data-confirm-receipt-date>-</dd></div>

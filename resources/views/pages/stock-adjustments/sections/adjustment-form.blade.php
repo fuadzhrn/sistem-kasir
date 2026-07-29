@@ -8,7 +8,7 @@
     data-stock-quantities="{{ $stockQuantities->toJson() }}"
 >
     @csrf
-    <section class="card">
+    <section class="card adjustment-form-card">
         <div class="card__header">
             <div><p class="eyebrow">Data penyesuaian</p><h3>Perubahan Stok</h3></div>
             <span class="badge badge-warning">Permanen</span>
@@ -17,13 +17,13 @@
             @if (auth()->user()->isOwner())
                 <div class="form-group">
                     <label class="form-label" for="adjustment-branch">Cabang <span class="form-required">*</span></label>
-                    <select class="form-select @error('branch_id') is-error @enderror" id="adjustment-branch" name="branch_id" required data-adjustment-branch>
+                    <select class="form-select @error('branch_id') is-error @enderror" id="adjustment-branch" name="branch_id" required data-adjustment-branch @error('branch_id') aria-describedby="adjustment-branch-error" aria-invalid="true" @enderror>
                         <option value="">Pilih cabang aktif</option>
                         @foreach ($branches as $formBranch)
                             <option value="{{ $formBranch->id }}" @selected((string) old('branch_id') === (string) $formBranch->id)>{{ $formBranch->code }} - {{ $formBranch->name }}</option>
                         @endforeach
                     </select>
-                    @error('branch_id')<span class="form-error">{{ $message }}</span>@enderror
+                    @error('branch_id')<span class="form-error" id="adjustment-branch-error">{{ $message }}</span>@enderror
                 </div>
             @else
                 <div class="form-group">
@@ -34,7 +34,7 @@
 
             <div class="form-group">
                 <label class="form-label" for="adjustment-product">Produk <span class="form-required">*</span></label>
-                <select class="form-select @error('product_id') is-error @enderror" id="adjustment-product" name="product_id" required data-adjustment-product>
+                <select class="form-select @error('product_id') is-error @enderror" id="adjustment-product" name="product_id" required data-adjustment-product @error('product_id') aria-describedby="adjustment-product-error" aria-invalid="true" @enderror>
                     <option value="">Pilih produk aktif</option>
                     @foreach ($products as $formProduct)
                         <option value="{{ $formProduct->id }}" data-unit="{{ $formProduct->unit->symbol ?: $formProduct->unit->name }}" @selected((string) old('product_id') === (string) $formProduct->id)>
@@ -42,18 +42,18 @@
                         </option>
                     @endforeach
                 </select>
-                @error('product_id')<span class="form-error">{{ $message }}</span>@enderror
+                @error('product_id')<span class="form-error" id="adjustment-product-error">{{ $message }}</span>@enderror
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="adjustment-type">Jenis penyesuaian <span class="form-required">*</span></label>
-                <select class="form-select @error('adjustment_type') is-error @enderror" id="adjustment-type" name="adjustment_type" required data-adjustment-type>
+                <select class="form-select @error('adjustment_type') is-error @enderror" id="adjustment-type" name="adjustment_type" required data-adjustment-type @error('adjustment_type') aria-describedby="adjustment-type-error" aria-invalid="true" @enderror>
                     <option value="">Pilih jenis</option>
                     @foreach ($labels as $type => $label)
                         <option value="{{ $type }}" @selected(old('adjustment_type') === $type)>{{ $label }}</option>
                     @endforeach
                 </select>
-                @error('adjustment_type')<span class="form-error">{{ $message }}</span>@enderror
+                @error('adjustment_type')<span class="form-error" id="adjustment-type-error">{{ $message }}</span>@enderror
             </div>
 
             <div class="form-group adjustment-current-stock">
@@ -65,21 +65,21 @@
 
             <div class="form-group" data-quantity-group>
                 <label class="form-label" for="adjustment-quantity">Quantity perubahan <span class="form-required">*</span></label>
-                <input class="form-control @error('quantity') is-error @enderror" id="adjustment-quantity" name="quantity" type="text" value="{{ \App\Support\Format\Quantity::inputValue(old('quantity')) }}" inputmode="decimal" data-adjustment-quantity data-quantity-input>
-                @error('quantity')<span class="form-error">{{ $message }}</span>@enderror
+                <input class="form-control @error('quantity') is-error @enderror" id="adjustment-quantity" name="quantity" type="text" value="{{ \App\Support\Format\Quantity::inputValue(old('quantity')) }}" inputmode="decimal" data-adjustment-quantity data-quantity-input @error('quantity') aria-describedby="adjustment-quantity-error" aria-invalid="true" @enderror>
+                @error('quantity')<span class="form-error" id="adjustment-quantity-error">{{ $message }}</span>@enderror
             </div>
 
             <div class="form-group" data-target-group hidden>
                 <label class="form-label" for="adjustment-target">Target quantity akhir <span class="form-required">*</span></label>
-                <input class="form-control @error('target_quantity') is-error @enderror" id="adjustment-target" name="target_quantity" type="text" value="{{ \App\Support\Format\Quantity::inputValue(old('target_quantity')) }}" inputmode="decimal" data-adjustment-target data-quantity-input disabled>
-                @error('target_quantity')<span class="form-error">{{ $message }}</span>@enderror
+                <input class="form-control @error('target_quantity') is-error @enderror" id="adjustment-target" name="target_quantity" type="text" value="{{ \App\Support\Format\Quantity::inputValue(old('target_quantity')) }}" inputmode="decimal" data-adjustment-target data-quantity-input disabled @error('target_quantity') aria-describedby="adjustment-target-error" aria-invalid="true" @enderror>
+                @error('target_quantity')<span class="form-error" id="adjustment-target-error">{{ $message }}</span>@enderror
             </div>
 
             <div class="form-group form-group--full">
                 <label class="form-label" for="adjustment-reason">Alasan <span class="form-required">*</span></label>
-                <textarea class="form-textarea @error('reason') is-error @enderror" id="adjustment-reason" name="reason" minlength="10" maxlength="1000" required data-adjustment-reason placeholder="Jelaskan hasil pemeriksaan atau kejadian secara spesifik.">{{ old('reason') }}</textarea>
-                <span class="form-help">Minimal 10 karakter. Alasan akan disimpan pada dokumen dan stock movement.</span>
-                @error('reason')<span class="form-error">{{ $message }}</span>@enderror
+                <textarea class="form-textarea @error('reason') is-error @enderror" id="adjustment-reason" name="reason" minlength="10" maxlength="1000" required data-adjustment-reason placeholder="Jelaskan hasil pemeriksaan atau kejadian secara spesifik." @error('reason') aria-describedby="adjustment-reason-help adjustment-reason-error" aria-invalid="true" @else aria-describedby="adjustment-reason-help" @enderror>{{ old('reason') }}</textarea>
+                <span class="form-help" id="adjustment-reason-help">Minimal 10 karakter. Alasan akan disimpan pada dokumen dan stock movement.</span>
+                @error('reason')<span class="form-error" id="adjustment-reason-error">{{ $message }}</span>@enderror
             </div>
         </div>
     </section>

@@ -50,6 +50,9 @@ export function createCartRenderer(root, store, options = {}) {
         root.querySelector('[data-mobile-cart-summary]').textContent = summary.kinds + ' item • ' + formatRupiah(summary.subtotalCents);
         clearTrigger.disabled = items.length === 0;
         mobileBar.hidden = items.length === 0;
+        root.dispatchEvent(new CustomEvent('cashier:cart-summary', {
+            detail: summary,
+        }));
 
         if (typeof options.onSummary === 'function') {
             options.onSummary(summary, items);

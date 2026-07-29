@@ -3,10 +3,13 @@
     <div class="modal__positioner">
         <div class="modal__dialog adjustment-confirmation-dialog" data-modal-dialog tabindex="-1">
             <div class="modal__header">
-                <div><p class="eyebrow">Catatan permanen</p><h2 id="adjustment-confirmation-title">Konfirmasi Penyesuaian Stok</h2></div>
+                <div><p class="eyebrow">Catatan permanen</p><h2 id="adjustment-confirmation-title">Simpan Penyesuaian Stok?</h2></div>
                 <button class="modal__close" type="button" data-modal-close aria-label="Tutup modal">&times;</button>
             </div>
             <div class="modal__body">
+                <p class="adjustment-confirmation-intro">
+                    Perubahan stok akan dicatat pada riwayat pergerakan dan tidak dapat diedit atau dihapus.
+                </p>
                 <dl class="adjustment-confirmation-list">
                     <div><dt>Cabang</dt><dd data-confirm-adjustment-branch>-</dd></div>
                     <div><dt>Produk</dt><dd data-confirm-adjustment-product>-</dd></div>

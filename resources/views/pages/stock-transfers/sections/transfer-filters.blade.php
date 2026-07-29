@@ -1,4 +1,14 @@
-<section class="card transfer-filter-card" aria-label="Filter mutasi stok">
+@php
+    $selectedTransferBranch = auth()->user()->isOwner() && filled($filters['branch_id'] ?? null)
+        ? $branches->firstWhere('id', (int) $filters['branch_id'])
+        : null;
+    $selectedTransferProduct = filled($filters['product_id'] ?? null)
+        ? $products->firstWhere('id', (int) $filters['product_id'])
+        : null;
+    $selectedTransferStatus = $labels[$filters['status'] ?? ''] ?? null;
+@endphp
+
+<section class="card transfer-filter-card" aria-label="Pencarian dan filter mutasi stok">
     <form action="{{ route('stock-transfers.index') }}" method="GET" class="transfer-filter-grid">
         <div class="form-group transfer-filter-grid__search">
             <label class="form-label" for="transfer-search">Nomor atau produk</label>
@@ -50,4 +60,37 @@
             <button class="btn btn-primary" type="submit">Terapkan Filter</button>
         </div>
     </form>
+
+    @if (
+        filled($filters['search'] ?? null)
+        || $selectedTransferBranch
+        || $selectedTransferProduct
+        || $selectedTransferStatus
+        || filled($filters['date_from'] ?? null)
+        || filled($filters['date_to'] ?? null)
+    )
+        <div class="stock-transfers-filter-summary" aria-label="Filter aktif">
+            <span class="stock-transfers-filter-summary__label">Filter aktif:</span>
+            <div class="stock-transfers-filter-summary__items">
+                @if (filled($filters['search'] ?? null))
+                    <span>Pencarian “{{ $filters['search'] }}”</span>
+                @endif
+                @if ($selectedTransferBranch)
+                    <span>Cabang terkait {{ $selectedTransferBranch->name }}</span>
+                @endif
+                @if ($selectedTransferProduct)
+                    <span>Produk {{ $selectedTransferProduct->name }}</span>
+                @endif
+                @if ($selectedTransferStatus)
+                    <span>Status {{ $selectedTransferStatus }}</span>
+                @endif
+                @if (filled($filters['date_from'] ?? null))
+                    <span>Mulai {{ $filters['date_from'] }}</span>
+                @endif
+                @if (filled($filters['date_to'] ?? null))
+                    <span>Sampai {{ $filters['date_to'] }}</span>
+                @endif
+            </div>
+        </div>
+    @endif
 </section>

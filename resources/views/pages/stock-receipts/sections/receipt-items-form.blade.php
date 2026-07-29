@@ -8,7 +8,7 @@
             <p class="eyebrow">Rincian produk</p>
             <h3>Item Barang Masuk</h3>
         </div>
-        <button class="btn btn-secondary" type="button" data-add-receipt-item>Tambah Baris Produk</button>
+        <button class="btn btn-secondary" type="button" data-add-receipt-item>Tambah Item Produk</button>
     </div>
     <div class="receipt-product-search">
         <label class="form-label" for="receipt-product-search">Pencarian produk</label>
@@ -16,7 +16,13 @@
         <span class="form-help">Pencarian menyaring pilihan produk pada setiap baris.</span>
     </div>
     @error('items')<div class="alert alert-danger receipt-items-error">{{ $message }}</div>@enderror
-    <div class="table-wrapper">
+    @if ($products->isEmpty())
+        <div class="goods-receipts-empty goods-receipts-empty--inline" role="alert">
+            <h4>Produk aktif belum tersedia</h4>
+            <p>Barang Masuk belum dapat disimpan sebelum terdapat produk aktif.</p>
+        </div>
+    @endif
+    <div class="table-wrapper receipt-items-table-wrapper">
         <table class="table receipt-items-table">
             <thead>
                 <tr>

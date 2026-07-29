@@ -14,6 +14,11 @@ export function createPaymentForm(root, store, options = {}) {
     const noncashNotice = root.querySelector('[data-noncash-notice]');
     const errorOutput = root.querySelector('[data-payment-error]');
     const actionButtons = Array.from(root.querySelectorAll('[data-payment-action]'));
+    const sheetItems = root.querySelector('[data-payment-sheet-items]');
+    const sheetSubtotal = root.querySelector('[data-payment-sheet-subtotal]');
+    const sheetDiscount = root.querySelector('[data-payment-sheet-discount]');
+    const sheetTotal = root.querySelector('[data-payment-sheet-total]');
+    const paymentDialog = root.querySelector('[data-payment-dialog]');
     const maximumDiscountCents = moneyToCents(root.dataset.maximumDiscount) || 0;
     const discountRestricted = root.dataset.discountRestricted === '1';
     let items = [];
@@ -60,8 +65,25 @@ export function createPaymentForm(root, store, options = {}) {
         }
 
         if (isCash && (receivedCents === null || receivedCents < state.totalCents)) {
-            errors.push('Uang diterima harus mencukupi total pembayaran.');
+            errors.push('Uang diterima kurang dari total pembayaran.');
         }
+
+        discountInput.setAttribute(
+            'aria-invalid',
+            discountCents === null
+                || discountCents < 0
+                || discountCents > state.subtotalCents
+                || (discountRestricted && discountCents > maximumDiscountCents)
+                ? 'true'
+                : 'false',
+        );
+        methodSelect?.setAttribute('aria-invalid', method ? 'false' : 'true');
+        receivedInput.setAttribute(
+            'aria-invalid',
+            isCash && (receivedCents === null || receivedCents < state.totalCents)
+                ? 'true'
+                : 'false',
+        );
 
         const changeCents = isCash && receivedCents !== null
             ? Math.max(0, receivedCents - state.totalCents)
@@ -70,6 +92,10 @@ export function createPaymentForm(root, store, options = {}) {
         root.querySelector('[data-summary-total]').textContent = formatRupiah(state.totalCents);
         root.querySelector('[data-payment-change]').textContent = formatRupiah(changeCents);
         root.querySelector('[data-mobile-cart-summary]').textContent = state.kinds + ' item • ' + formatRupiah(state.totalCents);
+        sheetItems.textContent = String(state.kinds);
+        sheetSubtotal.textContent = formatRupiah(state.subtotalCents);
+        sheetDiscount.textContent = formatRupiah(state.discountCents);
+        sheetTotal.textContent = formatRupiah(state.totalCents);
         errorOutput.textContent = errors[0] || '';
         actionButtons.forEach(function (button) {
             button.disabled = isSubmitting || errors.length > 0 || !root.dataset.branchId;
@@ -105,6 +131,7 @@ export function createPaymentForm(root, store, options = {}) {
 
     function setSubmitting(submitting) {
         isSubmitting = submitting;
+        paymentDialog.setAttribute('aria-busy', submitting ? 'true' : 'false');
         discountInput.disabled = submitting;
         methodSelect.disabled = submitting;
         receivedInput.disabled = submitting || selectedMethod()?.type !== 'cash';
@@ -121,6 +148,7 @@ export function createPaymentForm(root, store, options = {}) {
     function showSuccess(payload, action, printFallbackRequired = false) {
         const data = payload.data;
         const printLink = root.querySelector('[data-preview-print-link]');
+        root.dispatchEvent(new CustomEvent('cashier:payment-success'));
         root.querySelector('[data-preview-invoice]').textContent = data.invoice_number;
         root.querySelector('[data-preview-branch]').textContent = data.branch_name;
         root.querySelector('[data-preview-items]').textContent = data.item_count + ' jenis produk';

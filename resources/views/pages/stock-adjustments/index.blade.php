@@ -15,7 +15,7 @@
     ])
 
     <div class="module-actions">
-        <a class="btn btn-primary" href="{{ route('stock-adjustments.create') }}">Buat Penyesuaian</a>
+        <a class="btn btn-primary" href="{{ route('stock-adjustments.create') }}">Tambah Penyesuaian Stok</a>
     </div>
 
     @include('pages.stock-adjustments.sections.adjustment-summary')

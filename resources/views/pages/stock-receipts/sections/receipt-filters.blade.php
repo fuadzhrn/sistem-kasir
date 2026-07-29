@@ -1,4 +1,10 @@
-<section class="card receipt-filter-card" aria-label="Filter penerimaan barang">
+@php
+    $selectedReceiptBranch = auth()->user()->isOwner() && filled($filters['branch_id'] ?? null)
+        ? $branches->firstWhere('id', (int) $filters['branch_id'])
+        : null;
+@endphp
+
+<section class="card receipt-filter-card" aria-label="Pencarian dan filter barang masuk">
     <form action="{{ route('stock-receipts.index') }}" method="GET" class="receipt-filter-grid">
         <div class="form-group receipt-filter-grid__search">
             <label class="form-label" for="receipt-search">Nomor atau supplier</label>
@@ -42,4 +48,33 @@
             <button class="btn btn-primary" type="submit">Terapkan Filter</button>
         </div>
     </form>
+
+    @if (
+        filled($filters['search'] ?? null)
+        || $selectedReceiptBranch
+        || filled($filters['date_from'] ?? null)
+        || filled($filters['date_to'] ?? null)
+        || filled($filters['supplier'] ?? null)
+    )
+        <div class="goods-receipts-filter-summary" aria-label="Filter aktif">
+            <span class="goods-receipts-filter-summary__label">Filter aktif:</span>
+            <div class="goods-receipts-filter-summary__items">
+                @if (filled($filters['search'] ?? null))
+                    <span>Pencarian “{{ $filters['search'] }}”</span>
+                @endif
+                @if ($selectedReceiptBranch)
+                    <span>Cabang {{ $selectedReceiptBranch->name }}</span>
+                @endif
+                @if (filled($filters['supplier'] ?? null))
+                    <span>Supplier {{ $filters['supplier'] }}</span>
+                @endif
+                @if (filled($filters['date_from'] ?? null))
+                    <span>Mulai {{ $filters['date_from'] }}</span>
+                @endif
+                @if (filled($filters['date_to'] ?? null))
+                    <span>Sampai {{ $filters['date_to'] }}</span>
+                @endif
+            </div>
+        </div>
+    @endif
 </section>

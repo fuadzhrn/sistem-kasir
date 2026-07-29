@@ -150,7 +150,13 @@ export function createProductBrowser(root, store) {
             card.querySelector('[data-product-stock]').textContent = formatQuantity(product.stock_quantity) + ' ' + (product.unit_symbol || product.unit_name);
             card.querySelector('[data-product-price]').textContent = formatRupiah(moneyToCents(product.selling_price));
             addButton.disabled = !product.is_available;
-            addButton.setAttribute('aria-label', 'Tambah ' + product.name + ' ke keranjang');
+            addButton.textContent = product.is_available ? 'Tambah' : 'Stok Habis';
+            addButton.setAttribute(
+                'aria-label',
+                product.is_available
+                    ? 'Tambah ' + product.name + ' ke keranjang'
+                    : product.name + ' tidak dapat ditambahkan karena stok habis',
+            );
             fragment.appendChild(card);
         });
 
