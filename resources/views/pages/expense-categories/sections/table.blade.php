@@ -1,5 +1,5 @@
-<section class="card table-card expense-category-table-card">
-    <div class="expense-category-table-wrapper">
+<section class="card table-card expense-category-table-card master-data-table-card">
+    <div class="expense-category-table-wrapper master-desktop-table">
         <table class="expense-category-table">
             <colgroup>
                 <col class="expense-category-table__column-name">
@@ -50,14 +50,59 @@
             </tbody>
         </table>
     </div>
+    <div class="master-mobile-list" aria-label="Daftar kategori pengeluaran mobile">
+        @forelse ($categories as $category)
+            @php
+                $canDeleteExpenseCategory = $category->expenses_count === 0
+                    && \Illuminate\Support\Facades\Gate::allows('delete', $category);
+            @endphp
+            <article class="master-card">
+                <header class="master-card__header">
+                    <div class="master-card__identity">
+                        <strong class="master-card__title">{{ $category->name }}</strong>
+                        <span class="master-card__subtitle">Slug: {{ $category->slug }}</span>
+                    </div>
+                    <span class="badge {{ $category->is_active ? 'badge-success' : 'badge-danger' }}">{{ $category->is_active ? 'Aktif' : 'Nonaktif' }}</span>
+                </header>
+                <dl class="master-card__body">
+                    <div class="master-card__row">
+                        <dt class="master-card__label">Deskripsi</dt>
+                        <dd class="master-card__value">{{ $category->description ?: '—' }}</dd>
+                    </div>
+                    <div class="master-card__row">
+                        <dt class="master-card__label">Digunakan</dt>
+                        <dd class="master-card__value">{{ $category->expenses_count }} pengeluaran</dd>
+                    </div>
+                </dl>
+                <footer class="master-card__footer">
+                    <a class="btn btn-outline" href="{{ route('expense-categories.edit', $category) }}">Edit</a>
+                    <details class="master-card__actions" data-master-action-menu>
+                        <summary class="btn btn-secondary master-card__action-toggle" aria-expanded="false">Tindakan</summary>
+                        <div class="master-card__action-menu" role="menu">
+                            <button class="btn {{ $category->is_active ? 'btn-danger' : 'btn-success' }}" type="button" role="menuitem" data-expense-category-status data-action="{{ route('expense-categories.status.update', $category) }}" data-name="{{ $category->name }}" data-next-status="{{ $category->is_active ? 0 : 1 }}">{{ $category->is_active ? 'Nonaktifkan' : 'Aktifkan' }}</button>
+                            @if ($canDeleteExpenseCategory)
+                                <button class="btn btn-danger" type="button" role="menuitem" data-expense-category-delete data-action="{{ route('expense-categories.destroy', $category) }}" data-name="{{ $category->name }}">Hapus</button>
+                            @endif
+                        </div>
+                    </details>
+                </footer>
+            </article>
+        @empty
+            <div class="master-card__empty">
+                <h3>Belum ada kategori pengeluaran</h3>
+                <p>Tidak ada kategori pengeluaran yang sesuai dengan pencarian atau filter saat ini.</p>
+                <a class="btn btn-primary" href="{{ route('expense-categories.create') }}">Tambah Kategori Pengeluaran</a>
+            </div>
+        @endforelse
+    </div>
     @if ($categories->hasPages())
         <div class="table-pagination">
             <span>Menampilkan {{ $categories->firstItem() }}–{{ $categories->lastItem() }} dari {{ $categories->total() }}</span>
-            <div class="pagination-buttons">
-                @if ($categories->onFirstPage())<span class="pagination-button" aria-disabled="true">‹</span>@else<a class="pagination-button" href="{{ $categories->previousPageUrl() }}">‹</a>@endif
-                <span class="pagination-button is-active">{{ $categories->currentPage() }}</span>
-                @if ($categories->hasMorePages())<a class="pagination-button" href="{{ $categories->nextPageUrl() }}">›</a>@else<span class="pagination-button" aria-disabled="true">›</span>@endif
-            </div>
+            <nav class="pagination-buttons" aria-label="Pagination kategori pengeluaran">
+                @if ($categories->onFirstPage())<span class="pagination-button" aria-disabled="true">‹</span>@else<a class="pagination-button" href="{{ $categories->previousPageUrl() }}" aria-label="Halaman sebelumnya">‹</a>@endif
+                <span class="pagination-button is-active" aria-current="page">{{ $categories->currentPage() }}</span>
+                @if ($categories->hasMorePages())<a class="pagination-button" href="{{ $categories->nextPageUrl() }}" aria-label="Halaman berikutnya">›</a>@else<span class="pagination-button" aria-disabled="true">›</span>@endif
+            </nav>
         </div>
     @endif
 </section>

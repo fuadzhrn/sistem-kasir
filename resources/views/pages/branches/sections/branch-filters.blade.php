@@ -15,7 +15,6 @@
         <div class="module-filters__actions">
             <button class="btn btn-secondary" type="submit">Terapkan</button>
             <a class="btn btn-ghost" href="{{ route('branches.index') }}">Reset</a>
-            <a class="btn btn-primary" href="{{ route('branches.create') }}">Tambah Cabang</a>
         </div>
     </form>
 </section>

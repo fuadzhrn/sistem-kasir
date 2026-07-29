@@ -1,3 +1,5 @@
+@import url("./master-data-mobile.css");
+
 .summary-grid {
     display: grid;
     gap: var(--space-4);

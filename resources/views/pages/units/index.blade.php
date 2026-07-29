@@ -11,4 +11,7 @@
     @include('pages.units.sections.status-modal')
     @include('pages.units.sections.delete-modal')
 @endsection
-@push('scripts')<script src="{{ asset('assets/js/pages/units.js') }}" defer></script>@endpush
+@push('scripts')
+    <script src="{{ asset('assets/js/pages/master-data-mobile.js') }}" defer></script>
+    <script src="{{ asset('assets/js/pages/units.js') }}" defer></script>
+@endpush

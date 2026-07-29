@@ -14,7 +14,7 @@
         'eyebrow' => 'Master Pengeluaran',
     ])
     <div class="module-actions">
-        <a class="btn btn-primary" href="{{ route('expense-categories.create') }}">Tambah Kategori</a>
+        <a class="btn btn-primary" href="{{ route('expense-categories.create') }}">Tambah Kategori Pengeluaran</a>
     </div>
     @include('pages.expense-categories.sections.summary')
     @include('pages.expense-categories.sections.filters')
@@ -24,5 +24,6 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('assets/js/pages/master-data-mobile.js') }}" defer></script>
     <script src="{{ asset('assets/js/pages/expense-categories.js') }}" defer></script>
 @endpush

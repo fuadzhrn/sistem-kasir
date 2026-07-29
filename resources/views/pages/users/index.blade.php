@@ -16,6 +16,12 @@
         'eyebrow' => $viewer->isOwner() ? 'Khusus Owner' : 'Read-only',
     ])
 
+    @can('create', \App\Models\User::class)
+        <div class="module-actions">
+            <a class="btn btn-primary" href="{{ route('users.create') }}">Tambah Pengguna</a>
+        </div>
+    @endcan
+
     @include('pages.users.sections.user-summary')
     @include('pages.users.sections.user-filters')
     @include('pages.users.sections.user-table')
@@ -26,5 +32,6 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('assets/js/pages/master-data-mobile.js') }}" defer></script>
     <script src="{{ asset('assets/js/pages/users.js') }}" defer></script>
 @endpush

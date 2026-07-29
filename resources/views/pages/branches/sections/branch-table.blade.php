@@ -1,5 +1,5 @@
-<section class="table-card" aria-label="Daftar cabang">
-    <div class="table-wrapper">
+<section class="table-card master-data-table-card" aria-label="Daftar cabang">
+    <div class="table-wrapper master-desktop-table">
         <table class="table">
             <thead>
                 <tr>
@@ -46,6 +46,66 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <div class="master-mobile-list" aria-label="Daftar cabang mobile">
+        @forelse ($branches as $branch)
+            <article class="master-card">
+                <header class="master-card__header">
+                    <div class="master-card__identity">
+                        <strong class="master-card__title">{{ $branch->name }}</strong>
+                        <span class="master-card__subtitle">Kode: {{ $branch->code }}</span>
+                    </div>
+                    <span class="badge {{ $branch->is_active ? 'badge-success' : 'badge-danger' }}">
+                        {{ $branch->is_active ? 'Aktif' : 'Nonaktif' }}
+                    </span>
+                </header>
+                <dl class="master-card__body">
+                    <div class="master-card__row">
+                        <dt class="master-card__label">Alamat</dt>
+                        <dd class="master-card__value">{{ $branch->address ?: '—' }}</dd>
+                    </div>
+                    <div class="master-card__row">
+                        <dt class="master-card__label">Nomor Telepon</dt>
+                        <dd class="master-card__value">{{ $branch->phone ?: '—' }}</dd>
+                    </div>
+                    <div class="master-card__row">
+                        <dt class="master-card__label">Jumlah Pengguna</dt>
+                        <dd class="master-card__value">{{ $branch->users_count }} pengguna</dd>
+                    </div>
+                </dl>
+                <footer class="master-card__footer">
+                    <a class="btn btn-outline" href="{{ route('branches.show', $branch) }}">Detail</a>
+                    <details class="master-card__actions" data-master-action-menu>
+                        <summary class="btn btn-secondary master-card__action-toggle" aria-expanded="false">
+                            Tindakan
+                        </summary>
+                        <div class="master-card__action-menu" role="menu">
+                            <a class="btn btn-secondary" href="{{ route('branches.edit', $branch) }}" role="menuitem">Edit</a>
+                            @can('updateStatus', $branch)
+                                <button
+                                    class="btn {{ $branch->is_active ? 'btn-danger' : 'btn-success' }}"
+                                    type="button"
+                                    role="menuitem"
+                                    data-branch-status
+                                    data-action="{{ route('branches.status.update', $branch) }}"
+                                    data-name="{{ $branch->name }}"
+                                    data-next-status="{{ $branch->is_active ? '0' : '1' }}"
+                                >
+                                    {{ $branch->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                </button>
+                            @endcan
+                        </div>
+                    </details>
+                </footer>
+            </article>
+        @empty
+            <div class="master-card__empty">
+                <h3>Belum ada data cabang</h3>
+                <p>Tidak ada cabang yang sesuai dengan pencarian atau filter saat ini.</p>
+                <a class="btn btn-primary" href="{{ route('branches.create') }}">Tambah Cabang</a>
+            </div>
+        @endforelse
     </div>
 
     <div class="table-pagination">

@@ -33,9 +33,6 @@
         <div class="module-filters__actions">
             <button class="btn btn-secondary" type="submit">Terapkan</button>
             <a class="btn btn-ghost" href="{{ route('users.index') }}">Reset</a>
-            @can('create', \App\Models\User::class)
-                <a class="btn btn-primary" href="{{ route('users.create') }}">Tambah Pengguna</a>
-            @endcan
         </div>
     </form>
 </section>
