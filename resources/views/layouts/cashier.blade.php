@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/pages/cashier.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/pages/cashier-responsive.css') }}">
     @stack('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 </head>
 <body class="cashier-body">
     @include('pages.cashier.sections.cashier-header')

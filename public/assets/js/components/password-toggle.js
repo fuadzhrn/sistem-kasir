@@ -6,10 +6,13 @@
         const showIcon = button.querySelector('[data-password-icon-show]');
         const hideIcon = button.querySelector('[data-password-icon-hide]');
         const action = isVisible ? 'Sembunyikan' : 'Tampilkan';
+        const accessibleLabel = isVisible
+            ? button.dataset.passwordHideLabel || action + ' kata sandi'
+            : button.dataset.passwordShowLabel || action + ' kata sandi';
 
         input.type = isVisible ? 'text' : 'password';
         button.setAttribute('aria-pressed', String(isVisible));
-        button.setAttribute('aria-label', action + ' kata sandi');
+        button.setAttribute('aria-label', accessibleLabel);
 
         if (label) {
             label.textContent = action;

@@ -1,4 +1,5 @@
 import {
+    appendMobileDetail,
     createBadgeCell,
     createCell,
     createLinkCell,
@@ -16,8 +17,26 @@ export function renderDashboard(root, data) {
 }
 
 function renderContext(root, data) {
+    const adminDashboard = root.hasAttribute('data-admin-dashboard');
+    const dashboardName = adminDashboard ? 'Dashboard Admin' : 'Dashboard Owner';
     root.querySelector('[data-active-branch]').textContent = data.filters.branch_name;
     root.querySelector('[data-active-period]').textContent = data.filters.period_label;
+    root.querySelectorAll('[data-active-filter-summary]').forEach((summary) => {
+        summary.textContent = adminDashboard
+            ? `${data.filters.branch_name} · ${data.filters.period_label}`
+            : `${data.filters.period_label} · ${data.filters.branch_name}`;
+    });
+    const filterButton = root.querySelector(
+        '[data-dashboard-filter-open], [data-admin-filter-open]',
+    );
+
+    if (filterButton) {
+        filterButton.setAttribute(
+            'aria-label',
+            `Buka filter ${dashboardName}. Filter aktif: ${data.filters.period_label}, ${data.filters.branch_name}`,
+        );
+    }
+
     const generated = root.querySelector('[data-generated-at]');
     generated.textContent = data.generated_at_formatted;
     generated.dateTime = data.generated_at;
@@ -42,15 +61,15 @@ function renderCards(root, cards) {
 
 function renderTopProducts(root, products) {
     renderRows(root.querySelector('[data-top-products]'), products, 5,
-        'Belum ada produk terjual pada periode ini.',
+        'Belum ada produk terlaris pada periode ini.',
         (product) => {
             const row = document.createElement('tr');
             row.append(
-                createCell(product.rank),
-                productCell(product.name, product.code),
-                createCell(`${formatQuantity(product.quantity_value)} ${product.unit}`),
-                createCell(product.receipt_count),
-                createCell(product.net_sales_formatted),
+                createCell(`#${product.rank}`, '', 'Peringkat'),
+                productCell(product.name, product.code, 'Produk'),
+                createCell(`${formatQuantity(product.quantity_value)} ${product.unit}`, '', 'Terjual'),
+                createCell(product.receipt_count, '', 'Jumlah Nota'),
+                createCell(product.net_sales_formatted, '', 'Penjualan Bersih'),
             );
             return row;
         });
@@ -58,15 +77,19 @@ function renderTopProducts(root, products) {
 
 function renderLowStocks(root, stocks) {
     renderRows(root.querySelector('[data-low-stocks]'), stocks, 5,
-        'Tidak ada stok kritis saat ini.',
+        'Tidak ada stok yang hampir habis.',
         (stock) => {
             const row = document.createElement('tr');
             row.append(
-                createCell(stock.branch),
-                createLinkCell(stock.product_name, stock.detail_url, stock.product_code),
-                createCell(`${formatQuantity(stock.quantity_value)} ${stock.unit}`),
-                createCell(`${formatQuantity(stock.minimum_stock_value)} ${stock.unit}`),
-                createBadgeCell(stock.status, stock.status === 'Habis' ? 'danger' : 'warning'),
+                createCell(stock.branch, '', 'Cabang'),
+                createLinkCell(stock.product_name, stock.detail_url, stock.product_code, 'Produk'),
+                createCell(`${formatQuantity(stock.quantity_value)} ${stock.unit}`, '', 'Tersedia'),
+                createCell(`${formatQuantity(stock.minimum_stock_value)} ${stock.unit}`, '', 'Minimum'),
+                createBadgeCell(
+                    stock.status,
+                    stock.status === 'Habis' ? 'danger' : 'warning',
+                    'Status',
+                ),
             );
             return row;
         });
@@ -77,14 +100,16 @@ function renderLatestTransactions(root, transactions) {
         'Belum ada transaksi pada periode ini.',
         (sale) => {
             const row = document.createElement('tr');
+            const status = createBadgeCell(sale.status, sale.status_variant, 'Status');
+            appendMobileDetail(status, sale.detail_url);
             row.append(
-                createLinkCell(sale.invoice_number, sale.detail_url),
-                createCell(sale.transaction_date),
-                createCell(sale.branch),
-                createCell(sale.cashier),
-                createCell(sale.payment_method),
-                createCell(sale.total_formatted),
-                createBadgeCell(sale.status, sale.status_variant),
+                createLinkCell(sale.invoice_number, sale.detail_url, '', 'Nomor Nota'),
+                createCell(sale.transaction_date, '', 'Tanggal dan Waktu'),
+                createCell(sale.branch, '', 'Cabang'),
+                createCell(sale.cashier, '', 'Kasir'),
+                createCell(sale.payment_method, '', 'Pembayaran'),
+                createCell(sale.total_formatted, '', 'Total'),
+                status,
             );
             return row;
         });
@@ -95,14 +120,16 @@ function renderLatestExpenses(root, expenses) {
         'Belum ada pengeluaran pada periode ini.',
         (expense) => {
             const row = document.createElement('tr');
+            const status = createBadgeCell(expense.status, expense.status_variant, 'Status');
+            appendMobileDetail(status, expense.detail_url);
             row.append(
-                createCell(expense.expense_date),
-                createCell(expense.branch),
-                createCell(expense.category),
-                createLinkCell(expense.description, expense.detail_url),
-                createCell(expense.creator),
-                createCell(expense.amount_formatted),
-                createBadgeCell(expense.status, expense.status_variant),
+                createCell(expense.expense_date, '', 'Tanggal'),
+                createCell(expense.branch, '', 'Cabang'),
+                createCell(expense.category, '', 'Kategori'),
+                createLinkCell(expense.description, expense.detail_url, '', 'Deskripsi'),
+                createCell(expense.creator, '', 'Pencatat'),
+                createCell(expense.amount_formatted, '', 'Jumlah'),
+                status,
             );
             return row;
         });
@@ -121,12 +148,17 @@ function renderRows(body, items, columnCount, message, factory) {
     body.append(fragment);
 }
 
-function productCell(name, code) {
+function productCell(name, code, label = '') {
     const cell = document.createElement('td');
     const strong = document.createElement('strong');
     const small = document.createElement('small');
     strong.textContent = name ?? '';
     small.textContent = code ?? '';
     cell.append(strong, small);
+
+    if (label) {
+        cell.dataset.label = label;
+    }
+
     return cell;
 }

@@ -12,8 +12,8 @@
         <p>Ubah kata pencarian, tanggal, atau status untuk melihat hasil lain.</p>
         <a class="btn btn-secondary" href="{{ route('dashboard.cashier') }}">Reset Filter</a>
     @else
-        <h3>Belum ada transaksi yang Anda buat.</h3>
-        <p>Mulai transaksi pertama dari ruang kasir.</p>
-        <a class="btn btn-primary" href="{{ route('cashier.index') }}">Buat Transaksi Baru</a>
+        <h3>Belum ada transaksi.</h3>
+        <p>Tekan tombol Transaksi Baru untuk mulai melayani pelanggan.</p>
+        <a class="btn btn-primary" href="{{ route('cashier.index') }}">Mulai Transaksi</a>
     @endif
 </div>

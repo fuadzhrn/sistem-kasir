@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/components/alerts.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components/toast.css') }}">
     @stack('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 </head>
 <body class="@yield('body-class')">
     <main class="auth-shell">

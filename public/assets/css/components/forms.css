@@ -34,7 +34,9 @@
     border-radius: var(--radius-sm);
     color: var(--color-text);
     font-size: var(--font-size-base);
+    max-width: 100%;
     min-height: 42px;
+    min-width: 0;
     padding: 9px var(--space-3);
     width: 100%;
 }
@@ -144,6 +146,9 @@
 
 .input-group {
     display: flex;
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
 }
 
 .input-group .form-control {

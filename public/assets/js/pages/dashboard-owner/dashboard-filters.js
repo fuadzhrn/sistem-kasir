@@ -13,10 +13,18 @@ export function initializeFilters(form) {
 
     period.addEventListener('change', updateCustomRange);
     updateCustomRange();
+    let committedState = captureFilterState(form);
 
     return {
         parameters: () => filterParameters(form),
         validate: () => validateFilter(form),
+        commit: () => {
+            committedState = captureFilterState(form);
+        },
+        restore: () => {
+            restoreFilterState(form, committedState);
+            updateCustomRange();
+        },
         reset: () => {
             form.reset();
             form.elements.branch_id.value = '';
@@ -26,6 +34,22 @@ export function initializeFilters(form) {
             updateCustomRange();
         },
     };
+}
+
+function captureFilterState(form) {
+    return {
+        branchId: form.elements.branch_id.value,
+        period: form.elements.period.value,
+        dateFrom: form.elements.date_from.value,
+        dateTo: form.elements.date_to.value,
+    };
+}
+
+function restoreFilterState(form, state) {
+    form.elements.branch_id.value = state.branchId;
+    form.elements.period.value = state.period;
+    form.elements.date_from.value = state.dateFrom;
+    form.elements.date_to.value = state.dateTo;
 }
 
 export function filterParameters(form) {

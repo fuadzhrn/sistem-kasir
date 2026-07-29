@@ -26,8 +26,8 @@
             <tbody data-low-stocks>
                 @forelse ($dashboard['low_stocks'] as $stock)
                     <tr>
-                        <td>{{ $stock['branch'] }}</td>
-                        <td>
+                        <td data-label="Cabang">{{ $stock['branch'] }}</td>
+                        <td data-label="Produk">
                             @if ($stock['detail_url'])
                                 <a href="{{ $stock['detail_url'] }}"><strong>{{ $stock['product_name'] }}</strong></a>
                             @else
@@ -35,12 +35,12 @@
                             @endif
                             <small>{{ $stock['product_code'] }}</small>
                         </td>
-                        <td>{{ $stock['quantity'] }} {{ $stock['unit'] }}</td>
-                        <td>{{ $stock['minimum_stock'] }} {{ $stock['unit'] }}</td>
-                        <td><span class="badge {{ $stock['status'] === 'Habis' ? 'badge-danger' : 'badge-warning' }}">{{ $stock['status'] }}</span></td>
+                        <td data-label="Tersedia">{{ $stock['quantity'] }} {{ $stock['unit'] }}</td>
+                        <td data-label="Minimum">{{ $stock['minimum_stock'] }} {{ $stock['unit'] }}</td>
+                        <td data-label="Status"><span class="badge {{ $stock['status'] === 'Habis' ? 'badge-danger' : 'badge-warning' }}">{{ $stock['status'] }}</span></td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="table-empty">Tidak ada stok kritis saat ini.</td></tr>
+                    <tr><td colspan="5" class="table-empty">Tidak ada stok yang hampir habis.</td></tr>
                 @endforelse
             </tbody>
         </table>

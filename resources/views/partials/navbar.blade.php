@@ -1,6 +1,20 @@
 <header class="app-navbar">
+    <button
+        class="navbar-menu-button"
+        type="button"
+        data-drawer-toggle
+        aria-label="Buka menu navigasi"
+        aria-controls="app-navigation"
+        aria-expanded="false"
+    >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"/>
+        </svg>
+    </button>
+
     <div class="navbar-heading">
         <p class="navbar-heading__eyebrow">Sistem Manajemen Toko</p>
+        <span class="navbar-heading__mobile-brand">Sistem Kasir</span>
         <h1>@yield('page-title', 'Ruang Kerja')</h1>
     </div>
 

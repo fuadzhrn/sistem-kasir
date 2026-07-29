@@ -41,9 +41,9 @@ class LoginRequest extends FormRequest
         return [
             'login_role.required' => 'Silakan pilih Owner, Admin Cabang, atau Kasir terlebih dahulu.',
             'login_role.in' => 'Jenis akun yang dipilih tidak tersedia.',
-            'login.required' => 'Username atau email wajib diisi.',
+            'login.required' => 'Silakan masukkan username atau email.',
             'login.max' => 'Username atau email maksimal 255 karakter.',
-            'password.required' => 'Kata sandi wajib diisi.',
+            'password.required' => 'Silakan masukkan password.',
             'remember.boolean' => 'Pilihan Ingat saya tidak valid.',
         ];
     }

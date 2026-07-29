@@ -22,7 +22,7 @@ export function formatQuantity(value) {
         : '0';
 }
 
-export function createCell(content, className = '') {
+export function createCell(content, className = '', label = '') {
     const cell = document.createElement('td');
     cell.textContent = content ?? '';
 
@@ -30,10 +30,14 @@ export function createCell(content, className = '') {
         cell.className = className;
     }
 
+    if (label) {
+        cell.dataset.label = label;
+    }
+
     return cell;
 }
 
-export function createLinkCell(label, href, secondary = '') {
+export function createLinkCell(label, href, secondary = '', fieldLabel = '') {
     const cell = document.createElement('td');
     const link = document.createElement('a');
     const strong = document.createElement('strong');
@@ -52,17 +56,37 @@ export function createLinkCell(label, href, secondary = '') {
         cell.append(small);
     }
 
+    if (fieldLabel) {
+        cell.dataset.label = fieldLabel;
+    }
+
     return cell;
 }
 
-export function createBadgeCell(label, variant = 'neutral') {
+export function createBadgeCell(label, variant = 'neutral', fieldLabel = '') {
     const cell = document.createElement('td');
     const badge = document.createElement('span');
     badge.className = `badge badge-${safeVariant(variant)}`;
     badge.textContent = label ?? '';
     cell.append(badge);
 
+    if (fieldLabel) {
+        cell.dataset.label = fieldLabel;
+    }
+
     return cell;
+}
+
+export function appendMobileDetail(cell, href) {
+    if (!safeInternalUrl(href)) {
+        return;
+    }
+
+    const link = document.createElement('a');
+    link.className = 'dashboard-mobile-detail';
+    link.href = href;
+    link.textContent = 'Lihat Detail';
+    cell.append(link);
 }
 
 export function emptyRow(columnCount, message) {

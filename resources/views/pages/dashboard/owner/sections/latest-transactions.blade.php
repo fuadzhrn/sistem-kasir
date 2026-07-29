@@ -22,13 +22,16 @@
             <tbody data-latest-transactions>
                 @forelse ($dashboard['latest_transactions'] as $sale)
                     <tr>
-                        <td><a href="{{ $sale['detail_url'] }}"><strong>{{ $sale['invoice_number'] }}</strong></a></td>
-                        <td><time datetime="{{ $sale['transaction_date_iso'] }}">{{ $sale['transaction_date'] }}</time></td>
-                        <td>{{ $sale['branch'] }}</td>
-                        <td>{{ $sale['cashier'] }}</td>
-                        <td>{{ $sale['payment_method'] }}</td>
-                        <td>{{ $sale['total_formatted'] }}</td>
-                        <td><span class="badge badge-{{ $sale['status_variant'] }}">{{ $sale['status'] }}</span></td>
+                        <td data-label="Nomor Nota"><a href="{{ $sale['detail_url'] }}"><strong>{{ $sale['invoice_number'] }}</strong></a></td>
+                        <td data-label="Tanggal dan Waktu"><time datetime="{{ $sale['transaction_date_iso'] }}">{{ $sale['transaction_date'] }}</time></td>
+                        <td data-label="Cabang">{{ $sale['branch'] }}</td>
+                        <td data-label="Kasir">{{ $sale['cashier'] }}</td>
+                        <td data-label="Pembayaran">{{ $sale['payment_method'] }}</td>
+                        <td data-label="Total">{{ $sale['total_formatted'] }}</td>
+                        <td data-label="Status">
+                            <span class="badge badge-{{ $sale['status_variant'] }}">{{ $sale['status'] }}</span>
+                            <a class="dashboard-mobile-detail" href="{{ $sale['detail_url'] }}">Lihat Detail</a>
+                        </td>
                     </tr>
                 @empty
                     <tr><td colspan="7" class="table-empty">Belum ada transaksi pada periode ini.</td></tr>

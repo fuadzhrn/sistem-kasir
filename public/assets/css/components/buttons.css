@@ -10,9 +10,13 @@
     font-weight: var(--font-weight-medium);
     gap: var(--space-2);
     justify-content: center;
+    line-height: 1.35;
+    max-width: 100%;
     min-height: 40px;
+    overflow-wrap: anywhere;
     padding: 9px var(--space-4);
     text-decoration: none;
+    white-space: normal;
     transition:
         background-color var(--transition-fast),
         border-color var(--transition-fast),

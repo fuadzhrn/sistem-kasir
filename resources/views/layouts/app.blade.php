@@ -32,10 +32,16 @@
     <link rel="stylesheet" href="{{ asset('assets/css/components/loading.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components/pagination.css') }}">
     @stack('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 </head>
 <body>
     <div class="app-shell" data-app-shell>
         @include('partials.sidebar')
+        <div
+            class="app-drawer-overlay"
+            data-drawer-overlay
+            aria-hidden="true"
+        ></div>
 
         <div class="app-main">
             @include('partials.navbar')

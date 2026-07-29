@@ -4,7 +4,9 @@
         <p>Omzet dan penjualan bersih cabang per periode.</p>
     </header>
     <div class="dashboard-chart-card__canvas">
-        <canvas data-dashboard-chart="sales_trend" aria-label="Grafik tren penjualan cabang" role="img"></canvas>
+        <canvas data-dashboard-chart="sales_trend" aria-label="Grafik tren penjualan cabang" role="img">
+            Grafik omzet dan penjualan bersih untuk cabang aktif.
+        </canvas>
     </div>
     @include('pages.dashboard.admin.sections.dashboard-empty-state', ['message' => 'Belum ada penjualan pada periode ini.', 'key' => 'sales_trend'])
 </article>

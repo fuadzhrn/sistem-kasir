@@ -18,6 +18,9 @@
         $submitLabel = isset($roleLabels[$selectedRole])
             ? 'Masuk sebagai '.$roleLabels[$selectedRole]
             : 'Pilih Jenis Akun Terlebih Dahulu';
+        $formTitle = isset($roleLabels[$selectedRole])
+            ? 'Masuk sebagai '.$roleLabels[$selectedRole]
+            : 'Selamat Datang';
     @endphp
 
     <div class="auth-page" data-auth-page>
@@ -65,7 +68,10 @@
                         <path d="M19.5 4.5c-6.3.3-10.1 2.4-11.7 6.2-1 2.4-.5 4.8.2 6.3 1.3-3.1 3.6-5.7 7.1-7.8-3 2.7-4.8 5.7-5.5 9.1 1.8.9 4.3.8 6.3-.6 3.8-2.6 4.1-7.7 3.6-13.2Z"/>
                     </svg>
                 </span>
-                <strong>{{ config('app.name') }}</strong>
+                <span class="auth-mobile-brand__content">
+                    <strong>{{ config('app.name') }}</strong>
+                    <span>Kelola kegiatan toko dengan lebih mudah.</span>
+                </span>
             </div>
 
             <div class="auth-login-panel__inner">
@@ -74,10 +80,10 @@
 
                     <header class="auth-login-heading">
                         <p class="auth-login-heading__eyebrow">Akses akun</p>
-                        <h2 id="login-title">Selamat Datang</h2>
+                        <h2 id="login-title" data-login-title>{{ $formTitle }}</h2>
                         <p>Pilih jenis akun Anda untuk masuk.</p>
                         <p class="auth-login-heading__context" data-login-context aria-live="polite">
-                            {{ isset($roleLabels[$selectedRole]) ? 'Masuk sebagai '.$roleLabels[$selectedRole] : 'Belum ada jenis akun yang dipilih' }}
+                            {{ isset($roleLabels[$selectedRole]) ? 'Masukkan username atau email dan kata sandi akun Anda.' : 'Belum ada jenis akun yang dipilih' }}
                         </p>
                     </header>
 
@@ -101,7 +107,12 @@
                                         </span>
                                         <strong class="auth-role-card__title">Owner</strong>
                                         <span class="auth-role-card__description" id="owner-role-description">
-                                            Memantau seluruh cabang, penjualan, stok, pengeluaran, dan keuntungan.
+                                            <span class="auth-role-card__description-full">
+                                                Memantau seluruh cabang, penjualan, stok, pengeluaran, dan keuntungan.
+                                            </span>
+                                            <span class="auth-role-card__description-short">
+                                                Pemilik toko dan seluruh cabang.
+                                            </span>
                                         </span>
                                     </span>
                                 </label>
@@ -119,7 +130,12 @@
                                         </span>
                                         <strong class="auth-role-card__title">Admin Cabang</strong>
                                         <span class="auth-role-card__description" id="admin-role-description">
-                                            Mengelola produk, stok, barang masuk, pengeluaran, dan kegiatan cabang.
+                                            <span class="auth-role-card__description-full">
+                                                Mengelola produk, stok, barang masuk, pengeluaran, dan kegiatan cabang.
+                                            </span>
+                                            <span class="auth-role-card__description-short">
+                                                Pengelola kegiatan satu cabang.
+                                            </span>
                                         </span>
                                     </span>
                                 </label>
@@ -137,7 +153,12 @@
                                         </span>
                                         <strong class="auth-role-card__title">Kasir</strong>
                                         <span class="auth-role-card__description" id="cashier-role-description">
-                                            Membuat transaksi, menerima pembayaran, dan mencetak struk.
+                                            <span class="auth-role-card__description-full">
+                                                Membuat transaksi, menerima pembayaran, dan mencetak struk.
+                                            </span>
+                                            <span class="auth-role-card__description-short">
+                                                Pelayanan transaksi dan cetak struk.
+                                            </span>
                                         </span>
                                     </span>
                                 </label>
@@ -168,7 +189,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="password">Kata Sandi</label>
+                            <label class="form-label" for="password">Password</label>
                             <div class="password-field auth-password-field">
                                 <input
                                     class="form-control @error('password') is-error @enderror"
@@ -185,8 +206,10 @@
                                     type="button"
                                     data-password-toggle
                                     data-password-target="password"
+                                    data-password-show-label="Tampilkan password"
+                                    data-password-hide-label="Sembunyikan password"
                                     aria-controls="password"
-                                    aria-label="Tampilkan kata sandi"
+                                    aria-label="Tampilkan password"
                                     aria-pressed="false"
                                 >
                                     <svg data-password-icon-show viewBox="0 0 24 24" focusable="false" aria-hidden="true">

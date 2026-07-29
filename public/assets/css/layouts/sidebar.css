@@ -41,6 +41,11 @@
     width: 24px;
 }
 
+.sidebar-drawer-close,
+.sidebar-drawer-footer {
+    display: none;
+}
+
 .sidebar-brand__text,
 .sidebar-footer__text {
     display: grid;
@@ -101,6 +106,14 @@
 .sidebar-nav__item:not(.is-disabled):hover {
     background: rgb(255 255 255 / 8%);
     color: var(--color-white);
+}
+
+.sidebar-nav__item:not(.is-disabled):focus-visible,
+.sidebar-drawer-close:focus-visible,
+.sidebar-drawer-logout:focus-visible,
+.sidebar-toggle:focus-visible {
+    outline: 3px solid rgb(255 255 255 / 42%);
+    outline-offset: 2px;
 }
 
 .sidebar-nav__item.is-active {
@@ -254,4 +267,236 @@
     opacity: 1;
     transform: translate(0, -50%);
     visibility: visible;
+}
+
+.app-drawer-overlay {
+    background: var(--color-overlay);
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    transition: opacity var(--transition-base), visibility var(--transition-base);
+    visibility: hidden;
+    z-index: 80;
+}
+
+@media (max-width: 1024px) {
+    body.drawer-open {
+        overflow: hidden;
+    }
+
+    .app-sidebar,
+    .app-sidebar[data-collapsed] {
+        flex-basis: auto;
+        height: 100vh;
+        height: 100dvh;
+        left: 0;
+        max-width: 100%;
+        overflow: hidden;
+        position: fixed;
+        top: 0;
+        transform: translateX(-100%);
+        transition: transform var(--transition-base), visibility var(--transition-base);
+        visibility: hidden;
+        width: min(72vw, 340px);
+        z-index: 90;
+    }
+
+    .app-sidebar.is-open {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .app-sidebar[data-collapsed] .sidebar-brand,
+    .app-sidebar[data-collapsed] .sidebar-footer {
+        justify-content: initial;
+        padding-inline: initial;
+    }
+
+    .app-sidebar[data-collapsed] .sidebar-brand__text,
+    .app-sidebar[data-collapsed] .sidebar-nav__label,
+    .app-sidebar[data-collapsed] .sidebar-nav__text,
+    .app-sidebar[data-collapsed] .sidebar-nav__badge,
+    .app-sidebar[data-collapsed] .sidebar-footer__info {
+        display: initial;
+    }
+
+    .app-sidebar[data-collapsed] .sidebar-nav__item {
+        justify-content: initial;
+        padding-inline: var(--space-3);
+    }
+
+    .sidebar-brand {
+        flex: 0 0 64px;
+        padding: 0 var(--space-4);
+    }
+
+    .sidebar-brand__text {
+        white-space: normal;
+    }
+
+    .sidebar-brand__text strong,
+    .sidebar-brand__text small {
+        overflow-wrap: anywhere;
+    }
+
+    .sidebar-drawer-close {
+        align-items: center;
+        background: rgb(255 255 255 / 10%);
+        border: 1px solid rgb(255 255 255 / 12%);
+        border-radius: var(--radius-md);
+        color: var(--color-white);
+        cursor: pointer;
+        display: inline-flex;
+        flex: 0 0 44px;
+        height: 44px;
+        justify-content: center;
+        margin-left: auto;
+        width: 44px;
+    }
+
+    .sidebar-drawer-close:hover {
+        background: rgb(255 255 255 / 18%);
+    }
+
+    .sidebar-drawer-close svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .sidebar-nav {
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+        padding: var(--space-3);
+    }
+
+    .sidebar-nav__item,
+    .app-sidebar[data-collapsed] .sidebar-nav__item {
+        min-height: 46px;
+        padding: var(--space-2) var(--space-3);
+    }
+
+    .sidebar-nav__text {
+        overflow: visible;
+        overflow-wrap: anywhere;
+        text-overflow: clip;
+        white-space: normal;
+    }
+
+    .sidebar-footer {
+        display: none;
+    }
+
+    .sidebar-drawer-footer {
+        border-top: 1px solid rgb(255 255 255 / 10%);
+        display: grid;
+        flex: 0 0 auto;
+        gap: var(--space-3);
+        padding: var(--space-4);
+    }
+
+    .sidebar-drawer-user {
+        align-items: center;
+        display: flex;
+        gap: var(--space-3);
+        min-width: 0;
+    }
+
+    .sidebar-drawer-user__avatar {
+        align-items: center;
+        background: rgb(255 255 255 / 12%);
+        border-radius: var(--radius-pill);
+        display: inline-flex;
+        flex: 0 0 40px;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        height: 40px;
+        justify-content: center;
+        width: 40px;
+    }
+
+    .sidebar-drawer-user__identity {
+        display: grid;
+        min-width: 0;
+    }
+
+    .sidebar-drawer-user__identity strong,
+    .sidebar-drawer-user__identity span,
+    .sidebar-drawer-user__identity small {
+        overflow-wrap: anywhere;
+    }
+
+    .sidebar-drawer-user__identity strong {
+        color: var(--color-white);
+        font-size: var(--font-size-sm);
+    }
+
+    .sidebar-drawer-user__identity span {
+        color: rgb(255 255 255 / 78%);
+        font-size: var(--font-size-xs);
+    }
+
+    .sidebar-drawer-user__identity small {
+        color: rgb(255 255 255 / 58%);
+        font-size: 11px;
+    }
+
+    .sidebar-drawer-logout {
+        align-items: center;
+        background: rgb(255 255 255 / 10%);
+        border: 1px solid rgb(255 255 255 / 14%);
+        border-radius: var(--radius-md);
+        color: var(--color-white);
+        cursor: pointer;
+        display: flex;
+        font-family: var(--font-heading);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+        gap: var(--space-3);
+        justify-content: center;
+        min-height: 44px;
+        padding: var(--space-2) var(--space-4);
+        width: 100%;
+    }
+
+    .sidebar-drawer-logout:hover {
+        background: rgb(255 255 255 / 18%);
+    }
+
+    .sidebar-drawer-logout svg {
+        height: 20px;
+        width: 20px;
+    }
+
+    .app-drawer-overlay.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+        visibility: visible;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-sidebar,
+    .app-sidebar[data-collapsed] {
+        width: min(86vw, 320px);
+    }
+}
+
+@media (max-width: 480px) {
+    .app-sidebar,
+    .app-sidebar[data-collapsed] {
+        width: min(88vw, 320px);
+    }
+
+    .sidebar-brand,
+    .sidebar-drawer-footer {
+        padding-inline: var(--space-3);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .app-sidebar,
+    .app-drawer-overlay {
+        transition-duration: 0.01ms;
+    }
 }

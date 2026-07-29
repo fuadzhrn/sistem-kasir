@@ -14,6 +14,7 @@
             ? submitButton.querySelector('[data-login-submit-label]')
             : null;
         const context = document.querySelector('[data-login-context]');
+        const title = document.querySelector('[data-login-title]');
         const roleInputs = Array.from(document.querySelectorAll('input[name="login_role"]'));
         let isSubmitting = false;
 
@@ -48,9 +49,15 @@
                 ? 'Masuk sebagai ' + label
                 : 'Pilih Jenis Akun Terlebih Dahulu';
 
+            if (title) {
+                title.textContent = label
+                    ? 'Masuk sebagai ' + label
+                    : 'Selamat Datang';
+            }
+
             if (context) {
                 context.textContent = label
-                    ? 'Masuk sebagai ' + label
+                    ? 'Masukkan username atau email dan kata sandi akun Anda.'
                     : 'Belum ada jenis akun yang dipilih';
             }
         }
@@ -75,7 +82,7 @@
             submitButton.setAttribute('data-loading', 'true');
             submitButton.setAttribute('aria-busy', 'true');
             submitButton.disabled = true;
-            submitLabel.textContent = 'Memproses masuk...';
+            submitLabel.textContent = 'Memeriksa akun...';
         });
 
         window.addEventListener('pageshow', function () {

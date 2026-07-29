@@ -1,16 +1,19 @@
 <section class="cashier-dashboard__history card" aria-labelledby="cashier-history-title">
     <header class="cashier-dashboard__section-heading">
         <div>
-            <h2 id="cashier-history-title">Riwayat Transaksi Saya</h2>
+            <p class="cashier-dashboard__section-eyebrow">Aktivitas Kasir</p>
+            <h2 id="cashier-history-title">Riwayat Transaksi Terbaru</h2>
             <p>Hanya transaksi yang dibuat menggunakan akun Anda.</p>
         </div>
-        <span>{{ number_format($dashboard['sales']->total(), 0, ',', '.') }} nota</span>
+        <span class="cashier-dashboard__history-count">
+            {{ number_format($dashboard['sales']->total(), 0, ',', '.') }} nota
+        </span>
     </header>
 
     @if ($dashboard['sales']->isEmpty())
         @include('pages.dashboard.cashier.sections.transaction-empty-state')
     @else
-        <div class="table-responsive">
+        <div class="table-responsive cashier-dashboard__desktop-history">
             <table class="table">
                 <thead>
                     <tr>
@@ -49,6 +52,49 @@
             </table>
         </div>
 
+        <div class="cashier-dashboard__transactions" aria-label="Daftar transaksi terbaru">
+            @foreach ($dashboard['sales'] as $sale)
+                <article class="cashier-dashboard__transaction-card">
+                    <header class="cashier-dashboard__transaction-header">
+                        <div>
+                            <strong>{{ $sale['invoice_number'] }}</strong>
+                            <time>{{ $sale['transaction_date'] }}</time>
+                        </div>
+                        @include('pages.dashboard.cashier.sections.transaction-status-badge', ['sale' => $sale])
+                    </header>
+
+                    <dl class="cashier-dashboard__transaction-body">
+                        <div class="cashier-dashboard__transaction-total">
+                            <dt>Total</dt>
+                            <dd>{{ $sale['total_formatted'] }}</dd>
+                        </div>
+                        <div>
+                            <dt>Pembayaran</dt>
+                            <dd>{{ $sale['payment_method'] }}</dd>
+                        </div>
+                        <div>
+                            <dt>Jumlah Item</dt>
+                            <dd>{{ number_format($sale['items_count'], 0, ',', '.') }}</dd>
+                        </div>
+                    </dl>
+
+                    <footer class="cashier-dashboard__transaction-footer">
+                        <a class="btn btn-secondary" href="{{ $sale['detail_url'] }}">Detail</a>
+                        <form method="POST" action="{{ $sale['receipt_url'] }}" target="_blank" rel="noopener">
+                            @csrf
+                            <button class="btn btn-outline" type="submit">Cetak Ulang</button>
+                        </form>
+                    </footer>
+                </article>
+            @endforeach
+        </div>
+
         {{ $dashboard['sales']->onEachSide(1)->links('components.pagination', ['itemLabel' => 'transaksi']) }}
     @endif
+
+    <div class="cashier-dashboard__history-footer">
+        <a class="btn btn-secondary cashier-dashboard__view-history" href="{{ route('sales.index') }}">
+            Lihat Semua Riwayat
+        </a>
+    </div>
 </section>

@@ -44,8 +44,8 @@ class LoginRoleSelectionTest extends AuthorizationTestCase
             ->assertRedirect(route('login'))
             ->assertSessionHasErrors([
                 'login_role' => 'Silakan pilih Owner, Admin Cabang, atau Kasir terlebih dahulu.',
-                'login' => 'Username atau email wajib diisi.',
-                'password' => 'Kata sandi wajib diisi.',
+                'login' => 'Silakan masukkan username atau email.',
+                'password' => 'Silakan masukkan password.',
             ]);
         $this->assertGuest();
     }
@@ -226,12 +226,13 @@ class LoginRoleSelectionTest extends AuthorizationTestCase
         $this->assertStringNotContainsString('<style', $blade);
         $this->assertStringNotContainsString('<script>', $blade);
 
-        foreach (['1280px', '900px', '700px', '420px'] as $breakpoint) {
+        foreach (['1280px', '1024px', '768px', '480px'] as $breakpoint) {
             $this->assertStringContainsString('@media (max-width: '.$breakpoint.')', $css);
         }
 
         $this->assertStringContainsString('updateRoleState', $javascript);
         $this->assertStringContainsString('isSubmitting', $javascript);
+        $this->assertStringContainsString('Memeriksa akun...', $javascript);
         $this->assertStringContainsString('data-loading', $javascript);
         $this->assertStringNotContainsString('jQuery', $javascript);
     }

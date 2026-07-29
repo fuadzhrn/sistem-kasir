@@ -19,7 +19,7 @@ class AuthenticationTest extends TestCase
         $this->get(route('login'))
             ->assertOk()
             ->assertSeeText('Username atau Email')
-            ->assertSeeText('Kata Sandi')
+            ->assertSeeText('Password')
             ->assertSeeText('Owner')
             ->assertSeeText('Admin Cabang')
             ->assertSeeText('Kasir')

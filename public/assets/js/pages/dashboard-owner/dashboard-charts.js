@@ -20,6 +20,10 @@ export function destroyDashboardCharts() {
     instances.clear();
 }
 
+export function resizeDashboardCharts() {
+    instances.forEach((chart) => chart.resize());
+}
+
 function renderLineChart(root, key, data, datasets) {
     if (toggleEmpty(root, key, data.empty)) {
         destroy(key);
@@ -50,7 +54,7 @@ function renderBarChart(root, data) {
                 dataset('Laba Bersih', data.net_profit, '--color-primary-dark', false),
             ],
         },
-        options: commonOptions(),
+        options: branchComparisonOptions(),
     });
 
     const subtitle = root.querySelector('[data-branch-chart-subtitle]');
@@ -86,6 +90,7 @@ function renderDoughnutChart(root, data) {
                 ],
                 borderColor: '#ffffff',
                 borderWidth: 2,
+                hoverOffset: 6,
             }],
         },
         options: {
@@ -107,6 +112,8 @@ function renderDoughnutChart(root, data) {
 
 function dataset(label, data, colorVariable, fill = true) {
     const color = cssColor(colorVariable);
+    const mobile = isMobileViewport();
+
     return {
         label,
         data,
@@ -114,17 +121,21 @@ function dataset(label, data, colorVariable, fill = true) {
         backgroundColor: fill ? withAlpha(color, 0.12) : color,
         pointBackgroundColor: color,
         borderWidth: 2,
-        pointRadius: 2,
-        pointHoverRadius: 4,
+        pointHitRadius: 14,
+        pointRadius: mobile ? 3 : 2,
+        pointHoverRadius: mobile ? 5 : 4,
         fill,
         tension: 0.25,
     };
 }
 
 function commonOptions(showScales = true) {
+    const mobile = isMobileViewport();
+
     return {
         responsive: true,
         maintainAspectRatio: false,
+        resizeDelay: 100,
         interaction: {
             mode: 'index',
             intersect: false,
@@ -133,6 +144,13 @@ function commonOptions(showScales = true) {
             duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 250,
         },
         scales: showScales ? {
+            x: {
+                ticks: {
+                    autoSkip: true,
+                    maxRotation: 0,
+                    maxTicksLimit: mobile ? 6 : 12,
+                },
+            },
             y: {
                 beginAtZero: true,
                 ticks: {
@@ -146,7 +164,10 @@ function commonOptions(showScales = true) {
                 labels: {
                     usePointStyle: true,
                     boxWidth: 8,
-                    padding: 16,
+                    padding: mobile ? 12 : 16,
+                    font: {
+                        size: mobile ? 11 : 12,
+                    },
                 },
             },
             tooltip: {
@@ -156,6 +177,23 @@ function commonOptions(showScales = true) {
             },
         },
     };
+}
+
+function branchComparisonOptions() {
+    const options = commonOptions();
+    const mobile = isMobileViewport();
+
+    options.scales.x.ticks.maxTicksLimit = mobile ? 6 : 10;
+    options.scales.x.ticks.callback = function (value) {
+        const label = this.getLabelForValue(value);
+        const maximumLength = mobile ? 14 : 22;
+
+        return label.length > maximumLength
+            ? `${label.slice(0, maximumLength - 1)}…`
+            : label;
+    };
+
+    return options;
 }
 
 function create(key, root, configuration) {
@@ -206,4 +244,8 @@ function withAlpha(hex, alpha) {
     const green = (value >> 8) & 255;
     const blue = value & 255;
     return `rgb(${red} ${green} ${blue} / ${alpha})`;
+}
+
+function isMobileViewport() {
+    return window.matchMedia('(max-width: 768px)').matches;
 }

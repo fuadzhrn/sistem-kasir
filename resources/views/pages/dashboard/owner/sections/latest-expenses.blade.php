@@ -22,13 +22,16 @@
             <tbody data-latest-expenses>
                 @forelse ($dashboard['latest_expenses'] as $expense)
                     <tr>
-                        <td><time datetime="{{ $expense['expense_date_iso'] }}">{{ $expense['expense_date'] }}</time></td>
-                        <td>{{ $expense['branch'] }}</td>
-                        <td>{{ $expense['category'] }}</td>
-                        <td><a href="{{ $expense['detail_url'] }}">{{ \Illuminate\Support\Str::limit($expense['description'], 70) }}</a></td>
-                        <td>{{ $expense['creator'] }}</td>
-                        <td>{{ $expense['amount_formatted'] }}</td>
-                        <td><span class="badge badge-{{ $expense['status_variant'] }}">{{ $expense['status'] }}</span></td>
+                        <td data-label="Tanggal"><time datetime="{{ $expense['expense_date_iso'] }}">{{ $expense['expense_date'] }}</time></td>
+                        <td data-label="Cabang">{{ $expense['branch'] }}</td>
+                        <td data-label="Kategori">{{ $expense['category'] }}</td>
+                        <td data-label="Deskripsi"><a href="{{ $expense['detail_url'] }}">{{ \Illuminate\Support\Str::limit($expense['description'], 70) }}</a></td>
+                        <td data-label="Pencatat">{{ $expense['creator'] }}</td>
+                        <td data-label="Jumlah">{{ $expense['amount_formatted'] }}</td>
+                        <td data-label="Status">
+                            <span class="badge badge-{{ $expense['status_variant'] }}">{{ $expense['status'] }}</span>
+                            <a class="dashboard-mobile-detail" href="{{ $expense['detail_url'] }}">Lihat Detail</a>
+                        </td>
                     </tr>
                 @empty
                     <tr><td colspan="7" class="table-empty">Belum ada pengeluaran pada periode ini.</td></tr>

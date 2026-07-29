@@ -1,7 +1,7 @@
 <header class="dashboard-header admin-dashboard__header">
     <div>
         <p class="dashboard-eyebrow">Ringkasan operasional cabang</p>
-        <h1>Dashboard Cabang</h1>
+        <h1>Dashboard Admin</h1>
         <p class="dashboard-header__context">
             <strong data-active-branch>{{ $dashboard['filters']['branch_name'] }}</strong>
             <span aria-hidden="true">•</span>

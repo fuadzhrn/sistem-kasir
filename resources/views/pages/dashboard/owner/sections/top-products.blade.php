@@ -26,14 +26,14 @@
             <tbody data-top-products>
                 @forelse ($dashboard['top_products'] as $product)
                     <tr>
-                        <td>{{ $product['rank'] }}</td>
-                        <td><strong>{{ $product['name'] }}</strong><small>{{ $product['code'] }}</small></td>
-                        <td>{{ $product['quantity'] }} {{ $product['unit'] }}</td>
-                        <td>{{ $product['receipt_count'] }}</td>
-                        <td>{{ $product['net_sales_formatted'] }}</td>
+                        <td data-label="Peringkat">#{{ $product['rank'] }}</td>
+                        <td data-label="Produk"><strong>{{ $product['name'] }}</strong><small>{{ $product['code'] }}</small></td>
+                        <td data-label="Terjual">{{ $product['quantity'] }} {{ $product['unit'] }}</td>
+                        <td data-label="Jumlah Nota">{{ $product['receipt_count'] }}</td>
+                        <td data-label="Penjualan Bersih">{{ $product['net_sales_formatted'] }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="table-empty">Belum ada produk terjual pada periode ini.</td></tr>
+                    <tr><td colspan="5" class="table-empty">Belum ada produk terlaris pada periode ini.</td></tr>
                 @endforelse
             </tbody>
         </table>

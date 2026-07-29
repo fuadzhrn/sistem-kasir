@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Cabang')
+@section('title', 'Dashboard Admin')
+@section('page-title', 'Dashboard Admin')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/pages/dashboard-owner.css') }}">
@@ -16,6 +17,7 @@
     >
         @include('pages.dashboard.admin.sections.dashboard-header')
         @include('pages.dashboard.admin.sections.dashboard-filters')
+        @include('pages.dashboard.admin.sections.quick-actions')
         @include('pages.dashboard.admin.sections.dashboard-loading')
         @include('pages.dashboard.admin.sections.dashboard-error')
         @include('pages.dashboard.admin.sections.financial-cards')

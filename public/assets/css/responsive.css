@@ -1,0 +1,436 @@
+/*
+ * Fondasi responsive global.
+ *
+ * File ini hanya menangani perilaku umum lintas halaman. Penyesuaian visual
+ * yang spesifik untuk sebuah modul tetap ditempatkan pada stylesheet halaman.
+ */
+
+.app-shell,
+.app-main,
+.app-content,
+.app-content__inner,
+.app-container,
+.page-heading,
+.page-heading__content,
+.section-stack,
+.table-card,
+.app-table-wrapper,
+.data-table-wrapper,
+.chart-container,
+.dashboard-chart-card,
+.dashboard-chart-card__canvas {
+    max-width: 100%;
+    min-width: 0;
+}
+
+.app-main,
+.app-content__inner,
+.app-container,
+.table-card,
+.app-table-wrapper,
+.data-table-wrapper,
+.chart-container,
+.dashboard-chart-card,
+.dashboard-chart-card__canvas {
+    width: 100%;
+}
+
+.app-content__inner > *,
+.section-stack > *,
+.card-grid > *,
+.summary-grid > *,
+.form-grid > *,
+.dashboard-financial-grid > *,
+.dashboard-chart-grid > *,
+.dashboard-information-grid > * {
+    min-width: 0;
+}
+
+.chart-container canvas,
+.dashboard-chart-card__canvas canvas,
+canvas[data-dashboard-chart] {
+    display: block;
+    max-width: 100%;
+}
+
+.card pre,
+.modal pre,
+.modal-dialog pre {
+    max-width: 100%;
+    overflow: auto;
+}
+
+.page-heading__actions,
+.module-actions,
+.module-filters__actions,
+.form-actions,
+.action-group,
+.table-toolbar,
+.table-toolbar__controls {
+    min-width: 0;
+}
+
+.form-help,
+.form-error,
+.form-success,
+.validation-message {
+    overflow-wrap: anywhere;
+}
+
+input[type="date"],
+input[type="number"],
+input[type="search"],
+input[type="file"] {
+    max-width: 100%;
+    min-width: 0;
+}
+
+@media (max-width: 1024px) {
+    .app-content {
+        padding-inline: 24px;
+    }
+
+    .app-footer {
+        padding-inline: 24px;
+    }
+
+    .page-heading,
+    .page-heading__row,
+    .dashboard-header,
+    .reports-header,
+    .cashier-dashboard__welcome {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .page-heading__actions,
+    .dashboard-header__actions,
+    .reports-header__actions,
+    .cashier-dashboard__primary-action {
+        flex-wrap: wrap;
+    }
+
+    .card-grid,
+    .summary-grid,
+    .activities-summary,
+    .dashboard-financial-grid,
+    .stock-summary-grid,
+    .receipt-summary-grid,
+    .cashier-dashboard__summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .expense-summary,
+    .expense-category-summary,
+    .sales-summary,
+    .adjustment-summary-grid,
+    .transfer-summary-grid,
+    .authorization-summary,
+    .authorization-counts__grid,
+    .system-check__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .module-filters,
+    .module-filters--expenses,
+    .module-filters--payment,
+    .activities-filters__grid,
+    .expense-category-filters,
+    .product-filters,
+    .stock-filters,
+    .stock-history-filters,
+    .sales-filters__grid,
+    .adjustment-filter-grid,
+    .transfer-filter-grid,
+    .receipt-filter-grid,
+    .cashier-dashboard__filters,
+    .admin-dashboard__filter,
+    .report-filter,
+    .report-filter__custom {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .profile-menu {
+        max-width: calc(100vw - 32px);
+    }
+}
+
+@media (max-width: 768px) {
+    .app-navbar {
+        gap: 8px;
+        height: auto;
+        min-height: 64px;
+        padding: 8px 16px;
+    }
+
+    .navbar-heading {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .navbar-heading h1 {
+        font-size: 16px;
+        line-height: 1.35;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .navbar-heading__eyebrow,
+    .profile-trigger__identity {
+        display: none;
+    }
+
+    .app-content {
+        padding: 20px 16px;
+    }
+
+    .app-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px;
+    }
+
+    .page-heading {
+        margin-bottom: 24px;
+    }
+
+    .page-heading__row,
+    .page-heading__actions,
+    .module-actions,
+    .module-filters__actions,
+    .form-actions,
+    .action-group,
+    .dashboard-header,
+    .dashboard-header__actions,
+    .dashboard-filter,
+    .dashboard-filter__custom,
+    .dashboard-filter__actions,
+    .cashier-dashboard__welcome,
+    .cashier-dashboard__primary-action,
+    .cashier-dashboard__filter-actions,
+    .reports-header,
+    .report-filter__actions,
+    .activities-filters__header,
+    .activities-filters__actions,
+    .receipt-filter-grid__actions,
+    .stock-filter-actions,
+    .product-filters__actions {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .page-heading__actions {
+        width: 100%;
+    }
+
+    .page-heading__content h1,
+    .page-heading__content h2,
+    .dashboard-header h1,
+    .reports-header h1 {
+        font-size: clamp(20px, 6vw, 26px);
+        overflow-wrap: anywhere;
+    }
+
+    .card,
+    .table-card {
+        min-width: 0;
+    }
+
+    .card__header,
+    .card-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .card-grid,
+    .summary-grid,
+    .activities-summary,
+    .expense-summary,
+    .expense-category-summary,
+    .sales-summary,
+    .adjustment-summary-grid,
+    .transfer-summary-grid,
+    .authorization-summary,
+    .authorization-counts__grid,
+    .system-check__grid,
+    .activities-filters__grid,
+    .dashboard-financial-grid,
+    .dashboard-chart-grid,
+    .dashboard-information-grid,
+    .cashier-dashboard__summary-grid,
+    .cashier-dashboard__filters,
+    .stock-summary-grid,
+    .receipt-summary-grid,
+    .receipt-filter-grid,
+    .reports-landing-grid,
+    .report-filter,
+    .report-filter__custom,
+    .module-filters,
+    .module-filters--expenses,
+    .module-filters--payment,
+    .expense-category-filters,
+    .product-filters,
+    .stock-filters,
+    .stock-history-filters,
+    .sales-filters__grid,
+    .adjustment-filter-grid,
+    .transfer-filter-grid,
+    .form-grid,
+    .product-form-grid,
+    .admin-dashboard__filter,
+    .admin-dashboard-branch-context {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .activities-filters__search,
+    .report-filter__custom,
+    .report-filter__search,
+    .report-filter__actions,
+    .cashier-dashboard__filter-actions,
+    .receipt-filter-grid__actions,
+    .module-filters__actions {
+        grid-column: 1 / -1;
+    }
+
+    .account-grid,
+    .activities-detail-grid,
+    .detail-grid,
+    .detail-list,
+    .metric-list,
+    .expense-detail-grid,
+    .product-detail-layout,
+    .sale-detail-meta,
+    .sale-detail-grid,
+    .adjustment-detail-grid,
+    .receipt-detail-grid,
+    .transfer-detail-grid,
+    .stock-detail-grid,
+    .stock-detail-list,
+    .settings-layout,
+    .logo-settings,
+    .settings-toggle-grid,
+    .business-rule-grid,
+    .payment-summary__list article {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .table-toolbar,
+    .table-toolbar__controls {
+        align-items: stretch;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .table-toolbar .form-control,
+    .table-toolbar .search-input,
+    .table-toolbar__controls .form-control,
+    .table-toolbar__controls .search-input {
+        max-width: none;
+        width: 100%;
+    }
+
+    .modal-positioner,
+    .modal__positioner {
+        padding: 12px;
+    }
+
+    .modal-dialog,
+    .modal__dialog {
+        max-height: calc(100vh - 24px);
+        max-height: calc(100dvh - 24px);
+        width: min(100%, calc(100vw - 24px));
+    }
+
+    .modal-header,
+    .modal__header,
+    .modal-body,
+    .modal__body,
+    .modal-footer,
+    .modal__footer,
+    .modal__actions {
+        padding: 16px;
+    }
+
+    .modal-footer,
+    .modal__footer,
+    .modal__actions {
+        flex-wrap: wrap;
+    }
+
+    .pagination-shell,
+    .pagination,
+    .pagination__links {
+        max-width: 100%;
+    }
+
+    .pagination a,
+    .pagination button,
+    .pagination__link,
+    .app-pagination__link {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .badge {
+        white-space: normal;
+    }
+
+    .btn,
+    .button {
+        min-height: 44px;
+    }
+
+    .profile-menu {
+        min-width: 0;
+        right: 0;
+        width: min(280px, calc(100vw - 24px));
+    }
+
+    .toast-container {
+        inset-inline: 12px;
+        max-width: none;
+        width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-navbar {
+        gap: 8px;
+        padding-inline: 12px;
+    }
+
+    .app-content {
+        padding: 16px 12px;
+    }
+
+    .app-footer {
+        padding-inline: 12px;
+    }
+
+    .card__header,
+    .card__body,
+    .card__footer,
+    .card-header,
+    .card-body,
+    .card-footer {
+        padding-inline: 16px;
+    }
+
+    .modal-positioner,
+    .modal__positioner {
+        padding: 8px;
+    }
+
+    .modal-dialog,
+    .modal__dialog {
+        max-height: calc(100vh - 16px);
+        max-height: calc(100dvh - 16px);
+        width: min(100%, calc(100vw - 16px));
+    }
+
+    .profile-menu {
+        width: min(280px, calc(100vw - 16px));
+    }
+}

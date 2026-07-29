@@ -1,8 +1,8 @@
 @php
     $summaryCards = [
-        ['label' => 'Nota Selesai Hari Ini', 'value' => $dashboard['today']['completed'], 'variant' => 'success'],
-        ['label' => 'Nota Dibatalkan Hari Ini', 'value' => $dashboard['today']['voided'], 'variant' => 'danger'],
-        ['label' => 'Total Nota Dibuat Hari Ini', 'value' => $dashboard['today']['total'], 'variant' => 'info'],
+        ['label' => 'Transaksi Selesai', 'value' => $dashboard['today']['completed'], 'variant' => 'success', 'short' => 'SL'],
+        ['label' => 'Transaksi Dibatalkan', 'value' => $dashboard['today']['voided'], 'variant' => 'danger', 'short' => 'BT'],
+        ['label' => 'Total Transaksi', 'value' => $dashboard['today']['total'], 'variant' => 'info', 'short' => 'TR'],
     ];
 @endphp
 
@@ -11,8 +11,12 @@
     <div class="cashier-dashboard__summary-grid">
         @foreach ($summaryCards as $card)
             <article class="cashier-dashboard__summary-card card is-{{ $card['variant'] }}">
-                <p>{{ $card['label'] }}</p>
-                <strong>{{ number_format($card['value'], 0, ',', '.') }}</strong>
+                <span class="cashier-dashboard__summary-icon" aria-hidden="true">{{ $card['short'] }}</span>
+                <div>
+                    <p>{{ $card['label'] }}</p>
+                    <strong>{{ number_format($card['value'], 0, ',', '.') }}</strong>
+                    <small>Hari ini</small>
+                </div>
             </article>
         @endforeach
     </div>

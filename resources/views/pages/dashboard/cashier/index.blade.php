@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard Kasir')
+@section('page-title', 'Dashboard Kasir')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/pages/dashboard-cashier.css') }}">

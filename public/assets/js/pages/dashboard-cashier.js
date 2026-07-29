@@ -11,7 +11,9 @@ if (root) {
         }
     });
 
-    if (!new URLSearchParams(window.location.search).toString()) {
+    const hasDesktopViewport = window.matchMedia('(min-width: 1025px)').matches;
+
+    if (hasDesktopViewport && !new URLSearchParams(window.location.search).toString()) {
         root.querySelector('[data-cashier-dashboard-search]')?.focus();
     }
 }

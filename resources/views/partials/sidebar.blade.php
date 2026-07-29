@@ -69,9 +69,22 @@
     $sidebarBranch = $sidebarUser?->isOwner()
         ? 'Semua Cabang'
         : ($sidebarUser?->branch?->name ?? ($sidebarUser ? 'Cabang belum ditetapkan' : 'Fondasi antarmuka'));
+    $sidebarInitials = $sidebarUser
+        ? collect(explode(' ', $sidebarUser->name))
+            ->filter()
+            ->take(2)
+            ->map(fn (string $name): string => mb_strtoupper(mb_substr($name, 0, 1)))
+            ->implode('')
+        : 'UI';
 @endphp
 
-<aside class="app-sidebar" data-sidebar aria-label="Navigasi aplikasi">
+<aside
+    class="app-sidebar"
+    id="app-navigation"
+    data-sidebar
+    aria-label="Navigasi utama"
+    tabindex="-1"
+>
     <div class="sidebar-brand">
         <span class="sidebar-brand__mark" aria-hidden="true">
             <svg viewBox="0 0 24 24" focusable="false">
@@ -82,6 +95,16 @@
             <strong>Sistem Manajemen</strong>
             <small>Toko Pertanian</small>
         </span>
+        <button
+            class="sidebar-drawer-close"
+            type="button"
+            data-drawer-close
+            aria-label="Tutup menu navigasi"
+        >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"/>
+            </svg>
+        </button>
     </div>
 
     <nav class="sidebar-nav" aria-label="Menu utama">
@@ -121,9 +144,32 @@
         </ul>
     </nav>
 
+    <div class="sidebar-drawer-footer">
+        <div class="sidebar-drawer-user">
+            <span class="sidebar-drawer-user__avatar" aria-hidden="true">{{ $sidebarInitials ?: 'AK' }}</span>
+            <span class="sidebar-drawer-user__identity">
+                <strong>{{ $sidebarUser?->name ?? 'Mode Lokal' }}</strong>
+                <span>{{ $sidebarRole }}</span>
+                <small>{{ $sidebarBranch }}</small>
+            </span>
+        </div>
+
+        @auth
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button class="sidebar-drawer-logout" type="submit">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M14 8l4 4-4 4M18 12H9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                    </svg>
+                    <span>Keluar</span>
+                </button>
+            </form>
+        @endauth
+    </div>
+
     <div class="sidebar-footer">
         <div class="sidebar-footer__info">
-            <span class="sidebar-footer__avatar" aria-hidden="true">{{ $sidebarUser ? 'AK' : 'UI' }}</span>
+            <span class="sidebar-footer__avatar" aria-hidden="true">{{ $sidebarInitials ?: 'AK' }}</span>
             <span class="sidebar-footer__text">
                 <strong>{{ $sidebarRole }}</strong>
                 <small>{{ $sidebarBranch }}</small>

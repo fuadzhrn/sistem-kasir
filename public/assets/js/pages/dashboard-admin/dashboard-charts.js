@@ -20,6 +20,10 @@ export function destroyDashboardCharts() {
     instances.clear();
 }
 
+export function resizeDashboardCharts() {
+    instances.forEach((chart) => chart.resize());
+}
+
 function renderLineChart(root, key, data, datasets) {
     if (toggleEmpty(root, key, data.empty)) {
         destroy(key);
@@ -81,6 +85,7 @@ function renderDoughnutChart(root, data) {
                 ],
                 borderColor: '#ffffff',
                 borderWidth: 2,
+                hoverOffset: 6,
             }],
         },
         options: {
@@ -102,6 +107,7 @@ function renderDoughnutChart(root, data) {
 
 function dataset(label, data, colorVariable, fill = true) {
     const color = cssColor(colorVariable);
+    const mobile = isMobileViewport();
 
     return {
         label,
@@ -110,22 +116,33 @@ function dataset(label, data, colorVariable, fill = true) {
         backgroundColor: fill ? withAlpha(color, 0.12) : color,
         pointBackgroundColor: color,
         borderWidth: 2,
-        pointRadius: 2,
-        pointHoverRadius: 4,
+        pointHitRadius: 14,
+        pointRadius: mobile ? 3 : 2,
+        pointHoverRadius: mobile ? 5 : 4,
         fill,
         tension: 0.25,
     };
 }
 
 function commonOptions(showScales = true) {
+    const mobile = isMobileViewport();
+
     return {
         responsive: true,
         maintainAspectRatio: false,
+        resizeDelay: 100,
         interaction: { mode: 'index', intersect: false },
         animation: {
             duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 250,
         },
         scales: showScales ? {
+            x: {
+                ticks: {
+                    autoSkip: true,
+                    maxRotation: 0,
+                    maxTicksLimit: mobile ? 6 : 12,
+                },
+            },
             y: {
                 beginAtZero: true,
                 ticks: { callback: (value) => formatRupiah(value) },
@@ -134,7 +151,12 @@ function commonOptions(showScales = true) {
         plugins: {
             legend: {
                 position: 'bottom',
-                labels: { usePointStyle: true, boxWidth: 8, padding: 16 },
+                labels: {
+                    usePointStyle: true,
+                    boxWidth: 8,
+                    padding: mobile ? 12 : 16,
+                    font: { size: mobile ? 11 : 12 },
+                },
             },
             tooltip: {
                 callbacks: {
@@ -190,4 +212,8 @@ function withAlpha(hex, alpha) {
 
     const value = Number.parseInt(normalized, 16);
     return `rgb(${(value >> 16) & 255} ${(value >> 8) & 255} ${value & 255} / ${alpha})`;
+}
+
+function isMobileViewport() {
+    return window.matchMedia('(max-width: 768px)').matches;
 }

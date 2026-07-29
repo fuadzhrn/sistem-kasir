@@ -4,7 +4,9 @@
         <p>Persentase penjualan bersih cabang berdasarkan snapshot metode pembayaran.</p>
     </header>
     <div class="dashboard-chart-card__canvas">
-        <canvas data-dashboard-chart="payment_composition" aria-label="Grafik komposisi metode pembayaran cabang" role="img"></canvas>
+        <canvas data-dashboard-chart="payment_composition" aria-label="Grafik komposisi metode pembayaran cabang" role="img">
+            Grafik komposisi metode pembayaran untuk cabang aktif.
+        </canvas>
     </div>
     @include('pages.dashboard.admin.sections.dashboard-empty-state', ['message' => 'Belum ada pembayaran pada periode ini.', 'key' => 'payment_composition'])
 </article>
