@@ -1,7 +1,26 @@
+@php
+    $activeCategory = $categoryFilter !== null ? $categories->firstWhere('id', $categoryFilter)?->name : null;
+    $activeUnit = $unitFilter !== null ? $units->firstWhere('id', $unitFilter)?->name : null;
+    $activeStatus = ['active' => 'Aktif', 'inactive' => 'Nonaktif'][$status] ?? null;
+    $hasActiveProductFilters = $search !== ''
+        || $activeCategory !== null
+        || $activeUnit !== null
+        || $activeStatus !== null;
+@endphp
+
 <section class="card filter-card" aria-label="Filter produk"><form class="product-filters" method="GET" action="{{ route('products.index') }}">
-    <div class="form-group product-filters__search"><label class="form-label" for="product-search">Pencarian</label><input class="form-control" id="product-search" name="search" type="search" maxlength="100" value="{{ $search }}" placeholder="Kode, barcode, nama, merek, ukuran"></div>
+    <div class="form-group product-filters__search"><label class="form-label" for="product-search">Pencarian</label><input class="form-control" id="product-search" name="search" type="search" maxlength="100" value="{{ $search }}" placeholder="Cari nama, kode, atau barcode produk"></div>
     <div class="form-group"><label class="form-label" for="product-category">Kategori</label><select class="form-control" id="product-category" name="category"><option value="">Semua kategori</option>@foreach($categories as $category)<option value="{{ $category->id }}" @selected($categoryFilter === $category->id)>{{ $category->name }}</option>@endforeach</select></div>
     <div class="form-group"><label class="form-label" for="product-unit">Satuan</label><select class="form-control" id="product-unit" name="unit"><option value="">Semua satuan</option>@foreach($units as $unit)<option value="{{ $unit->id }}" @selected($unitFilter === $unit->id)>{{ $unit->name }}</option>@endforeach</select></div>
     <div class="form-group"><label class="form-label" for="product-status">Status</label><select class="form-control" id="product-status" name="status"><option value="">Semua status</option><option value="active" @selected($status === 'active')>Aktif</option><option value="inactive" @selected($status === 'inactive')>Nonaktif</option></select></div>
     <div class="product-filters__actions"><button class="btn btn-primary" type="submit">Terapkan</button><a class="btn btn-secondary" href="{{ route('products.index') }}">Reset</a></div>
+    @if ($hasActiveProductFilters)
+        <div class="products-page__filter-summary" role="status">
+            <strong>Filter aktif:</strong>
+            @if ($search !== '')<span>Pencarian: {{ $search }}</span>@endif
+            @if ($activeCategory !== null)<span>Kategori: {{ $activeCategory }}</span>@endif
+            @if ($activeUnit !== null)<span>Satuan: {{ $activeUnit }}</span>@endif
+            @if ($activeStatus !== null)<span>Status: {{ $activeStatus }}</span>@endif
+        </div>
+    @endif
 </form></section>
