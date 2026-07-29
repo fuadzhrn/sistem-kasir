@@ -1,4 +1,15 @@
-<section class="card stock-filter-card" aria-label="Filter stok">
+@php
+    $selectedCategory = filled($filters['category_id'] ?? null)
+        ? $categories->firstWhere('id', (int) $filters['category_id'])
+        : null;
+    $selectedStatusLabel = [
+        'safe' => 'Aman',
+        'low' => 'Menipis',
+        'out' => 'Habis',
+    ][$filters['status'] ?? ''] ?? null;
+@endphp
+
+<section class="card stock-filter-card" aria-label="Pencarian dan filter stok">
     <form class="stock-filters" method="GET" action="{{ route('stocks.index') }}">
         @if (auth()->user()->isOwner())
             <div class="form-group">
@@ -21,7 +32,7 @@
                 type="search"
                 maxlength="100"
                 value="{{ $filters['search'] ?? '' }}"
-                placeholder="Kode, barcode, atau nama produk"
+                placeholder="Cari nama atau kode produk"
             >
         </div>
         <div class="form-group">
@@ -54,4 +65,20 @@
             </a>
         </div>
     </form>
+
+    <div class="inventory-filter-summary" aria-label="Konteks dan filter aktif">
+        <span class="inventory-filter-summary__label">Konteks aktif:</span>
+        <div class="inventory-filter-summary__items">
+            <span>Cabang {{ $selectedBranch->name }}</span>
+            @if (filled($filters['search'] ?? null))
+                <span>Pencarian “{{ $filters['search'] }}”</span>
+            @endif
+            @if ($selectedCategory)
+                <span>Kategori {{ $selectedCategory->name }}</span>
+            @endif
+            @if ($selectedStatusLabel)
+                <span>Status {{ $selectedStatusLabel }}</span>
+            @endif
+        </div>
+    </div>
 </section>

@@ -14,11 +14,14 @@
             <div class="modal__header">
                 <div>
                     <p class="eyebrow">Catatan permanen</p>
-                    <h2 id="initial-stock-confirmation-title">Konfirmasi Stok Awal</h2>
+                    <h2 id="initial-stock-confirmation-title">Simpan Stok Awal?</h2>
                 </div>
                 <button class="modal__close" type="button" data-modal-close aria-label="Tutup modal">×</button>
             </div>
             <div class="modal__body">
+                <p class="stock-confirmation-intro">
+                    Pastikan cabang, produk, dan jumlah stok sudah benar sebelum disimpan.
+                </p>
                 <dl class="stock-confirmation-list">
                     <div><dt>Cabang</dt><dd data-confirm-branch>—</dd></div>
                     <div><dt>Produk</dt><dd data-confirm-product>—</dd></div>

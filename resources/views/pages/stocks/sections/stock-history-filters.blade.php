@@ -1,8 +1,24 @@
-<section class="card stock-history-filter-card" aria-label="Filter riwayat stok">
+@php
+    $historySelectedBranch = filled($filters['branch_id'] ?? null)
+        ? $branches->firstWhere('id', (int) $filters['branch_id'])
+        : null;
+    $historySelectedProduct = filled($filters['product_id'] ?? null)
+        ? $products->firstWhere('id', (int) $filters['product_id'])
+        : null;
+    $historySelectedCategory = filled($filters['category_id'] ?? null)
+        ? $categories->firstWhere('id', (int) $filters['category_id'])
+        : null;
+    $historySelectedUser = filled($filters['user_id'] ?? null)
+        ? $users->firstWhere('id', (int) $filters['user_id'])
+        : null;
+    $historySelectedMovement = $movementLabels[$filters['movement_type'] ?? ''] ?? null;
+@endphp
+
+<section class="card stock-history-filter-card" aria-label="Pencarian dan filter riwayat stok">
     <form class="stock-history-filters" method="GET" action="{{ route('stocks.history.index') }}">
         <div class="form-group stock-history-filters__search">
             <label class="form-label" for="history-search">Pencarian</label>
-            <input class="form-control" id="history-search" name="search" type="search" maxlength="100" value="{{ $filters['search'] ?? '' }}" placeholder="Kode atau nama produk">
+            <input class="form-control" id="history-search" name="search" type="search" maxlength="100" value="{{ $filters['search'] ?? '' }}" placeholder="Cari nama atau kode produk">
         </div>
         @if (auth()->user()->isOwner())
             <div class="form-group">
@@ -68,4 +84,45 @@
             <a class="btn btn-secondary" href="{{ route('stocks.history.index') }}">Reset</a>
         </div>
     </form>
+
+    @if (
+        filled($filters['search'] ?? null)
+        || $historySelectedBranch
+        || $historySelectedProduct
+        || $historySelectedCategory
+        || $historySelectedMovement
+        || $historySelectedUser
+        || filled($filters['date_from'] ?? null)
+        || filled($filters['date_to'] ?? null)
+    )
+        <div class="inventory-filter-summary" aria-label="Filter riwayat aktif">
+            <span class="inventory-filter-summary__label">Filter aktif:</span>
+            <div class="inventory-filter-summary__items">
+                @if (filled($filters['search'] ?? null))
+                    <span>Pencarian “{{ $filters['search'] }}”</span>
+                @endif
+                @if ($historySelectedBranch)
+                    <span>Cabang {{ $historySelectedBranch->name }}</span>
+                @endif
+                @if ($historySelectedProduct)
+                    <span>Produk {{ $historySelectedProduct->name }}</span>
+                @endif
+                @if ($historySelectedCategory)
+                    <span>Kategori {{ $historySelectedCategory->name }}</span>
+                @endif
+                @if ($historySelectedMovement)
+                    <span>Jenis {{ $historySelectedMovement }}</span>
+                @endif
+                @if ($historySelectedUser)
+                    <span>Pengguna {{ $historySelectedUser->name }}</span>
+                @endif
+                @if (filled($filters['date_from'] ?? null))
+                    <span>Mulai {{ $filters['date_from'] }}</span>
+                @endif
+                @if (filled($filters['date_to'] ?? null))
+                    <span>Sampai {{ $filters['date_to'] }}</span>
+                @endif
+            </div>
+        </div>
+    @endif
 </section>

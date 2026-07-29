@@ -18,6 +18,16 @@
         ],
     ])
 
+    <div class="alert alert-info opening-stock-guidance" role="status">
+        <span class="alert__icon" aria-hidden="true">i</span>
+        <div class="alert__content">
+            <h2 class="alert__title">Tentang stok awal</h2>
+            <p class="alert__message">
+                Stok awal digunakan ketika produk pertama kali dicatat pada suatu cabang dan tidak perlu dimasukkan kembali setiap hari.
+            </p>
+        </div>
+    </div>
+
     @include('pages.stocks.sections.initial-stock-form')
     @include('pages.stocks.sections.initial-stock-confirmation-modal')
 @endsection

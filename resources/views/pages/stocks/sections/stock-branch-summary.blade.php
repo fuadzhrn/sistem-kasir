@@ -26,7 +26,7 @@
 </section>
 
 <section class="table-card" aria-label="Ringkasan stok per cabang">
-    <div class="table-wrapper">
+    <div class="table-wrapper inventory-desktop-table">
         <table class="table branch-stock-summary-table">
             <thead>
                 <tr>
@@ -67,5 +67,54 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <div class="inventory-list inventory-branch-list" aria-label="Ringkasan stok per cabang versi mobile">
+        @forelse ($branchSummaries as $branch)
+            <article class="inventory-card inventory-branch-card">
+                <header class="inventory-card__header">
+                    <div class="inventory-card__heading">
+                        <p class="inventory-card__code">{{ $branch->code }}</p>
+                        <h2 class="inventory-card__product">{{ $branch->name }}</h2>
+                    </div>
+                </header>
+                <dl class="inventory-card__body inventory-branch-card__metrics">
+                    <div class="inventory-card__row">
+                        <dt class="inventory-card__label">SKU Aktif</dt>
+                        <dd class="inventory-card__value">{{ $branch->active_sku_count }}</dd>
+                    </div>
+                    <div class="inventory-card__row">
+                        <dt class="inventory-card__label">Aman</dt>
+                        <dd class="inventory-card__value"><span class="badge badge-success">{{ $branch->safe_count }}</span></dd>
+                    </div>
+                    <div class="inventory-card__row">
+                        <dt class="inventory-card__label">Menipis</dt>
+                        <dd class="inventory-card__value"><span class="badge badge-warning">{{ $branch->low_count }}</span></dd>
+                    </div>
+                    <div class="inventory-card__row">
+                        <dt class="inventory-card__label">Habis</dt>
+                        <dd class="inventory-card__value"><span class="badge badge-danger">{{ $branch->out_count }}</span></dd>
+                    </div>
+                    <div class="inventory-card__row inventory-card__row--full">
+                        <dt class="inventory-card__label">Pembaruan Terakhir</dt>
+                        <dd class="inventory-card__value">
+                            {{ $branch->last_stock_update
+                                ? \Illuminate\Support\Carbon::parse($branch->last_stock_update)->format('d M Y, H:i')
+                                : 'Belum ada perubahan' }}
+                        </dd>
+                    </div>
+                </dl>
+                <footer class="inventory-card__footer">
+                    <a class="btn btn-primary" href="{{ route('stocks.index', ['branch_id' => $branch->id]) }}">
+                        Lihat Stok Cabang
+                    </a>
+                </footer>
+            </article>
+        @empty
+            <div class="inventory-empty" role="status">
+                <h2>Belum ada cabang aktif</h2>
+                <p>Ringkasan stok akan tampil setelah cabang aktif tersedia.</p>
+            </div>
+        @endforelse
     </div>
 </section>

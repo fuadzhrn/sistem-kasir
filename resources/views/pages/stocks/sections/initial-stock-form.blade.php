@@ -57,8 +57,20 @@
                 <div><dt>Cabang</dt><dd>{{ $branch->code }} — {{ $branch->name }}</dd></div>
                 <div><dt>Produk</dt><dd>{{ $product->code }} — {{ $product->name }}</dd></div>
                 <div><dt>Satuan</dt><dd>{{ $product->unit->symbol ?: $product->unit->name }}</dd></div>
-                <div><dt>Quantity Saat Ini</dt><dd>{{ \App\Support\Format\Quantity::format($branchStock?->quantity) }}</dd></div>
-                <div><dt>Stok Minimum</dt><dd>{{ \App\Support\Format\Quantity::format($product->minimum_stock) }}</dd></div>
+                <div>
+                    <dt>Stok Tersedia</dt>
+                    <dd>
+                        {{ \App\Support\Format\Quantity::format($branchStock?->quantity) }}
+                        {{ $product->unit->symbol ?: $product->unit->name }}
+                    </dd>
+                </div>
+                <div>
+                    <dt>Stok Minimum</dt>
+                    <dd>
+                        {{ \App\Support\Format\Quantity::format($product->minimum_stock) }}
+                        {{ $product->unit->symbol ?: $product->unit->name }}
+                    </dd>
+                </div>
                 <div><dt>Status Saat Ini</dt><dd>{{ $statusLabels[$stockStatus] }}</dd></div>
             </dl>
 
@@ -92,6 +104,7 @@
             @endif
 
             <form
+                class="opening-stock-form"
                 method="POST"
                 action="{{ route('stocks.initial.store') }}"
                 data-initial-stock-form
@@ -121,8 +134,9 @@
                             data-quantity-input
                             required
                             @disabled(! $canCorrect)
+                            @error('quantity') aria-describedby="initial-quantity-error" aria-invalid="true" @enderror
                         >
-                        @error('quantity')<span class="form-error">{{ $message }}</span>@enderror
+                        @error('quantity')<span class="form-error" id="initial-quantity-error">{{ $message }}</span>@enderror
                     </div>
                     <div class="form-group form-group--full">
                         <label class="form-label" for="initial-reason">Alasan <span class="form-required">*</span></label>
@@ -135,8 +149,9 @@
                             required
                             @disabled(! $canCorrect)
                             placeholder="Contoh: Stok awal hasil perhitungan pembukaan toko"
+                            @error('reason') aria-describedby="initial-reason-error" aria-invalid="true" @enderror
                         >{{ old('reason') }}</textarea>
-                        @error('reason')<span class="form-error">{{ $message }}</span>@enderror
+                        @error('reason')<span class="form-error" id="initial-reason-error">{{ $message }}</span>@enderror
                     </div>
                 </div>
 

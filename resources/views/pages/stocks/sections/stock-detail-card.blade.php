@@ -13,25 +13,83 @@
             <span class="badge {{ $statusBadges[$stockStatus] }}">{{ $statusLabels[$stockStatus] }}</span>
             <h3>{{ $branchStock->product->name }}</h3>
             <p>{{ $branchStock->product->code }} · {{ $branchStock->product->brand ?: 'Tanpa merek' }}</p>
+            <dl class="stock-product-meta">
+                <div>
+                    <dt>Kategori</dt>
+                    <dd>{{ $branchStock->product->category->name }}</dd>
+                </div>
+                <div>
+                    <dt>Satuan</dt>
+                    <dd>{{ $branchStock->product->unit->name }}</dd>
+                </div>
+                <div>
+                    <dt>Barcode</dt>
+                    <dd>{{ $branchStock->product->barcode ?: 'Tidak tersedia' }}</dd>
+                </div>
+            </dl>
         </div>
     </article>
 
     <article class="card stock-detail-card">
         <div class="card__header"><h3>Informasi Stok</h3></div>
         <div class="card__body">
-            <dl class="stock-detail-list">
-                <div><dt>Cabang</dt><dd>{{ $branchStock->branch->code }} — {{ $branchStock->branch->name }}</dd></div>
-                <div><dt>Quantity</dt><dd class="stock-quantity">{{ \App\Support\Format\Quantity::format($branchStock->quantity) }} {{ $branchStock->product->unit->symbol }}</dd></div>
-                <div><dt>Stok Minimum</dt><dd>{{ \App\Support\Format\Quantity::format($branchStock->product->minimum_stock) }} {{ $branchStock->product->unit->symbol }}</dd></div>
-                <div><dt>Status</dt><dd>{{ $statusLabels[$stockStatus] }}</dd></div>
-                <div><dt>Kategori</dt><dd>{{ $branchStock->product->category->name }}</dd></div>
-                <div><dt>Satuan</dt><dd>{{ $branchStock->product->unit->name }}</dd></div>
-                <div><dt>Barcode</dt><dd>{{ $branchStock->product->barcode ?: 'Tidak tersedia' }}</dd></div>
-                <div><dt>Diperbarui</dt><dd>{{ $branchStock->updated_at->format('d M Y, H:i') }}</dd></div>
+            <div class="stock-detail-sections">
+                <section class="stock-detail-section" aria-labelledby="stock-detail-branch">
+                    <h4 id="stock-detail-branch">Informasi Cabang</h4>
+                    <dl class="stock-detail-list">
+                        <div>
+                            <dt>Cabang</dt>
+                            <dd>{{ $branchStock->branch->code }} — {{ $branchStock->branch->name }}</dd>
+                        </div>
+                    </dl>
+                </section>
+
+                <section class="stock-detail-section" aria-labelledby="stock-detail-summary">
+                    <h4 id="stock-detail-summary">Ringkasan Stok</h4>
+                    <dl class="stock-detail-list">
+                        <div>
+                            <dt>Stok Tersedia</dt>
+                            <dd class="stock-quantity">
+                                {{ \App\Support\Format\Quantity::format($branchStock->quantity) }}
+                                {{ $branchStock->product->unit->symbol ?: $branchStock->product->unit->name }}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>Status</dt>
+                            <dd><span class="badge {{ $statusBadges[$stockStatus] }}">{{ $statusLabels[$stockStatus] }}</span></dd>
+                        </div>
+                        <div>
+                            <dt>Diperbarui</dt>
+                            <dd>{{ $branchStock->updated_at->format('d M Y, H:i') }}</dd>
+                        </div>
+                    </dl>
+                </section>
+
+                <section class="stock-detail-section" aria-labelledby="stock-detail-minimum">
+                    <h4 id="stock-detail-minimum">Stok Minimum</h4>
+                    <dl class="stock-detail-list">
+                        <div>
+                            <dt>Batas Minimum</dt>
+                            <dd>
+                                {{ \App\Support\Format\Quantity::format($branchStock->product->minimum_stock) }}
+                                {{ $branchStock->product->unit->symbol ?: $branchStock->product->unit->name }}
+                            </dd>
+                        </div>
+                    </dl>
+                </section>
+
                 @if (auth()->user()->isOwner())
-                    <div><dt>Biaya Rata-rata Referensi</dt><dd>{{ \App\Support\Format\Rupiah::format($branchStock->average_cost) }}</dd></div>
+                    <section class="stock-detail-section" aria-labelledby="stock-detail-cost">
+                        <h4 id="stock-detail-cost">HPP Rata-rata</h4>
+                        <dl class="stock-detail-list">
+                            <div>
+                                <dt>Biaya Rata-rata Referensi</dt>
+                                <dd class="stock-detail-cost">{{ \App\Support\Format\Rupiah::format($branchStock->average_cost) }}</dd>
+                            </div>
+                        </dl>
+                    </section>
                 @endif
-            </dl>
+            </div>
         </div>
     </article>
 </section>
