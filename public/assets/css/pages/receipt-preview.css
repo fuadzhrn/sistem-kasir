@@ -10,6 +10,37 @@
     padding: 32px;
 }
 
+.receipt-preview-toolbar {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.receipt-preview-toolbar form {
+    margin: 0;
+}
+
+.receipt-preview-toolbar__button {
+    align-items: center;
+    background: #111;
+    border: 1px solid #111;
+    border-radius: 5px;
+    color: #fff;
+    display: inline-flex;
+    font: 600 14px/1 Arial, sans-serif;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 14px;
+    text-decoration: none;
+}
+
+.receipt-preview-toolbar__button--secondary {
+    background: #fff;
+    color: #111;
+}
+
 .receipt-preview {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -150,4 +181,46 @@
     color: var(--color-info);
     font-size: 12px;
     padding: 10px;
+}
+
+@media screen and (max-width: 640px) {
+    .print-document {
+        overflow-x: hidden;
+    }
+
+    .print-container {
+        max-width: 100%;
+        padding: 12px;
+        width: 100%;
+    }
+
+    .receipt-preview-toolbar {
+        align-items: stretch;
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .receipt-preview-toolbar form,
+    .receipt-preview-toolbar__button {
+        width: 100%;
+    }
+
+    .receipt-preview {
+        box-shadow: none;
+        max-width: 100%;
+        padding: 16px;
+    }
+
+    .receipt-header dl div,
+    .receipt-payment dl div,
+    .receipt-item__name,
+    .receipt-item__calculation {
+        gap: 8px;
+    }
+
+    .receipt-header dd,
+    .receipt-payment dd,
+    .receipt-item__calculation strong {
+        overflow-wrap: anywhere;
+    }
 }

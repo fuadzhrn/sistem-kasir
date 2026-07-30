@@ -1,5 +1,12 @@
-<section class="card filter-card">
-    <form class="module-filters module-filters--expenses" method="GET" action="{{ route('expenses.index') }}">
+<section class="card filter-card expense-filter-card" data-expense-filters>
+    <div class="expense-filter-card__mobile-heading">
+        <div>
+            <span>Persempit hasil</span>
+            <h2>Filter Pengeluaran</h2>
+        </div>
+        <button class="expense-filter-card__close" type="button" aria-label="Tutup filter pengeluaran" data-expense-filter-close>×</button>
+    </div>
+    <form id="expense-filter-panel" class="module-filters module-filters--expenses" method="GET" action="{{ route('expenses.index') }}" data-expense-filter-form>
         <div class="form-group">
             <label class="form-label" for="search">Pencarian</label>
             <input class="form-control" id="search" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Deskripsi, kategori, pembuat">
@@ -60,7 +67,7 @@
         </div>
         <div class="module-filters__actions">
             <a class="btn btn-secondary" href="{{ route('expenses.index') }}">Atur Ulang</a>
-            <button class="btn btn-primary" type="submit">Terapkan</button>
+            <button class="btn btn-primary" type="submit" data-expense-filter-submit>Terapkan</button>
         </div>
     </form>
 </section>

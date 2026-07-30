@@ -7,6 +7,16 @@
 @endpush
 
 @section('content')
+    <section class="receipt-preview-toolbar print-hidden" aria-label="Tindakan pratinjau nota">
+        <a class="receipt-preview-toolbar__button receipt-preview-toolbar__button--secondary" href="{{ route('sales.show', $sale) }}">
+            Kembali ke Detail
+        </a>
+        <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="_blank" rel="noopener">
+            @csrf
+            <button class="receipt-preview-toolbar__button" type="submit">Cetak Ulang Struk</button>
+        </form>
+    </section>
+
     <div class="receipt-preview">
         @if ($sale->status === \App\Models\Sale::STATUS_VOIDED)
             <div class="receipt-watermark receipt-watermark--danger">TRANSAKSI DIBATALKAN</div>

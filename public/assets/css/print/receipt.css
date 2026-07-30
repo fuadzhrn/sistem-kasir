@@ -264,6 +264,52 @@ body {
     }
 }
 
+@media screen and (max-width: 640px) {
+    .print-document {
+        overflow-x: hidden;
+    }
+
+    .print-container {
+        padding: 12px;
+        width: 100%;
+    }
+
+    .receipt-toolbar {
+        margin-bottom: 12px;
+        max-width: 100%;
+        padding: 12px;
+    }
+
+    .receipt-toolbar__actions {
+        align-items: stretch;
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .receipt-toolbar__actions > *,
+    .receipt-toolbar__button,
+    .receipt-toolbar__paper,
+    .receipt-toolbar__paper select {
+        min-height: 44px;
+        width: 100%;
+    }
+
+    .receipt-toolbar__button {
+        align-items: center;
+        display: inline-flex;
+        justify-content: center;
+    }
+
+    .receipt-toolbar__instructions {
+        display: grid;
+    }
+
+    .receipt {
+        box-shadow: none;
+        max-width: 100%;
+    }
+}
+
 @media print {
     html,
     body,

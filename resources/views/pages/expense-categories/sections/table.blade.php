@@ -60,11 +60,14 @@
                 <header class="master-card__header">
                     <div class="master-card__identity">
                         <strong class="master-card__title">{{ $category->name }}</strong>
-                        <span class="master-card__subtitle">Slug: {{ $category->slug }}</span>
                     </div>
                     <span class="badge {{ $category->is_active ? 'badge-success' : 'badge-danger' }}">{{ $category->is_active ? 'Aktif' : 'Nonaktif' }}</span>
                 </header>
                 <dl class="master-card__body">
+                    <div class="master-card__row">
+                        <dt class="master-card__label">Slug</dt>
+                        <dd class="master-card__value">{{ $category->slug }}</dd>
+                    </div>
                     <div class="master-card__row">
                         <dt class="master-card__label">Deskripsi</dt>
                         <dd class="master-card__value">{{ $category->description ?: '—' }}</dd>
@@ -75,7 +78,7 @@
                     </div>
                 </dl>
                 <footer class="master-card__footer">
-                    <a class="btn btn-outline" href="{{ route('expense-categories.edit', $category) }}">Edit</a>
+                    <a class="btn btn-outline" href="{{ route('expense-categories.edit', $category) }}">Ubah</a>
                     <details class="master-card__actions" data-master-action-menu>
                         <summary class="btn btn-secondary master-card__action-toggle" aria-expanded="false">Tindakan</summary>
                         <div class="master-card__action-menu" role="menu">
@@ -99,9 +102,9 @@
         <div class="table-pagination">
             <span>Menampilkan {{ $categories->firstItem() }}–{{ $categories->lastItem() }} dari {{ $categories->total() }}</span>
             <nav class="pagination-buttons" aria-label="Pagination kategori pengeluaran">
-                @if ($categories->onFirstPage())<span class="pagination-button" aria-disabled="true">‹</span>@else<a class="pagination-button" href="{{ $categories->previousPageUrl() }}" aria-label="Halaman sebelumnya">‹</a>@endif
+                @if ($categories->onFirstPage())<span class="pagination-button expense-category-pagination__wide" aria-disabled="true">‹ Sebelumnya</span>@else<a class="pagination-button expense-category-pagination__wide" href="{{ $categories->previousPageUrl() }}" aria-label="Halaman sebelumnya">‹ Sebelumnya</a>@endif
                 <span class="pagination-button is-active" aria-current="page">{{ $categories->currentPage() }}</span>
-                @if ($categories->hasMorePages())<a class="pagination-button" href="{{ $categories->nextPageUrl() }}" aria-label="Halaman berikutnya">›</a>@else<span class="pagination-button" aria-disabled="true">›</span>@endif
+                @if ($categories->hasMorePages())<a class="pagination-button expense-category-pagination__wide" href="{{ $categories->nextPageUrl() }}" aria-label="Halaman berikutnya">Berikutnya ›</a>@else<span class="pagination-button expense-category-pagination__wide" aria-disabled="true">Berikutnya ›</span>@endif
             </nav>
         </div>
     @endif

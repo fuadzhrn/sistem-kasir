@@ -5,7 +5,7 @@
         <form method="POST" data-expense-remove-proof-form>
             @csrf @method('DELETE')
             <div class="modal__body"><p>Hapus gambar bukti dari pengeluaran ini? File yang telah dihapus tidak dapat dipulihkan.</p></div>
-            <div class="modal__actions"><button class="btn btn-secondary" type="button" data-modal-close>Batal</button><button class="btn btn-danger" type="submit">Ya, Hapus Bukti</button></div>
+            <div class="modal__actions"><button class="btn btn-secondary" type="button" data-modal-close>Batal</button><button class="btn btn-danger" type="submit" data-expense-action-submit>Ya, Hapus Bukti</button></div>
         </form>
     </div></div>
 </div>

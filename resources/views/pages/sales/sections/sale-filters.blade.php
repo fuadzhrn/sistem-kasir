@@ -1,5 +1,13 @@
 <section class="card sales-filters" data-sales-filters>
-    <form action="{{ route('sales.index') }}" method="GET" data-sales-filter-form>
+    <div class="sales-filters__mobile-heading">
+        <div>
+            <span>Persempit hasil</span>
+            <h2>Filter Transaksi</h2>
+        </div>
+        <button class="sales-filters__close" type="button" aria-label="Tutup filter transaksi" data-sales-filter-close>×</button>
+    </div>
+
+    <form id="sales-filter-panel" action="{{ route('sales.index') }}" method="GET" data-sales-filter-form>
         <div class="sales-filters__grid">
             <div class="form-group sales-filters__search">
                 <label class="form-label" for="sale-search">Cari transaksi</label>

@@ -9,36 +9,38 @@
 @endpush
 
 @section('content')
-    @include('partials.page-header', [
-        'title' => 'Detail Nota',
-        'description' => 'Snapshot transaksi pada saat penjualan disimpan.',
-        'eyebrow' => $sale->invoice_number,
-        'breadcrumbs' => [
-            ['label' => 'Riwayat Transaksi', 'url' => route('sales.index')],
-            ['label' => $sale->invoice_number],
-        ],
-    ])
+    <div class="sale-detail">
+        @include('partials.page-header', [
+            'title' => 'Detail Transaksi',
+            'description' => 'Data historis sesuai kondisi saat transaksi disimpan.',
+            'eyebrow' => $sale->invoice_number,
+            'breadcrumbs' => [
+                ['label' => 'Riwayat Transaksi', 'url' => route('sales.index')],
+                ['label' => $sale->invoice_number],
+            ],
+        ])
 
-    @include('pages.sales.sections.sale-detail-header')
-    @include('pages.sales.sections.void-information')
-    @include('pages.sales.sections.sale-detail-items')
+        @include('pages.sales.sections.sale-detail-header')
+        @include('pages.sales.sections.void-information')
+        @include('pages.sales.sections.sale-detail-items')
 
-    <div class="sale-detail-grid">
-        @include('pages.sales.sections.sale-payment-summary')
-        @if ($showInternal)
-            @include('pages.sales.sections.sale-internal-summary')
-        @endif
+        <div class="sale-detail-grid">
+            @include('pages.sales.sections.sale-payment-summary')
+            @if ($showInternal)
+                @include('pages.sales.sections.sale-internal-summary')
+            @endif
+        </div>
+
+        <div class="sale-detail-actions">
+            <a class="btn btn-secondary" href="{{ route('sales.index') }}">Kembali ke Riwayat</a>
+            @include('pages.sales.sections.void-action')
+            <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="_blank" rel="noopener">
+                @csrf
+                <button class="btn btn-primary" type="submit">Cetak Ulang Struk</button>
+            </form>
+        </div>
+        @include('pages.sales.sections.void-confirmation-modal')
     </div>
-
-    <div class="sale-detail-actions">
-        <a class="btn btn-secondary" href="{{ route('sales.index') }}">Kembali ke Riwayat</a>
-        @include('pages.sales.sections.void-action')
-        <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="_blank" rel="noopener">
-            @csrf
-            <button class="btn btn-primary" type="submit">Cetak Ulang</button>
-        </form>
-    </div>
-    @include('pages.sales.sections.void-confirmation-modal')
 @endsection
 
 @push('scripts')

@@ -59,21 +59,23 @@
         </table>
     </div>
 
+    @include('pages.sales.sections.sale-card-list')
+
     <div class="table-pagination">
         <span>Menampilkan {{ $sales->firstItem() ?? 0 }}–{{ $sales->lastItem() ?? 0 }} dari {{ $sales->total() }} transaksi</span>
         <nav class="pagination-buttons" aria-label="Pagination transaksi">
             @if ($sales->onFirstPage())
-                <span class="pagination-button" aria-disabled="true">&lsaquo;</span>
+                <span class="pagination-button pagination-button--wide" aria-disabled="true">‹ Sebelumnya</span>
             @else
-                <a class="pagination-button" href="{{ $sales->previousPageUrl() }}" aria-label="Halaman sebelumnya">&lsaquo;</a>
+                <a class="pagination-button pagination-button--wide" href="{{ $sales->previousPageUrl() }}" aria-label="Halaman sebelumnya">‹ Sebelumnya</a>
             @endif
             @foreach ($sales->getUrlRange(max(1, $sales->currentPage() - 2), min($sales->lastPage(), $sales->currentPage() + 2)) as $page => $url)
                 <a class="pagination-button {{ $page === $sales->currentPage() ? 'is-active' : '' }}" href="{{ $url }}" @if ($page === $sales->currentPage()) aria-current="page" @endif>{{ $page }}</a>
             @endforeach
             @if ($sales->hasMorePages())
-                <a class="pagination-button" href="{{ $sales->nextPageUrl() }}" aria-label="Halaman berikutnya">&rsaquo;</a>
+                <a class="pagination-button pagination-button--wide" href="{{ $sales->nextPageUrl() }}" aria-label="Halaman berikutnya">Berikutnya ›</a>
             @else
-                <span class="pagination-button" aria-disabled="true">&rsaquo;</span>
+                <span class="pagination-button pagination-button--wide" aria-disabled="true">Berikutnya ›</span>
             @endif
         </nav>
     </div>

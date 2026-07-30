@@ -184,6 +184,11 @@
     padding-block: var(--space-8);
 }
 
+.expense-category-pagination__wide {
+    padding-inline: var(--space-3);
+    white-space: nowrap;
+}
+
 @media (max-width: 900px) {
     .expense-category-filters {
         grid-template-columns: minmax(0, 1fr);
@@ -191,5 +196,31 @@
 
     .expense-filter-actions {
         flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .expense-category-filters .form-control,
+    .expense-category-filters .form-select {
+        font-size: 16px;
+        min-height: 46px;
+        width: 100%;
+    }
+
+    .expense-category-form {
+        max-width: 100%;
+        padding: var(--space-4);
+        width: 100%;
+    }
+
+    .expense-category-form textarea {
+        min-height: 140px;
+        resize: vertical;
+    }
+}
+
+@media (max-width: 480px) {
+    .expense-category-pagination__wide {
+        flex: 1 1 auto;
     }
 }

@@ -50,8 +50,8 @@
                                     <a class="btn btn-sm btn-secondary" href="{{ route('expenses.edit', $expense) }}">Ubah</a>
                                 @endcan
                                 @can('approve', $expense)
-                                    <button class="btn btn-sm btn-success" type="button" data-expense-approve data-action="{{ route('expenses.approve', $expense) }}" data-description="{{ \Illuminate\Support\Str::limit($expense->description, 80) }}" data-amount="{{ \App\Support\Format\Rupiah::format($expense->amount) }}">Setujui</button>
-                                    <button class="btn btn-sm btn-danger" type="button" data-expense-reject data-action="{{ route('expenses.reject', $expense) }}" data-description="{{ \Illuminate\Support\Str::limit($expense->description, 80) }}" data-amount="{{ \App\Support\Format\Rupiah::format($expense->amount) }}">Tolak</button>
+                                    <button class="btn btn-sm btn-success" type="button" data-expense-approve data-action="{{ route('expenses.approve', $expense) }}" data-description="{{ $expense->description }}" data-amount="{{ \App\Support\Format\Rupiah::format($expense->amount) }}" data-branch="{{ $expense->branch->name }}" data-category="{{ $expense->expenseCategory->name }}" data-date="{{ $expense->expense_date->translatedFormat('d F Y') }}" data-creator="{{ $expense->creator->name }}" data-proof="{{ $expense->proof_file ? 'Tersedia' : 'Tidak ada' }}">Setujui</button>
+                                    <button class="btn btn-sm btn-danger" type="button" data-expense-reject data-action="{{ route('expenses.reject', $expense) }}" data-description="{{ $expense->description }}" data-amount="{{ \App\Support\Format\Rupiah::format($expense->amount) }}" data-branch="{{ $expense->branch->name }}" data-category="{{ $expense->expenseCategory->name }}" data-date="{{ $expense->expense_date->translatedFormat('d F Y') }}" data-creator="{{ $expense->creator->name }}" data-proof="{{ $expense->proof_file ? 'Tersedia' : 'Tidak ada' }}">Tolak</button>
                                 @endcan
                             </div>
                         </td>
@@ -62,5 +62,6 @@
             </tbody>
         </table>
     </div>
+    @include('pages.expenses.sections.expense-card-list')
     {{ $expenses->onEachSide(1)->links('components.pagination', ['itemLabel' => 'pengeluaran']) }}
 </section>

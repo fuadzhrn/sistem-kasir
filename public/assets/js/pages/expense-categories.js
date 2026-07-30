@@ -29,6 +29,37 @@
         window.StoreApp.modal.open(modal);
     }
 
+    function bindSubmitGuard(form) {
+        const submitButton = form.querySelector('[data-expense-category-submit], button[type="submit"]');
+
+        if (!submitButton) {
+            return;
+        }
+
+        submitButton.dataset.defaultLabel = submitButton.textContent.trim();
+        form.addEventListener('submit', function (event) {
+            if (form.dataset.submitting === 'true') {
+                event.preventDefault();
+
+                return;
+            }
+
+            if (!form.checkValidity()) {
+                return;
+            }
+
+            form.dataset.submitting = 'true';
+            form.setAttribute('aria-busy', 'true');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Memproses...';
+            submitButton.dataset.loading = 'true';
+        });
+    }
+
+    document.querySelectorAll(
+        '[data-expense-category-form], [data-expense-category-status-form], [data-expense-category-delete-form]',
+    ).forEach(bindSubmitGuard);
+
     document.addEventListener('click', function (event) {
         const statusTrigger = event.target.closest('[data-expense-category-status]');
         const deleteTrigger = event.target.closest('[data-expense-category-delete]');
@@ -49,5 +80,17 @@
                 '[data-expense-category-delete-name]'
             );
         }
+    });
+
+    window.addEventListener('pageshow', function () {
+        document.querySelectorAll('form[data-submitting="true"]').forEach(function (form) {
+            form.dataset.submitting = 'false';
+            form.setAttribute('aria-busy', 'false');
+        });
+        document.querySelectorAll('button[data-default-label]').forEach(function (button) {
+            button.disabled = false;
+            button.textContent = button.dataset.defaultLabel;
+            delete button.dataset.loading;
+        });
     });
 })(window, document);

@@ -4,7 +4,7 @@
         <form method="POST" data-expense-category-status-form>@csrf @method('PATCH')
             <input type="hidden" name="is_active" data-expense-category-status-value>
             <div class="modal__body"><p>Ubah status kategori <strong data-expense-category-status-name></strong>? Histori pengeluaran tidak akan dihapus.</p></div>
-            <div class="modal__actions"><button class="btn btn-secondary" type="button" data-modal-close>Batal</button><button class="btn btn-primary" type="submit">Ya, Ubah Status</button></div>
+            <div class="modal__actions"><button class="btn btn-secondary" type="button" data-modal-close>Batal</button><button class="btn btn-primary" type="submit" data-expense-category-submit>Ya, Ubah Status</button></div>
         </form>
     </div></div>
 </div>
