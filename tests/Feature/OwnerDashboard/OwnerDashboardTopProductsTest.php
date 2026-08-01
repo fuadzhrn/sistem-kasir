@@ -20,10 +20,11 @@ class OwnerDashboardTopProductsTest extends OwnerDashboardTestCase
             'quantity' => '1.000',
             'subtotal' => '100000.00',
         ]);
-        $this->createSale($branch, $owner, [], $productB, [
+        $historicalSale = $this->createSale($branch, $owner, [], $productB, [
             'quantity' => '10.000',
             'subtotal' => '200000.00',
         ]);
+        $historicalSale['item']->update(['product_id' => null]);
         $this->createSale($branch, $owner, ['status' => Sale::STATUS_VOIDED], $productB, [
             'subtotal' => '900000.00',
         ]);
@@ -34,7 +35,12 @@ class OwnerDashboardTopProductsTest extends OwnerDashboardTestCase
             ->assertJsonPath('data.top_products.0.code', 'TOP-A')
             ->assertJsonPath('data.top_products.0.quantity', '4,5')
             ->assertJsonPath('data.top_products.0.receipt_count', 2)
-            ->assertJsonPath('data.top_products.0.net_sales', '450000');
+            ->assertJsonPath('data.top_products.0.net_sales', '450000')
+            ->assertJsonPath('data.top_products.1.code', 'TOP-B')
+            ->assertJsonPath('data.top_products.1.name', 'Produk B')
+            ->assertJsonPath('data.top_products.1.quantity', '10')
+            ->assertJsonPath('data.top_products.1.receipt_count', 1)
+            ->assertJsonPath('data.top_products.1.net_sales', '200000');
     }
 
     public function test_top_products_are_limited_to_ten_and_follow_branch_filter(): void

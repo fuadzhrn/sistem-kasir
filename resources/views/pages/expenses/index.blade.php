@@ -41,7 +41,7 @@
                 <small>{{ number_format($expenses->total(), 0, ',', '.') }} pengeluaran ditemukan</small>
             </div>
             <button
-                class="btn btn-secondary"
+                class="btn btn-secondary mobile-filter-button {{ $activeFilterCount > 0 ? 'is-active' : '' }}"
                 type="button"
                 aria-controls="expense-filter-panel"
                 aria-expanded="false"

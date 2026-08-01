@@ -204,50 +204,8 @@
         });
     }
 
-    function closeActionMenu(menu, restoreFocus) {
-        if (!menu?.open) {
-            return;
-        }
-
-        menu.open = false;
-
-        if (restoreFocus) {
-            menu.querySelector('summary')?.focus();
-        }
-    }
-
-    function initializeActionMenus() {
-        document.querySelectorAll('[data-expense-action-menu]').forEach(function (menu) {
-            const toggle = menu.querySelector('summary');
-
-            menu.addEventListener('toggle', function () {
-                toggle?.setAttribute('aria-expanded', menu.open ? 'true' : 'false');
-
-                if (!menu.open) {
-                    return;
-                }
-
-                document.querySelectorAll('[data-expense-action-menu][open]').forEach(function (other) {
-                    if (other !== menu) {
-                        closeActionMenu(other, false);
-                    }
-                });
-            });
-        });
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                closeActionMenu(
-                    document.querySelector('[data-expense-action-menu][open]'),
-                    true,
-                );
-            }
-        });
-    }
-
     document.addEventListener('DOMContentLoaded', function () {
         initializeFilterPanel();
-        initializeActionMenus();
 
         document.querySelectorAll('[data-expense-amount]').forEach(function (input) {
             formatAmount(input);
@@ -307,16 +265,6 @@
                 );
             }
 
-            document.querySelectorAll('[data-expense-action-menu][open]').forEach(function (menu) {
-                if (
-                    approveTrigger
-                    || rejectTrigger
-                    || removeProofTrigger
-                    || !menu.contains(event.target)
-                ) {
-                    closeActionMenu(menu, false);
-                }
-            });
         });
     });
 

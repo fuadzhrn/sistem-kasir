@@ -100,12 +100,6 @@
         padding: var(--space-4);
     }
 
-    .sale-void-modal__dialog .modal__close {
-        flex-basis: 44px;
-        height: 44px;
-        width: 44px;
-    }
-
     .sale-void-modal__dialog textarea {
         font-size: 16px;
         min-height: 140px;

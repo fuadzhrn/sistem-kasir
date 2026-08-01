@@ -80,6 +80,7 @@ class OwnerDashboardMobileTest extends OwnerDashboardTestCase
     {
         $css = file_get_contents(public_path('assets/css/pages/dashboard-owner.css'));
         $indexScript = file_get_contents(public_path('assets/js/pages/dashboard-owner/index.js'));
+        $mobileSheetScript = file_get_contents(public_path('assets/js/components/mobile-sheet.js'));
         $chartScript = file_get_contents(public_path('assets/js/pages/dashboard-owner/dashboard-charts.js'));
         $rendererScript = file_get_contents(public_path('assets/js/pages/dashboard-owner/dashboard-renderer.js'));
 
@@ -93,8 +94,10 @@ class OwnerDashboardMobileTest extends OwnerDashboardTestCase
         $this->assertStringContainsString('height: 290px', $css);
         $this->assertStringNotContainsString('width: 100vw', $css);
 
-        $this->assertStringContainsString('initializeFilterSheet', $indexScript);
-        $this->assertStringContainsString("event.key === 'Escape'", $indexScript);
+        $this->assertStringContainsString('initializeMobileSheet', $indexScript);
+        $this->assertStringContainsString("from '../../components/mobile-sheet.js'", $indexScript);
+        $this->assertStringContainsString("event.key === 'Escape'", $mobileSheetScript);
+        $this->assertStringContainsString('trapFocus(event)', $mobileSheetScript);
         $this->assertStringContainsString('filters.commit()', $indexScript);
         $this->assertStringContainsString("filterSheet.close('apply')", $indexScript);
         $this->assertStringContainsString("filterSheet.close('reset')", $indexScript);

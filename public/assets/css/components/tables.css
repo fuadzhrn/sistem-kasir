@@ -32,7 +32,8 @@
 .dashboard-table-wrapper,
 .report-table-wrap,
 .expense-table-wrapper,
-.expense-category-table-wrapper {
+.expense-category-table-wrapper,
+.ui-table-scroll {
     max-width: 100%;
     min-width: 0;
     overflow-x: auto;
@@ -40,6 +41,19 @@
     overscroll-behavior-inline: contain;
     width: 100%;
     -webkit-overflow-scrolling: touch;
+}
+
+.ui-currency,
+.ui-quantity {
+    font-variant-numeric: tabular-nums;
+}
+
+.ui-currency {
+    white-space: nowrap;
+}
+
+.ui-quantity {
+    white-space: nowrap;
 }
 
 .table {

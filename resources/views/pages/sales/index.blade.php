@@ -41,7 +41,7 @@
                 <small>{{ number_format($sales->total(), 0, ',', '.') }} transaksi ditemukan</small>
             </div>
             <button
-                class="btn btn-secondary"
+                class="btn btn-secondary mobile-filter-button {{ $activeFilterCount > 0 ? 'is-active' : '' }}"
                 type="button"
                 aria-controls="sales-filter-panel"
                 aria-expanded="false"

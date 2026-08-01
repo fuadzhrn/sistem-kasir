@@ -9,7 +9,7 @@
     </div>
 
     <button
-        class="btn btn-secondary admin-dashboard__filter-button"
+        class="btn btn-secondary mobile-filter-button admin-dashboard__filter-button"
         type="button"
         data-admin-filter-open
         aria-controls="admin-dashboard-filter"
@@ -22,20 +22,20 @@
 </section>
 
 <div
-    class="modal admin-dashboard__filter-modal"
+    class="modal mobile-filter-sheet admin-dashboard__filter-modal"
     id="admin-dashboard-filter"
     data-admin-filter-modal
     aria-labelledby="admin-dashboard-filter-title"
 >
     <div class="modal__overlay" data-admin-filter-overlay></div>
-    <div class="modal__positioner admin-dashboard__filter-positioner">
+    <div class="modal__positioner mobile-filter-sheet__positioner admin-dashboard__filter-positioner">
         <section
-            class="modal__dialog admin-dashboard__filter-sheet"
+            class="modal__dialog mobile-filter-sheet__dialog admin-dashboard__filter-sheet"
             data-admin-filter-dialog
             aria-labelledby="admin-dashboard-filter-title"
             tabindex="-1"
         >
-            <header class="modal__header admin-dashboard__filter-sheet-header">
+            <header class="modal__header mobile-filter-sheet__header admin-dashboard__filter-sheet-header">
                 <div>
                     <p class="dashboard-eyebrow">Cabang {{ $dashboard['filters']['branch_name'] }}</p>
                     <h2 id="admin-dashboard-filter-title">Atur Periode Dashboard</h2>
@@ -52,7 +52,7 @@
             </header>
 
             <form
-                class="dashboard-filter admin-dashboard__filter card"
+                class="dashboard-filter mobile-filter-sheet__body admin-dashboard__filter card"
                 method="GET"
                 action="{{ route('dashboard.admin') }}"
                 data-dashboard-filter

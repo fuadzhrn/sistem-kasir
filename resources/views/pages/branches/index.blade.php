@@ -25,6 +25,5 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('assets/js/pages/master-data-mobile.js') }}" defer></script>
     <script src="{{ asset('assets/js/pages/branches.js') }}" defer></script>
 @endpush

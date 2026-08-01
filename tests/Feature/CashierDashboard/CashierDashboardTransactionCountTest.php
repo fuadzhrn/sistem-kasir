@@ -34,12 +34,12 @@ class CashierDashboardTransactionCountTest extends CashierDashboardTestCase
             ->get(route('dashboard.cashier'))
             ->assertOk()
             ->assertSeeInOrder([
-                'Nota Selesai Hari Ini',
-                '>2<',
-                'Nota Dibatalkan Hari Ini',
-                '>1<',
-                'Total Nota Dibuat Hari Ini',
-                '>3<',
+                '<p>Transaksi Selesai</p>',
+                '<strong>2</strong>',
+                '<p>Transaksi Dibatalkan</p>',
+                '<strong>1</strong>',
+                '<p>Total Transaksi</p>',
+                '<strong>3</strong>',
             ], false);
     }
 }

@@ -18,7 +18,7 @@ class CashierDashboardPageTest extends CashierDashboardTestCase
             ->assertSee('Transaksi Baru')
             ->assertSee(route('cashier.index'), false)
             ->assertSee('Ringkasan Hari Ini')
-            ->assertSee('Riwayat Transaksi Saya')
+            ->assertSee('Riwayat Transaksi Terbaru')
             ->assertDontSee('Chart.js');
     }
 }

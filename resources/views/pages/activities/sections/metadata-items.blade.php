@@ -1,5 +1,11 @@
 <dl class="activities-metadata-list">
     @foreach ($items as $key => $value)
+        @php
+            $normalizedKey = mb_strtolower((string) $key);
+            $isMoney = is_numeric($value)
+                && preg_match('/amount|price|cost|total|subtotal|discount|profit|hpp|inventory_value/', $normalizedKey) === 1
+                && ! str_contains($normalizedKey, 'count');
+        @endphp
         <div>
             <dt>{{ str((string) $key)->replace('_', ' ')->title() }}</dt>
             <dd>
@@ -9,6 +15,8 @@
                     {{ $value ? 'Ya' : 'Tidak' }}
                 @elseif ($value === null)
                     —
+                @elseif ($isMoney)
+                    {{ \App\Support\Format\Rupiah::format((string) $value) }}
                 @else
                     {{ $value }}
                 @endif

@@ -4,6 +4,7 @@
 @section('content')
 <div class="reports-page" data-report-page>
 @include('pages.reports.shared.report-header')
+@include('pages.reports.shared.report-active-filters')
 @include('pages.reports.shared.report-filters')
 @include('pages.reports.shared.report-summary')
 <section class="report-results card">

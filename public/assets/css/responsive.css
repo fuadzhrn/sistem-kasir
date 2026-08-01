@@ -77,6 +77,28 @@ canvas[data-dashboard-chart] {
     overflow-wrap: anywhere;
 }
 
+.mobile-filter-button {
+    min-height: 44px;
+}
+
+.mobile-filter-button.is-active,
+.mobile-filter-button[aria-expanded="true"] {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    color: var(--color-primary-dark);
+}
+
+.mobile-filter-button:focus-visible {
+    outline: 3px solid rgb(22 101 52 / 18%);
+    outline-offset: 2px;
+}
+
+.mobile-filter-sheet__dialog,
+.mobile-filter-sheet__header,
+.mobile-filter-sheet__body {
+    min-width: 0;
+}
+
 input[type="date"],
 input[type="number"],
 input[type="search"],
@@ -152,6 +174,25 @@ input[type="file"] {
 
     .profile-menu {
         max-width: calc(100vw - 32px);
+    }
+
+    .master-mobile-list,
+    .expense-card-list,
+    .reports-list {
+        display: grid;
+        gap: var(--space-4);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: var(--space-4);
+    }
+
+    .expense-card,
+    .report-card,
+    .activity-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        min-width: 0;
+        width: 100%;
     }
 }
 
@@ -231,6 +272,27 @@ input[type="file"] {
     .reports-header h1 {
         font-size: clamp(20px, 6vw, 26px);
         overflow-wrap: anywhere;
+    }
+
+    .mobile-page-header__content,
+    .mobile-page-header__actions {
+        max-width: 100%;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .mobile-page-header__description {
+        line-height: 1.65;
+        overflow-wrap: anywhere;
+    }
+
+    .mobile-page-header__actions .btn,
+    .mobile-page-header__actions .button {
+        min-height: 44px;
+    }
+
+    .mobile-filter-sheet.is-open .mobile-filter-sheet__dialog {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     .card,
@@ -323,6 +385,21 @@ input[type="file"] {
         width: 100%;
     }
 
+    .form-control,
+    .form-select,
+    .form-textarea,
+    .form-file {
+        font-size: 16px;
+        max-width: 100%;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .form-textarea,
+    textarea.form-control {
+        resize: vertical;
+    }
+
     .table-toolbar .form-control,
     .table-toolbar .search-input,
     .table-toolbar__controls .form-control,
@@ -373,6 +450,26 @@ input[type="file"] {
         min-width: 44px;
     }
 
+    .table-pagination {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: var(--space-3);
+        max-width: 100%;
+        padding: var(--space-4);
+    }
+
+    .pagination-buttons {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .pagination-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
     .badge {
         white-space: normal;
     }
@@ -392,6 +489,14 @@ input[type="file"] {
         inset-inline: 12px;
         max-width: none;
         width: auto;
+    }
+
+    .master-mobile-list,
+    .expense-card-list,
+    .reports-list {
+        gap: var(--space-3);
+        grid-template-columns: minmax(0, 1fr);
+        padding: var(--space-3);
     }
 }
 
@@ -432,5 +537,43 @@ input[type="file"] {
 
     .profile-menu {
         width: min(280px, calc(100vw - 16px));
+    }
+
+    .mobile-page-header__actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .mobile-page-header__actions .btn,
+    .mobile-page-header__actions .button {
+        width: 100%;
+    }
+}
+
+@media print {
+    .modal,
+    .toast-container,
+    .mobile-filter-button,
+    .mobile-filter-sheet,
+    .cashier-mobile-tabs,
+    .cashier-mobile-cart-bar,
+    .cashier-payment-sheet,
+    .master-mobile-list,
+    .expense-card-list,
+    .reports-list,
+    [data-master-action-menu],
+    [data-expense-action-menu],
+    [data-ui-action-menu],
+    [data-dashboard-filter-modal],
+    [data-admin-filter-modal] {
+        display: none !important;
+    }
+
+    .master-desktop-table,
+    .expense-table-card > .expense-table-wrapper,
+    .report-table-wrap {
+        display: block !important;
+        max-width: none;
+        overflow: visible !important;
     }
 }

@@ -19,6 +19,28 @@
     width: 20px;
 }
 
+.loading-state {
+    align-items: center;
+    color: var(--color-muted);
+    display: flex;
+    gap: var(--space-3);
+    min-height: 48px;
+}
+
+.loading-state[hidden],
+.error-state[hidden] {
+    display: none;
+}
+
+.error-state {
+    max-width: 100%;
+    min-width: 0;
+}
+
+.error-state p {
+    overflow-wrap: anywhere;
+}
+
 .skeleton {
     animation: skeleton-pulse 1.4s ease-in-out infinite;
     background: linear-gradient(

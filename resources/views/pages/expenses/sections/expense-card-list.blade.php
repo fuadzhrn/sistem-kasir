@@ -25,7 +25,7 @@
                 <div><dt>Dicatat oleh</dt><dd>{{ $expense->creator->name }}</dd></div>
                 <div class="expense-card__amount">
                     <dt>Jumlah</dt>
-                    <dd>{{ \App\Support\Format\Rupiah::format($expense->amount) }}</dd>
+                    <dd class="ui-currency">{{ \App\Support\Format\Rupiah::format($expense->amount) }}</dd>
                 </div>
             </dl>
 
@@ -77,7 +77,7 @@
             </footer>
         </article>
     @empty
-        <div class="expenses-empty">
+        <div class="empty-state expenses-empty">
             <h3>Belum ada data Pengeluaran</h3>
             <p>Pengeluaran yang dicari tidak ditemukan atau belum tersedia pada periode ini.</p>
             <div>

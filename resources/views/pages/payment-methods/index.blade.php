@@ -12,6 +12,5 @@
     @include('pages.payment-methods.sections.delete-modal')
 @endsection
 @push('scripts')
-    <script src="{{ asset('assets/js/pages/master-data-mobile.js') }}" defer></script>
     <script src="{{ asset('assets/js/pages/payment-methods.js') }}" defer></script>
 @endpush

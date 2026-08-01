@@ -1,4 +1,4 @@
-<header class="page-heading">
+<header class="page-heading mobile-page-header">
     @if (! empty($breadcrumbs))
         <nav class="breadcrumb" aria-label="Breadcrumb">
             <ol>
@@ -15,19 +15,19 @@
         </nav>
     @endif
 
-    <div class="page-heading__row">
-        <div class="page-heading__content">
+    <div class="page-heading__row mobile-page-header__row">
+        <div class="page-heading__content mobile-page-header__content">
             @if (! empty($eyebrow))
                 <span class="badge badge-outline">{{ $eyebrow }}</span>
             @endif
-            <h2>{{ $title }}</h2>
+            <h2 class="mobile-page-header__title">{{ $title }}</h2>
             @if (! empty($description))
-                <p>{{ $description }}</p>
+                <p class="mobile-page-header__description">{{ $description }}</p>
             @endif
         </div>
 
         @if (! empty($actions))
-            <div class="page-heading__actions">
+            <div class="page-heading__actions mobile-page-header__actions">
                 @foreach ($actions as $action)
                     <button
                         class="{{ $action['class'] ?? 'btn btn-secondary' }}"

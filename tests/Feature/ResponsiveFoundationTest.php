@@ -62,6 +62,14 @@ class ResponsiveFoundationTest extends TestCase
         $this->assertStringContainsString('-webkit-overflow-scrolling: touch;', $tables);
         $this->assertStringContainsString('max-height: calc(100dvh', $modal);
         $this->assertMatchesRegularExpression('/\\.modal__body\\s*\\{[^}]*overflow-y:\\s*auto;/s', $modal);
+        $this->assertStringContainsString(
+            '.modal__dialog > form:not(.modal__actions):not(.mobile-filter-sheet__body)',
+            $modal,
+        );
+        $this->assertDoesNotMatchRegularExpression(
+            '/\\.modal__dialog\\s*>\\s*form\\s*\\{/',
+            $modal,
+        );
     }
 
     public function test_every_application_table_is_inside_a_responsive_wrapper(): void

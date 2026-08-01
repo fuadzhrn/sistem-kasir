@@ -1,5 +1,5 @@
 <section class="card activities-detail-card">
-    <h2>Referensi</h2>
+    <h2>Referensi Terkait</h2>
     <dl class="activities-definition-list">
         <div><dt>Tipe</dt><dd>{{ $activity['reference_type'] ? class_basename($activity['reference_type']) : 'Tidak ada' }}</dd></div>
         <div><dt>ID</dt><dd>{{ $activity['reference_id'] ? '#'.$activity['reference_id'] : '—' }}</dd></div>

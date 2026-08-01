@@ -39,7 +39,9 @@ class StockReceiptCreateTest extends StockReceiptTestCase
             ->assertSee($active->name)
             ->assertDontSee($inactive->name)
             ->assertDontSee('987654')
-            ->assertSee('Konfirmasi Barang Masuk')
+            ->assertSee('id="receipt-confirmation-modal"', false)
+            ->assertSee('Simpan Barang Masuk?')
+            ->assertSee('data-confirm-stock-receipt', false)
             ->assertSee('data-add-receipt-item', false);
     }
 

@@ -15,6 +15,5 @@
     @include('pages.products.sections.status-modal')
 @endsection
 @push('scripts')
-    <script src="{{ asset('assets/js/pages/master-data-mobile.js') }}" defer></script>
     <script src="{{ asset('assets/js/pages/products.js') }}" defer></script>
 @endpush

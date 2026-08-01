@@ -75,9 +75,10 @@ class CashierPageTest extends CashierTestCase
         $this->actingAs($cashier)->get(route('cashier.index'))
             ->assertOk()
             ->assertSee('Kasir aktif')
-            ->assertSee('Bayar &amp; Cetak', false)
-            ->assertSee('Bayar Tanpa Cetak')
+            ->assertSee('Proses Pembayaran &amp; Cetak', false)
+            ->assertSee('Proses Tanpa Cetak')
             ->assertSee('data-payment-action="print"', false)
+            ->assertSee('data-payment-action="no_print"', false)
             ->assertDontSee('action="/sales"', false);
 
         $this->assertSame($before['sales'], Sale::query()->count());

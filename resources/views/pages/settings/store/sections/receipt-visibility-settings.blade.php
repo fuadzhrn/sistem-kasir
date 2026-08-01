@@ -12,6 +12,7 @@
 @endphp
 <fieldset class="settings-fieldset">
     <legend>Informasi Opsional</legend>
+    <p class="settings-subsection__description">Tekan seluruh area pilihan untuk menampilkan atau menyembunyikan informasi pada struk.</p>
     <div class="settings-toggle-grid">
         @foreach ($visibilityOptions as $field => [$key, $label])
             <label class="settings-toggle">

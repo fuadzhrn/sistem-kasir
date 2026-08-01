@@ -228,7 +228,7 @@
         display: none;
         inset: 0;
         position: fixed;
-        z-index: 120;
+        z-index: 90;
     }
 
     .admin-dashboard .admin-dashboard__filter-modal.is-open {

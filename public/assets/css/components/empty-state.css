@@ -37,3 +37,21 @@
 .empty-state .btn {
     margin-top: var(--space-5);
 }
+
+@media (max-width: 768px) {
+    .empty-state {
+        min-height: 0;
+        padding: var(--space-8) var(--space-4);
+    }
+
+    .empty-state__illustration {
+        height: 60px;
+        margin-bottom: var(--space-4);
+        width: 60px;
+    }
+
+    .empty-state__illustration svg {
+        height: 28px;
+        width: 28px;
+    }
+}

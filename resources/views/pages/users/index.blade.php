@@ -32,6 +32,5 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('assets/js/pages/master-data-mobile.js') }}" defer></script>
     <script src="{{ asset('assets/js/pages/users.js') }}" defer></script>
 @endpush

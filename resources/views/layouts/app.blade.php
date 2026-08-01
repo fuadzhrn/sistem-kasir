@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', config('app.name')) — {{ config('app.name') }}</title>
@@ -33,8 +33,13 @@
     <link rel="stylesheet" href="{{ asset('assets/css/components/pagination.css') }}">
     @stack('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/components/cashier-bottom-navigation.css') }}">
 </head>
-<body>
+@php
+    $layoutUser = auth()->user();
+    $showCashierBottomNavigation = $layoutUser?->isCashier() ?? false;
+@endphp
+<body @class(['has-cashier-bottom-navigation' => $showCashierBottomNavigation])>
     <div class="app-shell" data-app-shell>
         @include('partials.sidebar')
         <div
@@ -56,6 +61,10 @@
             @include('partials.footer')
         </div>
     </div>
+
+    @if ($showCashierBottomNavigation)
+        @include('partials.cashier-bottom-navigation')
+    @endif
 
     @include('partials.modal-confirm')
     <div class="toast-container" data-toast-container aria-live="polite" aria-atomic="true"></div>

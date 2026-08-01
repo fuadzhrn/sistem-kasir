@@ -26,13 +26,25 @@
     <link rel="stylesheet" href="{{ asset('assets/css/pages/cashier-responsive.css') }}">
     @stack('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/components/cashier-bottom-navigation.css') }}">
 </head>
-<body class="cashier-body">
+@php
+    $layoutUser = auth()->user();
+    $showCashierBottomNavigation = $layoutUser?->isCashier() ?? false;
+@endphp
+<body @class([
+    'cashier-body',
+    'has-cashier-bottom-navigation' => $showCashierBottomNavigation,
+])>
     @include('pages.cashier.sections.cashier-header')
 
     <main class="cashier-main" id="cashier-main">
         @yield('content')
     </main>
+
+    @if ($showCashierBottomNavigation)
+        @include('partials.cashier-bottom-navigation')
+    @endif
 
     <div class="toast-container" data-toast-container aria-live="polite" aria-atomic="true"></div>
     <script src="{{ asset('assets/js/core/quantity.js') }}" defer></script>

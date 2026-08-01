@@ -1,1 +1,1 @@
-<div class="report-empty"><span aria-hidden="true">LP</span><h2>Belum ada data laporan.</h2><p>Tidak ada data yang sesuai dengan filter aktif.</p><a class="btn btn-secondary" href="{{ route('reports.'.$report['slug'].'.index') }}">Reset Filter</a></div>
+<div class="empty-state report-empty"><span aria-hidden="true">LP</span><h2>Belum ada data laporan.</h2><p>Tidak ada data yang sesuai dengan filter aktif.</p><a class="btn btn-secondary" href="{{ route('reports.'.$report['slug'].'.index') }}">Reset Filter</a></div>

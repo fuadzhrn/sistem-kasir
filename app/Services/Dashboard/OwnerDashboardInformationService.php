@@ -11,6 +11,7 @@ use App\Models\SaleItem;
 use App\Support\Format\Quantity;
 use App\Support\Format\Rupiah;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 final class OwnerDashboardInformationService
@@ -37,10 +38,8 @@ final class OwnerDashboardInformationService
         ?Branch $branch,
         OwnerDashboardDateRange $range,
     ): array {
-        return SaleItem::query()
+        $rankedProducts = SaleItem::query()
             ->join('sales', 'sales.id', '=', 'sale_items.sale_id')
-            ->leftJoin('products', 'products.id', '=', 'sale_items.product_id')
-            ->leftJoin('units', 'units.id', '=', 'products.unit_id')
             ->where('sales.status', Sale::STATUS_COMPLETED)
             ->whereBetween('sales.transaction_date', [$range->start, $range->end])
             ->when($branch, fn (Builder $query): Builder => $query->where(
@@ -48,9 +47,6 @@ final class OwnerDashboardInformationService
                 $branch->getKey(),
             ))
             ->selectRaw('sale_items.product_id')
-            ->selectRaw('MAX(products.code) AS current_code')
-            ->selectRaw('MAX(products.name) AS current_name')
-            ->selectRaw('MAX(units.name) AS current_unit')
             ->selectRaw('MAX(sale_items.product_code) AS snapshot_code')
             ->selectRaw('MAX(sale_items.product_name) AS snapshot_name')
             ->selectRaw('MAX(sale_items.unit_name) AS snapshot_unit')
@@ -62,7 +58,19 @@ final class OwnerDashboardInformationService
                 "CASE WHEN sale_items.product_id IS NULL THEN sale_items.product_code ELSE '' END",
             )
             ->orderByDesc('net_sales')
-            ->limit(10)
+            ->limit(10);
+
+        return DB::query()
+            ->fromSub($rankedProducts, 'ranked_products')
+            ->leftJoin('products', 'products.id', '=', 'ranked_products.product_id')
+            ->leftJoin('units', 'units.id', '=', 'products.unit_id')
+            ->select([
+                'ranked_products.*',
+                'products.code AS current_code',
+                'products.name AS current_name',
+                'units.name AS current_unit',
+            ])
+            ->orderByDesc('ranked_products.net_sales')
             ->get()
             ->values()
             ->map(fn ($row, int $index): array => [

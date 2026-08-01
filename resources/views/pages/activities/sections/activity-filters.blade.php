@@ -1,13 +1,16 @@
-<form class="card activities-filters" method="GET" action="{{ route('activities.index') }}" data-activity-filters>
+<form id="activity-filter-panel" class="card activities-filters" method="GET" action="{{ route('activities.index') }}" data-activity-filters>
     <div class="activities-filters__header">
         <div>
             <p class="eyebrow">Penyaringan data</p>
             <h2>Filter aktivitas</h2>
             <p>Persempit riwayat berdasarkan pengguna, modul, tindakan, atau waktu.</p>
         </div>
-        @if (count(array_filter($filters, fn ($value) => filled($value))) > 0)
-            <span class="badge badge-info">Filter aktif</span>
-        @endif
+        <div class="activities-filters__header-actions">
+            @if (count(array_filter($filters, fn ($value) => filled($value))) > 0)
+                <span class="badge badge-info">Filter aktif</span>
+            @endif
+            <button class="activities-filters__close" type="button" aria-label="Tutup filter aktivitas" data-activity-filter-close>&times;</button>
+        </div>
     </div>
 
     <div class="activities-filters__grid">
@@ -90,6 +93,7 @@
     </div>
     <div class="activities-filters__actions">
         <a class="btn btn-secondary" href="{{ route('activities.index') }}">Reset filter</a>
-        <button class="btn btn-primary" type="submit">Terapkan filter</button>
+        <button class="btn btn-primary" type="submit" data-activity-filter-submit>Terapkan filter</button>
+        <button class="btn btn-secondary activities-filters__cancel" type="button" data-activity-filter-close>Tutup</button>
     </div>
 </form>

@@ -10,13 +10,25 @@ import {
     resizeDashboardCharts,
 } from './dashboard-charts.js';
 import { renderDashboard } from './dashboard-renderer.js';
+import { initializeMobileSheet } from '../../components/mobile-sheet.js';
 
 const root = document.querySelector('[data-owner-dashboard]');
 
 if (root) {
     const form = root.querySelector('[data-dashboard-filter]');
     const filters = initializeFilters(form);
-    const filterSheet = initializeFilterSheet(root, filters);
+    const filterSheet = initializeMobileSheet({
+        root,
+        stateController: filters,
+        breakpoint: '(max-width: 768px)',
+        selectors: {
+            sheet: '[data-dashboard-filter-modal]',
+            dialog: '[data-dashboard-filter-dialog]',
+            open: '[data-dashboard-filter-open]',
+            overlay: '[data-dashboard-filter-overlay]',
+            close: '[data-dashboard-filter-close]',
+        },
+    });
     const loading = root.querySelector('[data-dashboard-loading]');
     const error = root.querySelector('[data-dashboard-error]');
     let activeController = null;
@@ -134,129 +146,4 @@ if (root) {
     function hideError() {
         error.hidden = true;
     }
-}
-
-function initializeFilterSheet(root, filters) {
-    const sheet = root.querySelector('[data-dashboard-filter-modal]');
-    const dialog = root.querySelector('[data-dashboard-filter-dialog]');
-    const openButton = root.querySelector('[data-dashboard-filter-open]');
-    const overlay = root.querySelector('[data-dashboard-filter-overlay]');
-    const closeButtons = Array.from(root.querySelectorAll('[data-dashboard-filter-close]'));
-    const mobile = window.matchMedia('(max-width: 768px)');
-    let isOpen = false;
-
-    if (!sheet || !dialog || !openButton || !overlay) {
-        return { close: () => false };
-    }
-
-    const focusableSelector = [
-        'a[href]',
-        'button:not(:disabled)',
-        'input:not(:disabled)',
-        'select:not(:disabled)',
-        '[tabindex]:not([tabindex="-1"])',
-    ].join(',');
-
-    const syncMode = () => {
-        if (mobile.matches) {
-            sheet.setAttribute('aria-hidden', String(!isOpen));
-            dialog.setAttribute('role', 'dialog');
-            dialog.setAttribute('aria-modal', 'true');
-            return;
-        }
-
-        close('viewport');
-        sheet.removeAttribute('aria-hidden');
-        dialog.removeAttribute('role');
-        dialog.removeAttribute('aria-modal');
-    };
-
-    const open = () => {
-        if (!mobile.matches || isOpen) {
-            return false;
-        }
-
-        filters.restore();
-        isOpen = true;
-        sheet.classList.add('is-open');
-        sheet.setAttribute('aria-hidden', 'false');
-        openButton.setAttribute('aria-expanded', 'true');
-        document.body.classList.add('is-modal-open');
-        window.requestAnimationFrame(() => {
-            (dialog.querySelector(focusableSelector) || dialog).focus();
-        });
-
-        return true;
-    };
-
-    function close(reason = 'close') {
-        if (!isOpen) {
-            return false;
-        }
-
-        isOpen = false;
-        sheet.classList.remove('is-open');
-        sheet.setAttribute('aria-hidden', 'true');
-        openButton.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('is-modal-open');
-
-        if (!['apply', 'reset'].includes(reason)) {
-            filters.restore();
-        }
-
-        if (reason !== 'viewport') {
-            openButton.focus();
-        }
-
-        return true;
-    }
-
-    const trapFocus = (event) => {
-        if (!isOpen || event.key !== 'Tab') {
-            return;
-        }
-
-        const focusable = Array.from(dialog.querySelectorAll(focusableSelector))
-            .filter((element) => !element.hidden);
-
-        if (focusable.length === 0) {
-            event.preventDefault();
-            dialog.focus();
-            return;
-        }
-
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-
-        if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault();
-            last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first.focus();
-        }
-    };
-
-    openButton.addEventListener('click', open);
-    overlay.addEventListener('click', () => close('overlay'));
-    closeButtons.forEach((button) => {
-        button.addEventListener('click', () => close('cancel'));
-    });
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && isOpen) {
-            event.preventDefault();
-            close('escape');
-            return;
-        }
-
-        trapFocus(event);
-    });
-    if (typeof mobile.addEventListener === 'function') {
-        mobile.addEventListener('change', syncMode);
-    } else {
-        mobile.addListener(syncMode);
-    }
-    syncMode();
-
-    return { close };
 }

@@ -11,7 +11,7 @@
     </div>
 
     <button
-        class="btn btn-secondary owner-dashboard__filter-button"
+        class="btn btn-secondary mobile-filter-button owner-dashboard__filter-button"
         type="button"
         data-dashboard-filter-open
         aria-controls="owner-dashboard-filter"
@@ -24,20 +24,20 @@
 </section>
 
 <div
-    class="modal dashboard-filter-modal"
+    class="modal mobile-filter-sheet dashboard-filter-modal"
     id="owner-dashboard-filter"
     data-dashboard-filter-modal
     aria-labelledby="owner-dashboard-filter-title"
 >
     <div class="modal__overlay" data-dashboard-filter-overlay></div>
-    <div class="modal__positioner dashboard-filter-modal__positioner">
+    <div class="modal__positioner mobile-filter-sheet__positioner dashboard-filter-modal__positioner">
         <section
-            class="modal__dialog dashboard-filter-sheet"
+            class="modal__dialog mobile-filter-sheet__dialog dashboard-filter-sheet"
             data-dashboard-filter-dialog
             aria-labelledby="owner-dashboard-filter-title"
             tabindex="-1"
         >
-            <header class="modal__header dashboard-filter-sheet__header">
+            <header class="modal__header mobile-filter-sheet__header dashboard-filter-sheet__header">
                 <div>
                     <p class="dashboard-eyebrow">Dashboard Owner</p>
                     <h2 id="owner-dashboard-filter-title">Atur Filter Dashboard</h2>
@@ -54,7 +54,7 @@
             </header>
 
             <form
-                class="dashboard-filter card"
+                class="dashboard-filter mobile-filter-sheet__body card"
                 method="GET"
                 action="{{ route('dashboard.owner') }}"
                 data-dashboard-filter

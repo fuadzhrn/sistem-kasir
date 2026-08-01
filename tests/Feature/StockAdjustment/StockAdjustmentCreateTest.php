@@ -46,7 +46,9 @@ class StockAdjustmentCreateTest extends StockAdjustmentTestCase
             ->assertSee('Stok Rusak')
             ->assertSee('Stok Hilang')
             ->assertSee('Koreksi Stok')
-            ->assertSee('Konfirmasi Penyesuaian Stok');
+            ->assertSee('id="adjustment-confirmation-modal"', false)
+            ->assertSee('Simpan Penyesuaian Stok?')
+            ->assertSee('data-confirm-adjustment', false);
     }
 
     public function test_validation_requires_reason_correct_quantity_field_and_precision(): void

@@ -22,7 +22,7 @@ class SaleReceiptPreviewTest extends SaleHistoryTestCase
             ->assertSee('Kasir Preview')
             ->assertSee('Pupuk Snapshot')
             ->assertSee('Rp170.000')
-            ->assertSee('Preview nota siap. Fitur cetak browser akan diaktifkan pada Tahap 15.')
+            ->assertSee('Pratinjau menggunakan data transaksi yang tersimpan.')
             ->assertDontSee('Total HPP')
             ->assertDontSee('Laba kotor')
             ->assertDontSee('checkout_token')

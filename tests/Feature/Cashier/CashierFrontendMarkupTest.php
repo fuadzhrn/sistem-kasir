@@ -26,8 +26,10 @@ class CashierFrontendMarkupTest extends CashierTestCase
             ->assertSee('data-amount-received', false)
             ->assertSee('data-payment-change', false)
             ->assertSee('data-summary-total', false)
-            ->assertSee('Bayar &amp; Cetak', false)
-            ->assertSee('Bayar Tanpa Cetak');
+            ->assertSee('data-payment-action="print"', false)
+            ->assertSee('Proses Pembayaran &amp; Cetak', false)
+            ->assertSee('data-payment-action="no_print"', false)
+            ->assertSee('Proses Tanpa Cetak');
     }
 
     public function test_mobile_tabs_cart_bar_and_aria_markup_is_complete(): void

@@ -33,7 +33,14 @@
         'expenses' => ['pending'=>'Pending','approved'=>'Disetujui','rejected'=>'Ditolak'],
     ];
 @endphp
-<form class="report-filter card" method="GET" action="{{ route('reports.'.$report['slug'].'.index') }}" data-report-filter>
+<form id="report-filter-panel" class="report-filter card" method="GET" action="{{ route('reports.'.$report['slug'].'.index') }}" data-report-filter>
+    <div class="report-filter__mobile-header">
+        <div>
+            <span>Persempit hasil</span>
+            <h2>Filter {{ $report['title'] }}</h2>
+        </div>
+        <button class="report-filter__close" type="button" aria-label="Tutup filter laporan" data-report-filter-close>&times;</button>
+    </div>
     @if ($report['slug'] !== 'stocks')
         <div class="form-group">
             <label class="form-label" for="report-period">Periode</label>
@@ -114,5 +121,5 @@
     <div class="form-group"><label class="form-label" for="report-sort">Urutkan</label><select class="form-control" id="report-sort" name="sort">@foreach ($sortByReport[$report['slug']] as $value)<option value="{{ $value }}" @selected(($report['filters']['sort']??'date')===$value)>{{ $sortLabels[$value] }}</option>@endforeach</select></div>
     <div class="form-group"><label class="form-label" for="report-direction">Arah</label><select class="form-control" id="report-direction" name="direction"><option value="desc" @selected(($report['filters']['direction']??'desc')==='desc')>Menurun</option><option value="asc" @selected(($report['filters']['direction']??'desc')==='asc')>Menanjak</option></select></div>
     <div class="form-group"><label class="form-label" for="report-per-page">Per Halaman</label><select class="form-control" id="report-per-page" name="per_page">@foreach ([25,50,100] as $value)<option value="{{ $value }}" @selected((int)($report['filters']['per_page']??25)===$value)>{{ $value }}</option>@endforeach</select></div>
-    <div class="report-filter__actions"><button class="btn btn-primary" type="submit" data-report-submit>Terapkan</button><a class="btn btn-ghost" href="{{ route('reports.'.$report['slug'].'.index') }}">Reset</a></div>
+    <div class="report-filter__actions"><button class="btn btn-primary" type="submit" data-report-submit>Terapkan Filter</button><a class="btn btn-ghost" href="{{ route('reports.'.$report['slug'].'.index') }}">Reset</a><button class="btn btn-secondary report-filter__mobile-cancel" type="button" data-report-filter-close>Tutup</button></div>
 </form>

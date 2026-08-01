@@ -1,4 +1,29 @@
-<div class="report-table-wrap">
+@php
+    $complexReportSlugs = [
+        'cost-of-goods-sold',
+        'gross-profit',
+        'net-profit',
+        'stock-movements',
+        'branches',
+    ];
+    $usesComplexTable = in_array($report['slug'], $complexReportSlugs, true);
+@endphp
+
+@if (! $report['for_print'] && $usesComplexTable)
+    <p class="report-table-scroll__hint" id="report-table-scroll-hint-{{ $report['slug'] }}">
+        Geser tabel ke samping untuk melihat kolom lainnya.
+    </p>
+@endif
+
+<div
+    class="report-table-wrap ui-table-scroll {{ ! $report['for_print'] && ! $usesComplexTable ? 'report-table-wrap--desktop-only' : '' }} {{ ! $report['for_print'] && $usesComplexTable ? 'report-table-wrap--complex' : '' }}"
+    @if (! $report['for_print'] && $usesComplexTable)
+        role="region"
+        aria-labelledby="report-table-scroll-hint-{{ $report['slug'] }}"
+        tabindex="0"
+        data-report-table-scroll
+    @endif
+>
     <table class="report-table">
         <thead>
             <tr>
@@ -40,3 +65,7 @@
         </tfoot>
     </table>
 </div>
+
+@if (! $report['for_print'] && ! $usesComplexTable)
+    @include('pages.reports.shared.report-card-list')
+@endif

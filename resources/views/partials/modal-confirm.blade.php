@@ -14,7 +14,7 @@
         <div class="modal__dialog" data-modal-dialog tabindex="-1">
             <div class="modal__header">
                 <div>
-                    <p class="eyebrow">Tindakan demo</p>
+                    <p class="eyebrow">Konfirmasi Tindakan</p>
                     <h2 id="modal-confirm-title">Konfirmasi Perubahan</h2>
                 </div>
                 <button class="modal__close" type="button" data-modal-close aria-label="Tutup modal">×</button>
