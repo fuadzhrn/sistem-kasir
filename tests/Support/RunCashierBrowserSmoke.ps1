@@ -563,8 +563,7 @@ try {
         $history.hasInternalCost -or
         -not $history.detailUrl -or
         -not $history.receiptUrl -or
-        $history.receiptTarget -ne '_blank' -or
-        $history.receiptRel -notmatch 'noopener'
+        $history.receiptTarget -ne 'receipt-print'
     ) {
         throw 'Halaman riwayat transaksi Kasir tidak sesuai.'
     }

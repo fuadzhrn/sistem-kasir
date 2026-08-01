@@ -41,8 +41,8 @@ class SaleHistoryIndexTest extends SaleHistoryTestCase
             ->assertSee('Selesai')
             ->assertSee('Detail')
             ->assertSee('Cetak Ulang')
-            ->assertSee('target="_blank"', false)
-            ->assertSee('rel="noopener"', false)
+            ->assertSee('target="receipt-print"', false)
+            ->assertDontSee('target="_blank"', false)
             ->assertDontSee('Edit')
             ->assertDontSee('Hapus');
 

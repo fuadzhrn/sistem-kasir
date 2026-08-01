@@ -92,7 +92,7 @@ class ReceiptPrintIntegrationTest extends SaleTestCase
         $this->assertIsString($paymentScript);
         $this->assertIsString($modal);
         $this->assertStringContainsString(
-            "window.open('about:blank', '_blank')",
+            "window.open('about:blank', receiptWindowName)",
             $checkoutScript,
         );
         $this->assertStringContainsString('printWindow.location.replace(printUrl)', $checkoutScript);
@@ -103,8 +103,8 @@ class ReceiptPrintIntegrationTest extends SaleTestCase
         $this->assertStringContainsString('data-preview-print-link', $paymentScript);
         $this->assertStringContainsString('data-preview-print-link', $modal);
         $this->assertStringContainsString('Buka Struk untuk Dicetak', $modal);
-        $this->assertStringContainsString('target="_blank"', $modal);
-        $this->assertStringContainsString('rel="noopener"', $modal);
+        $this->assertStringContainsString('target="receipt-print"', $modal);
+        $this->assertStringNotContainsString('target="_blank"', $modal);
         $this->assertStringNotContainsString('window.print()', $checkoutScript);
     }
 }

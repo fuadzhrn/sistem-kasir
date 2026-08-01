@@ -3,8 +3,19 @@
 @section('title', 'Struk '.$receipt['invoice_number'])
 
 @section('content')
-    <section class="receipt-toolbar print-hidden" aria-label="Kontrol cetak struk">
+    <section
+        class="receipt-toolbar print-hidden"
+        aria-label="Kontrol cetak struk"
+        data-receipt-window-name="receipt-print"
+    >
         <div class="receipt-toolbar__actions">
+            <button
+                class="receipt-toolbar__button receipt-toolbar__button--secondary"
+                type="button"
+                data-receipt-close-button
+            >
+                Tutup Struk
+            </button>
             <a class="receipt-toolbar__button receipt-toolbar__button--secondary" href="{{ route('sales.show', ['sale' => request()->route('sale')]) }}">
                 Kembali ke Detail
             </a>

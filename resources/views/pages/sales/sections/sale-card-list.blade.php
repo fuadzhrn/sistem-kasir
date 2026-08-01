@@ -28,7 +28,7 @@
 
             <footer class="sales-history-card__footer">
                 <a class="btn btn-secondary" href="{{ route('sales.show', $sale) }}">Detail Transaksi</a>
-                <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="_blank" rel="noopener">
+                <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="receipt-print">
                     @csrf
                     <button class="btn btn-outline" type="submit">Cetak Ulang</button>
                 </form>

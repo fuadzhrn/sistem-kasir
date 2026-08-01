@@ -34,7 +34,7 @@ class CashierDashboardReceiptTest extends CashierDashboardTestCase
 
         $this->actingAs($cashier)
             ->get(route('dashboard.cashier'))
-            ->assertSee('target="_blank"', false)
-            ->assertSee('rel="noopener"', false);
+            ->assertSee('target="receipt-print"', false)
+            ->assertDontSee('target="_blank"', false);
     }
 }

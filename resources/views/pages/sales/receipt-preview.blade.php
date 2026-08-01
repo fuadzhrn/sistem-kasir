@@ -11,7 +11,7 @@
         <a class="receipt-preview-toolbar__button receipt-preview-toolbar__button--secondary" href="{{ route('sales.show', $sale) }}">
             Kembali ke Detail
         </a>
-        <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="_blank" rel="noopener">
+        <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="receipt-print">
             @csrf
             <button class="receipt-preview-toolbar__button" type="submit">Cetak Ulang Struk</button>
         </form>

@@ -3,6 +3,8 @@ import {
     showToast,
 } from './cashier-utils.js';
 
+const receiptWindowName = 'receipt-print';
+
 function centsToMoney(cents) {
     const safe = Number.isSafeInteger(cents) ? cents : 0;
     const sign = safe < 0 ? '-' : '';
@@ -94,7 +96,7 @@ export function createCheckoutClient(root, store, productBrowser, paymentForm) {
             return null;
         }
 
-        const printWindow = window.open('about:blank', '_blank');
+        const printWindow = window.open('about:blank', receiptWindowName);
 
         if (printWindow) {
             try {

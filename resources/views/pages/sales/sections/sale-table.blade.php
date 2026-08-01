@@ -32,7 +32,7 @@
                         <td class="table-actions">
                             <span class="sales-table__actions">
                                 <a class="btn btn-secondary btn-sm" href="{{ route('sales.show', $sale) }}">Detail</a>
-                                <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="_blank" rel="noopener">
+                                <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="receipt-print">
                                     @csrf
                                     <button class="btn btn-outline btn-sm" type="submit">Cetak Ulang</button>
                                 </form>

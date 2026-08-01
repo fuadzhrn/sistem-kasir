@@ -34,7 +34,7 @@
         <div class="sale-detail-actions">
             <a class="btn btn-secondary" href="{{ route('sales.index') }}">Kembali ke Riwayat</a>
             @include('pages.sales.sections.void-action')
-            <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="_blank" rel="noopener">
+            <form method="POST" action="{{ route('sales.receipt.reprint', $sale) }}" target="receipt-print">
                 @csrf
                 <button class="btn btn-primary" type="submit">Cetak Ulang Struk</button>
             </form>

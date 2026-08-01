@@ -21,8 +21,7 @@
                 <a
                     class="btn btn-outline"
                     href="#"
-                    target="_blank"
-                    rel="noopener"
+                    target="receipt-print"
                     data-preview-print-link
                     hidden
                 >Buka Struk untuk Dicetak</a>

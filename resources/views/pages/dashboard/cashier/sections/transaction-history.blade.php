@@ -40,7 +40,7 @@
                             <td>
                                 <div class="cashier-dashboard__row-actions">
                                     <a class="btn btn-secondary btn-sm" href="{{ $sale['detail_url'] }}">Detail</a>
-                                    <form method="POST" action="{{ $sale['receipt_url'] }}" target="_blank" rel="noopener">
+                                    <form method="POST" action="{{ $sale['receipt_url'] }}" target="receipt-print">
                                         @csrf
                                         <button class="btn btn-ghost btn-sm" type="submit">Cetak Ulang</button>
                                     </form>
@@ -80,7 +80,7 @@
 
                     <footer class="cashier-dashboard__transaction-footer">
                         <a class="btn btn-secondary" href="{{ $sale['detail_url'] }}">Detail</a>
-                        <form method="POST" action="{{ $sale['receipt_url'] }}" target="_blank" rel="noopener">
+                        <form method="POST" action="{{ $sale['receipt_url'] }}" target="receipt-print">
                             @csrf
                             <button class="btn btn-outline" type="submit">Cetak Ulang</button>
                         </form>

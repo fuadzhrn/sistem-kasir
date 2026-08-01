@@ -90,7 +90,7 @@
                         <dd class="{{ $valueClass }}">
                             @if (isset($column['link']) && filled($row[$column['link']] ?? null))
                                 @if (($column['method'] ?? 'get') === 'post')
-                                    <form method="POST" action="{{ $row[$column['link']] }}" target="_blank">
+                                    <form method="POST" action="{{ $row[$column['link']] }}" target="receipt-print">
                                         @csrf
                                         <button class="report-card__text-action" type="submit">{{ $value }}</button>
                                     </form>
@@ -109,7 +109,7 @@
                 <footer class="report-card__footer">
                     @foreach ($actionColumns as $column)
                         @if (($column['method'] ?? 'get') === 'post')
-                            <form method="POST" action="{{ $row[$column['link']] }}" target="_blank">
+                            <form method="POST" action="{{ $row[$column['link']] }}" target="receipt-print">
                                 @csrf
                                 <button class="btn btn-secondary" type="submit">{{ $row[$column['key']] }}</button>
                             </form>

@@ -97,7 +97,10 @@
 
         const select = document.querySelector('[data-receipt-paper-select]');
         const printButton = document.querySelector('[data-receipt-print-button]');
+        const closeButton = document.querySelector('[data-receipt-close-button]');
+        const toolbar = document.querySelector('[data-receipt-window-name]');
         const status = document.querySelector('[data-receipt-print-status]');
+        const isDedicatedReceiptWindow = window.name === toolbar?.dataset.receiptWindowName;
         const serverDefault = validatedPaperWidth(paper.dataset.receiptDefaultWidth) || '80';
         const browserPreference = readPaperPreference();
         applyPaperWidth(paper, null, browserPreference || serverDefault);
@@ -123,8 +126,24 @@
             invokePrint(status, false);
         });
 
+        closeButton?.addEventListener('click', function () {
+            window.close();
+
+            window.setTimeout(function () {
+                if (!window.closed) {
+                    status.textContent = 'Browser tidak mengizinkan tab ditutup otomatis. Silakan tutup tab ini secara manual.';
+                }
+            }, 150);
+        });
+
         window.addEventListener('afterprint', function () {
             status.textContent = 'Dialog cetak telah ditutup.';
+
+            if (isDedicatedReceiptWindow) {
+                window.setTimeout(function () {
+                    window.close();
+                }, 150);
+            }
         });
 
         if (paper.dataset.receiptAutoPrint === 'true') {

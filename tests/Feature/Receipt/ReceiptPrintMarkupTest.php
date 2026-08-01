@@ -20,6 +20,8 @@ class ReceiptPrintMarkupTest extends ReceiptPrintTestCase
         $this->assertStringContainsString('receipt-paper--80', $content);
         $this->assertStringContainsString('class="receipt-toolbar print-hidden"', $content);
         $this->assertStringContainsString('data-receipt-print-button', $content);
+        $this->assertStringContainsString('data-receipt-close-button', $content);
+        $this->assertStringContainsString('data-receipt-window-name="receipt-print"', $content);
         $this->assertStringContainsString('data-receipt-paper-select', $content);
         $this->assertStringContainsString('meta name="viewport"', $content);
         $this->assertStringContainsString('meta name="robots" content="noindex,nofollow"', $content);
@@ -57,6 +59,8 @@ class ReceiptPrintMarkupTest extends ReceiptPrintTestCase
             'window.print()',
             'hasAutoPrinted',
             "window.addEventListener('afterprint'",
+            'isDedicatedReceiptWindow',
+            'window.close()',
             'document.fonts?.ready',
             "querySelectorAll('img')",
             'receipt_paper_width',

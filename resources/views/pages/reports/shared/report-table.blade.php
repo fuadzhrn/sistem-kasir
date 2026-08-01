@@ -39,7 +39,7 @@
                         <td>
                             @if (! $report['for_print'] && isset($column['link']) && filled($row[$column['link']] ?? null))
                                 @if (($column['method'] ?? 'get') === 'post')
-                                    <form method="POST" action="{{ $row[$column['link']] }}" target="_blank" rel="noopener">
+                                    <form method="POST" action="{{ $row[$column['link']] }}" target="receipt-print">
                                         @csrf
                                         <button class="report-table__link-button" type="submit">{{ $row[$column['key']] ?? '—' }}</button>
                                     </form>
